@@ -1,0 +1,43 @@
+{
+    "name": "workable/acl",
+    "description": "A Laravel package for managing roles, permissions, and JWT authentication.",
+    "keywords": [
+        "laravel",
+        "roles",
+        "permissions",
+        "jwt",
+        "auth"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "thuannn",
+            "email": "thuannguyen0101.work@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "spatie/laravel-permission": "^5.5",
+        "tymon/jwt-auth": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Workable\\ACL\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+               "Workable\\ACL\\ACLServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php artisan package:discover --ansi"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
