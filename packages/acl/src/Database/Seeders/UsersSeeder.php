@@ -12,10 +12,9 @@ class UsersSeeder extends Seeder
 {
     public function run()
     {
-        $adminRole = Role::findByName(UserEnum::ADMIN);
-        $userRole  = Role::findByName(UserEnum::USER);
-
         UserApi::query()->truncate();
+        $adminRole = Role::findByName(UserEnum::ADMIN,'api');
+        $userRole  = Role::findByName(UserEnum::USER, 'api');
 
         $admin = UserApi::create([
             'name'     => 'Admin Thuannn',

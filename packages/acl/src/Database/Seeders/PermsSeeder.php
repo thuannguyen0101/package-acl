@@ -29,10 +29,11 @@ class PermsSeeder extends Seeder
 
         $group_perms = [
             'account' => [
+                'index_account'  => [UserEnum::ADMIN],
                 'create_account' => [UserEnum::USER],
                 'view_account'   => [UserEnum::ADMIN, UserEnum::USER],
                 'edit_account'   => [UserEnum::ADMIN, UserEnum::USER],
-                'delete_account' => [UserEnum::ADMIN],
+                'delete_account' => [UserEnum::ADMIN, UserEnum::USER],
             ]
         ];
 
@@ -42,7 +43,7 @@ class PermsSeeder extends Seeder
             }
 
             foreach ($perms as $perm => $role_ids) {
-                $permission      = Permission::query()
+                $permission = Permission::query()
                     ->where('name', $perm)
                     ->where('guard_name', $guard_name)
                     ->first();

@@ -60,4 +60,11 @@ abstract class BaseResource extends JsonResource
             'errors'  => $data,
         ];
     }
+    public static function handleDelete(string $message): array
+    {
+        return [
+            'success' => true,
+            'message' => $message,
+        ];
+    }
 }

@@ -12,6 +12,12 @@ class UserApi extends Authenticatable implements JWTSubject
 
     protected $table = 'users';
 
+//    public function __construct(array $attributes = [])
+//    {
+//        $this->table = config('acl.tables.auth_tokens_table');
+//        parent::__construct($attributes);
+//    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

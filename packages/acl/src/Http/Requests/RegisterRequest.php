@@ -4,11 +4,11 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\HandleFailedValidationTrait;
+use Workable\ACL\Core\Traits\ApiResponse;
 
 class RegisterRequest extends FormRequest
 {
-    use HandleFailedValidationTrait;
+    use ApiResponse;
 
     /**
      * Determine if the user is authorized to make this request.

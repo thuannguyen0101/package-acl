@@ -21,6 +21,7 @@ class CustomPermission
             : explode('|', $permission);
 
         $userPermissions = $authGuard->user()->getAllPermissions()->pluck('name')->toArray();
+
         foreach ($permissions as $permission) {
             if (in_array($permission, $userPermissions)) {
                 return $next($request);

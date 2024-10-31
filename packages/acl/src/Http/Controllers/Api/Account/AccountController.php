@@ -13,18 +13,29 @@ class AccountController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('custom_permission:create_account')->only('store', 'show');
+        $this->middleware('custom_permission:index_account')->only('index');
+        $this->middleware('custom_permission:create_account')->only('store');
+        $this->middleware('custom_permission:view_account')->only('show');
+        $this->middleware('custom_permission:edit_account')->only('save');
+        $this->middleware('custom_permission:delete_account')->only('destroy');
     }
 
     public function index()
     {
-
+        $listAccounts = Account::query()->with(['user'])->get();
+        return AccountResource::collection($listAccounts);
     }
 
     public function store(AccountRequest $request)
     {
-        $item = $request->validated();
+        auth()->user()->can('create_account');
 
+        $user    = auth()->user();
+        $item    = $request->validated();
+        $account = Account::where('user_id', $user->id)->first();
+        if ($account) {
+            return AccountResource::handleError("Bạn đã có tại khoản vui lòng xóa hủy tài khoản trước khi tạo mới.");
+        }
         $account = Account::create([
             'user_id'        => auth()->id(),
             'account_number' => $this->createAccountNumber(),
@@ -36,48 +47,57 @@ class AccountController extends Controller
             'updated_at'     => now()->format("Y-m-d H:i:s"),
         ]);
 
-        $user          = auth()->user();
-        $user->account = $account;
-
-        $accountRes = new AccountResource($user);
+        $accountRes = new AccountResource($account);
         $accountRes->setMessage('Tài khoản được tạo thành công.');
 
         return $accountRes;
     }
 
-    public function show($id)
+    public function show()
     {
-        $account = Account::find($id);
+        $user    = auth()->user();
+        $account = Account::where('user_id', $user->id)->first();
+
         if (is_null($account)) {
             return AccountResource::handleError('Không tìm thấy tài khoản.');
         }
-        $user          = auth()->user();
-        $user->account = $account;
 
-        $accountRes = new AccountResource($user);
-        $accountRes->setMessage('Tìm nạp tài khoản thành công.');
+        $account->user = $user;
+
+        $accountRes = new AccountResource($account);
+        $accountRes->setMessage('Tìm tài khoản thành công.');
 
         return $accountRes;
     }
 
-    public function save($id, AccountRequest $request)
+    public function save(AccountRequest $request)
     {
         $item    = $request->validated();
-        $account = Account::find($id)->update($item);
+        $user    = auth()->user();
+        $account = Account::where('user_id', $user->id)->first();
 
         if (is_null($account)) {
             return AccountResource::handleError('Không tìm thấy tài khoản.');
         }
-        $user          = auth()->user();
-        $user->account = $account;
 
-        $accountRes = new AccountResource($user);
+        $account->update($item);
+
+        $accountRes = new AccountResource($account);
         $accountRes->setMessage('Tài khoản được cập nhật thành công.');
+        return $accountRes;
     }
 
     public function destroy()
     {
+        $user    = auth()->user();
+        $account = Account::where('user_id', $user->id)->delete();
+
+        if (is_null($account)) {
+            return AccountResource::handleError('Không tìm thấy tài khoản.');
+        }
+        return AccountResource::handleDelete("Tài khoản được xóa thành công.");
     }
+
 
     private function createAccountNumber(): string
     {
