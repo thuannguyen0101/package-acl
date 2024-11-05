@@ -1,15 +1,15 @@
 <?php
 
-namespace Workable\ACL\Http\Requests;
+namespace Workable\Bank\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponse;
-use Workable\ACL\Enums\AccountEnum;
+use Workable\ACL\Core\Traits\ApiResponseTrait;
+use Workable\Bank\Enums\AccountEnum;
 
 class AccountRequest extends FormRequest
 {
-    use ApiResponse;
+    use ApiResponseTrait;
 
     /**
      * Determine if the user is authorized to make this request.

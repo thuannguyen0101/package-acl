@@ -2,21 +2,22 @@
 
 namespace Workable\ACL\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
 
 class UserApi extends Authenticatable implements JWTSubject
 {
-    use HasRoles;
+    use HasRoles, HasFactory;
 
     protected $table = 'users';
 
-//    public function __construct(array $attributes = [])
-//    {
-//        $this->table = config('acl.tables.auth_tokens_table');
-//        parent::__construct($attributes);
-//    }
+    protected $fillable = [
+        'email',
+        'password',
+        'name',
+    ];
 
     public function getJWTIdentifier()
     {

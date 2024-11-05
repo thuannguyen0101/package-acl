@@ -1,10 +1,11 @@
 <?php
 
-namespace Workable\ACL\Models;
+namespace Workable\Bank\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Workable\ACL\Models\UserApi;
 
 class Account extends Model
 {

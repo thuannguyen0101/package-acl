@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "47ff2a843f5db9de5da93c0c3d6081cb",
+    "content-hash": "1148d601a3ea709298949971919e47df",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -5878,6 +5878,101 @@
                 "symlink": true,
                 "relative": true
             }
+        },
+        {
+            "name": "workable/bank",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./packages/bank",
+                "reference": "6a8f24532126b6a98ce35670f776f1ec56560dae"
+            },
+            "require": {
+                "php": "^7.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\Bank\\BankServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\Bank\\": "src"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php artisan package:discover --ansi"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "thuannn",
+                    "email": "thuannguyen0101.work@gmail.com"
+                }
+            ],
+            "description": "A Laravel package for managing Bank",
+            "keywords": [
+                "Bank",
+                "laravel"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "workable/platform",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "./platform/core",
+                "reference": "46b808b220c2c40231a4c0f894b963094c882864"
+            },
+            "require-dev": {
+                "barryvdh/laravel-debugbar": "^3.2"
+            },
+            "type": "project",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\Base\\Providers\\BaseServiceProvider",
+                        "Workable\\Support\\Providers\\SupportServiceProvider",
+                        "Workable\\BinderProxy\\BinderProxyServiceProvider"
+                    ],
+                    "aliases": []
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\Widget\\": "widget/src",
+                    "Workable\\Setting\\": "setting/src",
+                    "Workable\\Base\\": "base/src",
+                    "Workable\\BinderProxy\\": "binder-proxy/src",
+                    "Workable\\Support\\": "support/src"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Hungokata",
+                    "email": "hungokata630@gmail.com"
+                }
+            ],
+            "description": "The Workable Platform based on Laravel Framework.",
+            "keywords": [
+                "Workable",
+                "Workable platform"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         }
     ],
     "packages-dev": [
@@ -8178,7 +8273,11 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "workable/acl": 20,
+        "workable/bank": 20,
+        "workable/platform": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -2,57 +2,105 @@
 
 namespace Workable\ACL\Http\Controllers\Api\Admin;
 
-use Workable\ACL\Core\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Workable\ACL\Core\Traits\ApiResponseTrait;
+use Workable\ACL\Enums\ResponseMessageEnum;
+use Workable\ACL\Http\Requests\RoleAssignModelRequest;
 use Workable\ACL\Http\Requests\RoleRequest;
-use Workable\ACL\Http\Resources\RoleResource;
+use Workable\ACL\Http\Resources\Role\RoleCollection;
+use Workable\ACL\Http\Resources\Role\RoleResource;
+use Workable\ACL\Http\Resources\UserResource;
 use Workable\ACL\Services\RoleService;
 
 class RoleController
 {
-    use ApiResponse;
+    use ApiResponseTrait;
 
-    protected $service;
+    protected $roleService;
 
-    public function __construct(RoleService $service)
+    public function __construct(RoleService $roleService)
     {
-        $this->service = $service;
+        $this->roleService = $roleService;
     }
 
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        $listRole = $this->service->getRoles();
-        return $this->successResponse(RoleResource::collection($listRole));
-    }
+        $filters  = $request->get('filters', []);
+        $listRole = $this->roleService->getRoles($filters);
 
-    public function show(int $id)
-    {
-        $role = $this->service->show($id);
-        if (empty($role)) {
-            return $this->errorResponse('Role not found', 404);
+        if ($listRole->count() === 0) {
+            return $this->successResponse([], "Không có dữ liệu.", ResponseMessageEnum::CODE_NO_CONTENT);
         }
+
+        $listRole = new RoleCollection($listRole);
+
+        return $this->successResponse($listRole);
+    }
+
+    public function store(RoleRequest $request): JsonResponse
+    {
+        list(
+            'status' => $status,
+            'message' => $message,
+            'role' => $role) = $this->roleService->createRole($request->all());
+
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->errorResponse($message, $status);
+        }
+
+        return $this->createdResponse(new RoleResource($role));
+    }
+
+    public function show(int $id): JsonResponse
+    {
+        $role = $this->roleService->getRole($id);
+
+        if (empty($role)) {
+            return $this->notFoundResponse();
+        }
+
         return $this->successResponse(new RoleResource($role));
     }
 
-    public function store(RoleRequest $request)
+    public function update(int $id, RoleRequest $request): JsonResponse
     {
-        $role = $this->service->createRole($request->all());
-        if (empty($role)) {
-            return $this->errorResponse('Role not created', 500);
+        list(
+            'status' => $status,
+            'message' => $message,
+            'role' => $role) = $this->roleService->updateRole($id, $request->all());
+
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->errorResponse($message, $status);
         }
+
         $roleRes = new RoleResource($role);
 
-        return $this->successResponse($roleRes);
+        return $this->updatedResponse(new RoleResource($roleRes));
     }
 
-    public function save(RoleRequest $request)
+    public function destroy(int $id)
     {
-        $role    = $this->service->updateRole($request->all());
-        $roleRes = new RoleResource($role);
-        return $this->successResponse(new RoleResource($roleRes), "Updated successfully");
+        $deleted = $this->roleService->deleteRole($id);
+
+        if (!$deleted) {
+            return $this->notFoundResponse();
+        }
+
+        return $this->deletedResponse();
     }
 
-    public function destroy()
+    public function assignRoleForModel(RoleAssignModelRequest $request): JsonResponse
     {
+        list(
+            'status' => $status,
+            'message' => $message,
+            'data' => $user) = $this->roleService->assignRoleForModel($request->model_id, $request->role_id);
 
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->errorResponse($message, $status);
+        }
+
+        return $this->updatedResponse(new UserResource($user));
     }
 }

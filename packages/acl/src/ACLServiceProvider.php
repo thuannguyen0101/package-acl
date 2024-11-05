@@ -8,7 +8,7 @@
 namespace Workable\ACL;
 
 use Illuminate\Support\ServiceProvider;
-use Workable\ACL\Core\Traits\LoadAndPublishDataTrait;
+use Workable\Base\Traits\LoadAndPublishDataTrait;
 
 class ACLServiceProvider extends ServiceProvider
 {
@@ -19,7 +19,7 @@ class ACLServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/auth.php' => config_path('auth.php'),
         ], 'config');
-        $this
+        $this->setBasePath(base_path('packages' . DIRECTORY_SEPARATOR))
             ->setNamespace('acl')
             ->loadAndPublishConfigurations([
                 'jwt', 'permission', 'auth'

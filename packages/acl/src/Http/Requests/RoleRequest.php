@@ -4,11 +4,11 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponse;
+use Workable\ACL\Core\Traits\ApiResponseTrait;
 
 class RoleRequest extends FormRequest
 {
-    use ApiResponse;
+    use ApiResponseTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -17,7 +17,6 @@ class RoleRequest extends FormRequest
      */
     public function authorize()
     {
-
         return true;
     }
 
@@ -28,28 +27,19 @@ class RoleRequest extends FormRequest
      */
     public function rules(Request $request)
     {
-        $rules = [];
-        if ($request->method() == 'PUT') {
-            $rules = [
-                'role_id' => 'required|exists:roles,id',
-            ];
-        }
-        return array_merge($rules, [
-            'name'             => 'required|unique:roles,name,' . $request->role_id ?? 0,
-            'permission_ids'   => 'nullable|array',
-            'permission_ids.*' => 'exists:permissions,id'
-        ]);
+        return [
+            'name'                  => 'required|unique:roles,name,' . $request->id ?? 0,
+            'permission_ids'        => 'nullable|array',
+        ];
     }
 
     public function messages()
     {
         return [
-            'name.required'           => 'Tên vai trò không được để trống.',
-            'name.unique'             => 'Tên vai trò đã tồn tại.',
-            'role_id.required'        => 'Vãi trò không được để trống.',
-            'role_id.exists'          => 'Vãi trò không tồn tại.',
-            'permission_ids.array'    => 'Dữ liệu quyền không hợp lệ.',
-            'permission_ids.*.exists' => 'Quyền không tồ tại.',
+            'name.required' => 'Tên vai trò không được để trống.',
+            'name.unique'   => 'Tên vai trò đã tồn tại.',
+
+            'permission_ids.array'        => 'Dữ liệu quyền không hợp lệ.',
         ];
     }
 }

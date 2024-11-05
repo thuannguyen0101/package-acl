@@ -2,40 +2,47 @@
 
 namespace Workable\ACL\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\Permission\Models\Permission;
 
 class PermissionService
 {
-    public function getPermissions(): array
+    public function getPermissions(array $filters = [])
     {
-        $listGroupPermission = Permission::with('roles')->get()->groupBy('group')->toArray();
-        $dataPermission      = [];
-        foreach ($listGroupPermission as $key => $permissions) {
-            foreach ($permissions as $permission) {
-                if (count($permission['roles']) > 0) {
-                    $permission['roles'] = array_column($permission['roles'], 'id');
-                }
-                $dataPermission[$key][] = [
-                    'id'         => $permission['id'],
-                    'name'       => $permission['name'],
-                    'group'      => $permission['group'],
-                    'guard_name' => $permission['guard_name'],
-                    'roles'      => $permission['roles']
-                ];
-            }
-        }
-
-        return [
-            'permissions' => $dataPermission
-        ];
+        return $this->buildQuery($filters)->get();
     }
 
-    public function updatePermission($data)
+    public function getPermission(int $id)
     {
-        $permission = Permission::findById($data['permission_id'], 'api');
+        $permission = Permission::find($id);
+
+        if (is_null($permission)) {
+            return false;
+        }
+        return $permission;
+    }
+
+    public function updatePermission(int $id, array $data)
+    {
+        $permission = Permission::find($id);
+
+        if (is_null($permission)) {
+            return false;
+        }
 
         $permission->syncRoles($data['role_ids']);
 
         return $permission;
+    }
+
+    private function buildQuery(array $filters = []): Builder
+    {
+        $with = [];
+        if (isset($filters['with']['roles']) && (bool)$filters['with']['roles']) {
+            $with = ['roles'];
+        }
+
+        return Permission::query()
+            ->with($with);
     }
 }

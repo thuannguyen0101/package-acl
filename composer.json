@@ -11,7 +11,9 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "workable/acl": "dev-main"
+        "workable/acl": "dev-main",
+        "workable/bank": "dev-main",
+        "workable/platform": "dev-master"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -25,7 +27,8 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Workable\\ACL\\": "packages/acl/src/"
+            "Workable\\ACL\\": "packages/acl/src/",
+            "Workable\\Bank\\": "packages/back/src/"
         }
     },
     "autoload-dev": {
@@ -61,6 +64,13 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "repositories": [
+        {
+            "type": "path",
+            "url": "./platform/core",
+            "options": {
+                "symlink": true
+            }
+        },
         {
             "type": "path",
             "url": "./packages/*",

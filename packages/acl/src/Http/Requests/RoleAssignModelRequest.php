@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Workable\ACL\Core\Traits\ApiResponseTrait;
 
-class LoginRequest extends FormRequest
+class RoleAssignModelRequest extends FormRequest
 {
     use ApiResponseTrait;
 
@@ -27,20 +27,17 @@ class LoginRequest extends FormRequest
      */
     public function rules(Request $request)
     {
-
         return [
-            'email'    => 'email|required',
-            'password' => 'required|min:6',
+            'role_id'  => 'required',
+            'model_id' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'email.required'    => 'Tên đăng nhập không được để trống.',
-            'email.email'       => 'Email không hợp lệ. Vui lòng nhập một địa chỉ email hợp lệ.',
-            'password.required' => 'Mật khẩu không được để trống.',
-            'password.min'      => 'Mật khẩu phải có ít nhất gồm 6 ký tự.',
+            'role_id.required'  => 'Vãi trò không được để trống.',
+            'model_id.required' => 'Dữ liệu người dung không được để trống.',
         ];
     }
 }

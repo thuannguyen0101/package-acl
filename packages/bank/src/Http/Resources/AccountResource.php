@@ -1,8 +1,9 @@
 <?php
 
-namespace Workable\ACL\Http\Resources;
+namespace Workable\Bank\Http\Resources;
 
-use Workable\ACL\Enums\AccountEnum;
+use Workable\ACL\Http\Resources\BaseResource;
+use Workable\Bank\Enums\AccountEnum;
 
 class AccountResource extends BaseResource
 {
@@ -11,11 +12,6 @@ class AccountResource extends BaseResource
         $user = $this->user;
 
         return [
-            "user"    => [
-                "id"    => $user->id,
-                "name"  => $user->name,
-                "email" => $user->email,
-            ],
             "account" => [
                 'account_id'     => $this->id,
                 'account_number' => $this->account_number,
@@ -24,6 +20,11 @@ class AccountResource extends BaseResource
                 'bank_name'      => AccountEnum::BANK_NAME_TEXT[$this->bank_name],
                 'branch_name'    => AccountEnum::BRANCH_NAME_TEXT[$this->branch_name],
                 'status'         => AccountEnum::STATUS_TEXT[$this->status],
+                "user"    => [
+                    "id"    => $user->id,
+                    "name"  => $user->name,
+                    "email" => $user->email,
+                ],
             ]
         ];
     }

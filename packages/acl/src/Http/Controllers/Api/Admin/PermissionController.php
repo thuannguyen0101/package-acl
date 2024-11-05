@@ -4,14 +4,17 @@ namespace Workable\ACL\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Workable\ACL\Core\Traits\ApiResponse;
+use Illuminate\Http\Request;
+use Workable\ACL\Core\Traits\ApiResponseTrait;
+use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\ACL\Http\Requests\PermissionRequest;
-use Workable\ACL\Http\Resources\PermissionResource;
+use Workable\ACL\Http\Resources\Permission\PermissionCollection;
+use Workable\ACL\Http\Resources\Permission\PermissionResource;
 use Workable\ACL\Services\PermissionService;
 
 class PermissionController extends Controller
 {
-    use ApiResponse;
+    use ApiResponseTrait;
 
     protected $service;
 
@@ -22,19 +25,42 @@ class PermissionController extends Controller
         $this->service = $service;
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $listPermission = $this->service->getPermissions();
+        $filters = $request->get('filters', []);
+
+        $listPermission = $this->service->getPermissions($filters);
+        if ($listPermission->count() === 0) {
+            return $this->successResponse([], "Không có dữ liệu.", ResponseMessageEnum::CODE_NO_CONTENT);
+        }
+
+        $listPermission = new PermissionCollection($listPermission);
+
         return $this->successResponse($listPermission);
     }
 
-    public function update(PermissionRequest $request): JsonResponse
+    public function update(int $id, PermissionRequest $request): JsonResponse
     {
-        $permission    = $this->service->updatePermission($request->all());
+        $permission = $this->service->updatePermission($id, $request->all());
+
+        if (!$permission) {
+            return $this->notFoundResponse();
+        }
+
         $permissionRes = new PermissionResource($permission);
-        return $this->successResponse($permissionRes);
+
+        return $this->updatedResponse($permissionRes);
     }
-    public function show($id)
+
+    public function show(int $id): JsonResponse
     {
+        $permission = $this->service->getPermission($id);
+
+        if (!$permission) {
+            return $this->notFoundResponse();
+        }
+        $permissionRes = new PermissionResource($permission);
+
+        return $this->successResponse($permissionRes);
     }
 }

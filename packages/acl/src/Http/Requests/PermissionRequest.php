@@ -4,11 +4,11 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponse;
+use Workable\ACL\Core\Traits\ApiResponseTrait;
 
 class PermissionRequest extends FormRequest
 {
-    use ApiResponse;
+    use ApiResponseTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -17,7 +17,6 @@ class PermissionRequest extends FormRequest
      */
     public function authorize()
     {
-
         return true;
     }
 
@@ -29,21 +28,17 @@ class PermissionRequest extends FormRequest
     public function rules(Request $request)
     {
         return [
-            'permission_id' => 'required|exists:permissions,id',
-            'role_ids'      => 'required|array',
-            'role_ids.*'    => 'exists:roles,id',
+            'role_ids'   => 'required|array',
+            'role_ids.*' => 'numeric',
         ];
     }
 
     public function messages()
     {
         return [
-            'permission_id.required' => 'Quyền không được để trống.',
-            'permission_id.exists'   => 'Quyền không tồn tại',
-
-            'role_ids.required' => 'Vai trò không được để trống.',
-            'role_ids.array'    => 'Dữ liệu vai trò không hợp lệ.',
-            'role_ids.*.exists' => 'Vai trò không không tồn tại',
+            'role_ids.required'  => 'Vai trò không được để trống.',
+            'role_ids.array'     => 'Dữ liệu vai trò không hợp lệ.',
+            'role_ids.*.numeric' => 'Dữ liệu quyền không hợp lệ',
         ];
     }
 }

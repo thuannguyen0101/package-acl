@@ -1,0 +1,6 @@
+[submodule "platform/core"]
+	path = platform/core
+	url = git@gitlab.com:workable_packages/platform.git
+; [submodule "packages/core"]
+; 	path = packages/core
+; 	url = git@gitlab.com:workable_packages/platform.git

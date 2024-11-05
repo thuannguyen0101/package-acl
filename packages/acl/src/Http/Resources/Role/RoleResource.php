@@ -1,6 +1,8 @@
 <?php
 
-namespace Workable\ACL\Http\Resources;
+namespace Workable\ACL\Http\Resources\Role;
+
+use Workable\ACL\Http\Resources\BaseResource;
 
 class RoleResource extends BaseResource
 {
@@ -8,7 +10,6 @@ class RoleResource extends BaseResource
     {
         $permissions = $this->permissions->pluck('id')->toArray() ?? $this->getAllPermissions()->pluck('id')->toArray();
         return [
-
             "role" => [
                 "id"          => $this->id,
                 "name"        => $this->name,

@@ -1,6 +1,6 @@
 <?php
 
-namespace Workable\ACL\Enums;
+namespace Workable\Bank\Enums;
 
 class AccountEnum
 {

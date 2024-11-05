@@ -1,35 +1,38 @@
 <?php
 
-namespace Workable\ACL\Http\Controllers\Api\Account;
+namespace Workable\Bank\Http\Controllers\Api\Account;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Workable\ACL\Enums\AccountEnum;
-use Workable\ACL\Http\Requests\AccountRequest;
-use Workable\ACL\Http\Resources\AccountResource;
-use Workable\ACL\Models\Account;
+use Workable\ACL\Core\Traits\ApiResponseTrait;
+use Workable\Bank\Enums\AccountEnum;
+use Workable\Bank\Http\Requests\AccountRequest;
+use Workable\Bank\Http\Resources\AccountCollection;
+use Workable\Bank\Http\Resources\AccountResource;
+use Workable\Bank\Models\Account;
 
 class AccountController extends Controller
 {
+    use ApiResponseTrait;
+
     public function __construct()
     {
-        $this->middleware('custom_permission:index_account')->only('index');
-        $this->middleware('custom_permission:create_account')->only('store');
-        $this->middleware('custom_permission:view_account')->only('show');
-        $this->middleware('custom_permission:edit_account')->only('save');
-        $this->middleware('custom_permission:delete_account')->only('destroy');
+        $this->middleware('acl_permission:index_account')->only('index');
+        $this->middleware('acl_permission:create_account')->only('store');
+        $this->middleware('acl_permission:view_account')->only('show');
+        $this->middleware('acl_permission:edit_account')->only('save');
+        $this->middleware('acl_permission:delete_account')->only('destroy');
     }
 
     public function index()
     {
         $listAccounts = Account::query()->with(['user'])->get();
-        return AccountResource::collection($listAccounts);
+        $listAccounts = new AccountCollection($listAccounts);
+
+        return $this->successResponse($listAccounts);
     }
 
     public function store(AccountRequest $request)
     {
-        auth()->user()->can('create_account');
-
         $user    = auth()->user();
         $item    = $request->validated();
         $account = Account::where('user_id', $user->id)->first();
@@ -53,49 +56,46 @@ class AccountController extends Controller
         return $accountRes;
     }
 
-    public function show()
+    public function show($id)
     {
-        $user    = auth()->user();
-        $account = Account::where('user_id', $user->id)->first();
+        $user = auth()->user();
+
+        $account = Account::query()->find($id);
 
         if (is_null($account)) {
-            return AccountResource::handleError('Không tìm thấy tài khoản.');
+            return $this->notFoundResponse("Không tìm thấy tài khoản.");
         }
-
         $account->user = $user;
+        $accountRes    = new AccountResource($account);
 
-        $accountRes = new AccountResource($account);
-        $accountRes->setMessage('Tìm tài khoản thành công.');
-
-        return $accountRes;
+        return $this->successResponse($accountRes, 'Tìm tài khoản thành công.');
     }
 
-    public function save(AccountRequest $request)
+    public function update(int $id, AccountRequest $request)
     {
         $item    = $request->validated();
-        $user    = auth()->user();
-        $account = Account::where('user_id', $user->id)->first();
+        $account = Account::query()->find($id);
 
         if (is_null($account)) {
-            return AccountResource::handleError('Không tìm thấy tài khoản.');
+            return $this->notFoundResponse("Không tìm thấy tài khoản.");
         }
 
         $account->update($item);
 
         $accountRes = new AccountResource($account);
-        $accountRes->setMessage('Tài khoản được cập nhật thành công.');
-        return $accountRes;
+
+        return $this->successResponse($accountRes, 'Tài khoản được cập nhật thành công.');
     }
 
-    public function destroy()
+    public function destroy(int $id)
     {
-        $user    = auth()->user();
-        $account = Account::where('user_id', $user->id)->delete();
+        $account = Account::query()->find($id)->delete();
 
         if (is_null($account)) {
-            return AccountResource::handleError('Không tìm thấy tài khoản.');
+            return $this->notFoundResponse("Không tìm thấy tài khoản.");
         }
-        return AccountResource::handleDelete("Tài khoản được xóa thành công.");
+
+        return $this->deletedResponse("Tài khoản được xóa thành công.");
     }
 
 

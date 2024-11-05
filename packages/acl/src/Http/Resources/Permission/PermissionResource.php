@@ -1,8 +1,8 @@
 <?php
 
-namespace Workable\ACL\Http\Resources;
+namespace Workable\ACL\Http\Resources\Permission;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use Workable\ACL\Http\Resources\BaseResource;
 
 class PermissionResource extends BaseResource
 {
