@@ -12,6 +12,7 @@ class ResponseMessageEnum
     const CODE_UNAUTHORIZED          = 401;
     const CODE_FORBIDDEN             = 403;
     const CODE_NOT_FOUND             = 404;
+    const CODE_CONFLICT              = 409;
     const CODE_UNPROCESSABLE_ENTITY  = 422;
     const CODE_INTERNAL_SERVER_ERROR = 500;
     const CODE_GATEWAY_TIMEOUT       = 504;

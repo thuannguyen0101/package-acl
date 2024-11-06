@@ -14,6 +14,9 @@
         <testsuite name="Acl">
             <directory suffix="Test.php">./packages/acl/tests/Feature</directory>
         </testsuite>
+        <testsuite name="Acl">
+            <directory suffix="Test.php">./packages/bank/tests/Feature</directory>
+        </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
         <include>

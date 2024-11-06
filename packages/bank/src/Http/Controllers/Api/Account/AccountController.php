@@ -4,6 +4,7 @@ namespace Workable\Bank\Http\Controllers\Api\Account;
 
 use App\Http\Controllers\Controller;
 use Workable\ACL\Core\Traits\ApiResponseTrait;
+use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\Bank\Enums\AccountEnum;
 use Workable\Bank\Http\Requests\AccountRequest;
 use Workable\Bank\Http\Resources\AccountCollection;
@@ -19,7 +20,7 @@ class AccountController extends Controller
         $this->middleware('acl_permission:index_account')->only('index');
         $this->middleware('acl_permission:create_account')->only('store');
         $this->middleware('acl_permission:view_account')->only('show');
-        $this->middleware('acl_permission:edit_account')->only('save');
+        $this->middleware('acl_permission:edit_account')->only('update');
         $this->middleware('acl_permission:delete_account')->only('destroy');
     }
 
@@ -37,7 +38,7 @@ class AccountController extends Controller
         $item    = $request->validated();
         $account = Account::where('user_id', $user->id)->first();
         if ($account) {
-            return AccountResource::handleError("Bạn đã có tại khoản vui lòng xóa hủy tài khoản trước khi tạo mới.");
+            return $this->errorResponse("Bạn đã có tại khoản vui lòng xóa hủy tài khoản trước khi tạo mới.", ResponseMessageEnum::CODE_CONFLICT);
         }
         $account = Account::create([
             'user_id'        => auth()->id(),
@@ -50,10 +51,7 @@ class AccountController extends Controller
             'updated_at'     => now()->format("Y-m-d H:i:s"),
         ]);
 
-        $accountRes = new AccountResource($account);
-        $accountRes->setMessage('Tài khoản được tạo thành công.');
-
-        return $accountRes;
+        return $this->createdResponse(new AccountResource($account));
     }
 
     public function show($id)
@@ -89,11 +87,11 @@ class AccountController extends Controller
 
     public function destroy(int $id)
     {
-        $account = Account::query()->find($id)->delete();
-
-        if (is_null($account)) {
+        $account = Account::query()->find($id);
+        if (!$account) {
             return $this->notFoundResponse("Không tìm thấy tài khoản.");
         }
+        $account->delete();
 
         return $this->deletedResponse("Tài khoản được xóa thành công.");
     }
