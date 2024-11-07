@@ -3,24 +3,27 @@
 namespace Workable\ACL\Http\Resources\Role;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Workable\ACL\Core\Traits\FilterApiTrait;
 
 class RoleCollection extends ResourceCollection
 {
+    use FilterApiTrait;
+
     public function toArray($request): array
     {
-        $filters        = $request->get("filters", []);
-        $withPermission = $filters['with']['permissions'] ?? null;
+        $relations = $this->getFilterRelationsApi($request->all());
 
-        $roles = $this->collection->transform(function ($item) use ($withPermission) {
+        $roles = $this->collection->transform(function ($item) use ($relations) {
             $role = [
                 'id'         => $item->id,
                 'name'       => $item->name,
-                'group'      => $item->group,
                 'guard_name' => $item->guard_name,
             ];
 
-            if ($withPermission) {
-                $role['permissions'] = $item->permissions->pluck('id')->toArray();
+            if (!empty($relations['with'])) {
+                foreach ($relations['with'] as $relation) {
+                    $role[$relation] = $item->$relation->makeHidden(['pivot', 'created_at', 'updated_at']);
+                }
             }
 
             return $role;

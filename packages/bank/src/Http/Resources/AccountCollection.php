@@ -3,14 +3,18 @@
 namespace Workable\Bank\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Workable\ACL\Core\Traits\FilterApiTrait;
 use Workable\Bank\Enums\AccountEnum;
 
 class AccountCollection extends ResourceCollection
 {
+    use FilterApiTrait;
+
     public function toArray($request): array
     {
-        $withUser = $request->get("withUser", false);
-        $dataRes  = $this->collection->transform(function ($item) use ($withUser) {
+        $relations = $this->getFilterRelationsApi($request->all());
+
+        $dataRes = $this->collection->transform(function ($item) use ($relations) {
             $dataRes = [
                 'account_id'     => $item->id,
                 'account_number' => $item->account_number,
@@ -20,13 +24,10 @@ class AccountCollection extends ResourceCollection
                 'branch_name'    => AccountEnum::BRANCH_NAME_TEXT[$item->branch_name],
                 'status'         => AccountEnum::STATUS_TEXT[$item->status],
             ];
-            if ($withUser) {
-                $user            = $item->user;
-                $dataRes['user'] = [
-                    "id"    => $user->id,
-                    "name"  => $user->name,
-                    "email" => $user->email,
-                ];
+            if (!empty($relations['with'])) {
+                foreach ($relations['with'] as $relation) {
+                    $dataRes[$relation] = $item->$relation->makeHidden(['pivot', 'created_at', 'updated_at', 'password', 'remember_token']);
+                }
             }
 
             return $dataRes;

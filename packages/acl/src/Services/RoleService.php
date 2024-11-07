@@ -7,18 +7,22 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
+use Workable\ACL\Core\Traits\FilterApiTrait;
 use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\ACL\Models\UserApi;
 
-class RoleService
+class RoleService extends BaseService
 {
+    use FilterApiTrait;
+
     public function __construct()
     {
 
     }
 
-    public function getRoles(array $filters)
+        public function getRoles(array $searches)
     {
+        $filters = $this->getFilterRelationsApi($searches);
         return $this->buildQuery($filters)->get();
     }
 
@@ -27,10 +31,11 @@ class RoleService
         $permissions = [];
         if ($data['permission_ids'] ?? false) {
             $permissions = Permission::query()->whereIn('id', $data['permission_ids'])->pluck('id')->toArray();
+
             if (count($permissions) < count($data['permission_ids'])) {
                 return [
                     'status'  => ResponseMessageEnum::CODE_NOT_FOUND,
-                    'message' => 'Không tìm thấy quyền.',
+                    'message' => __('acl::api.not_found'),
                     'role'    => null
                 ];
             }
@@ -157,15 +162,9 @@ class RoleService
         ];
     }
 
-    private function buildQuery(array $filters = []): Builder
+    private function buildQuery(array $filters = [])
     {
-        $with = [];
-
-        if (isset($filters['with']['permissions']) && (bool)$filters['with']['permissions']) {
-            $with = ['permissions'];
-        }
-
-        return Role::query()
-            ->with($with);
+        $query = Role::query();
+        return $this->applyBaseRelationsWithFields($query, $filters);
     }
 }

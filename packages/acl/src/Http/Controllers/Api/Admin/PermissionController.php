@@ -3,64 +3,70 @@
 namespace Workable\ACL\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
-use Workable\ACL\Enums\ResponseMessageEnum;
+use Workable\ACL\Http\Requests\PermissionListRequest;
 use Workable\ACL\Http\Requests\PermissionRequest;
 use Workable\ACL\Http\Resources\Permission\PermissionCollection;
 use Workable\ACL\Http\Resources\Permission\PermissionResource;
 use Workable\ACL\Services\PermissionService;
+use Workable\Support\Traits\ResponseHelperTrait;
 
 class PermissionController extends Controller
 {
-    use ApiResponseTrait;
+    use ResponseHelperTrait;
 
-    protected $service;
+    protected $permissionService;
 
     public function __construct(
-        PermissionService $service
+        PermissionService $permissionService
     )
     {
-        $this->service = $service;
+        $this->permissionService = $permissionService;
     }
 
-    public function index(Request $request): JsonResponse
+    public function index(PermissionListRequest $request)
     {
-        $filters = $request->get('filters', []);
+        $listPermission = $this->permissionService->getPermissions($request->all());
 
-        $listPermission = $this->service->getPermissions($filters);
         if ($listPermission->count() === 0) {
-            return $this->successResponse([], "Không có dữ liệu.", ResponseMessageEnum::CODE_NO_CONTENT);
+            return $this->respondError(__('acl::api.no_data'));
         }
 
         $listPermission = new PermissionCollection($listPermission);
 
-        return $this->successResponse($listPermission);
+        return $this->respondSuccess(
+            __('acl::api.success'),
+            $listPermission,
+        );
     }
 
-    public function update(int $id, PermissionRequest $request): JsonResponse
+    public function update(int $id, PermissionRequest $request)
     {
-        $permission = $this->service->updatePermission($id, $request->all());
+        $permission = $this->permissionService->updatePermission($id, $request->all());
 
         if (!$permission) {
-            return $this->notFoundResponse();
+            return $this->respondError(__('acl::api.not_found'));
         }
 
         $permissionRes = new PermissionResource($permission);
 
-        return $this->updatedResponse($permissionRes);
+        return $this->respondSuccess(
+            __('acl::api.updated'),
+            $permissionRes
+        );
     }
 
-    public function show(int $id): JsonResponse
+    public function show(int $id)
     {
-        $permission = $this->service->getPermission($id);
+        $permission = $this->permissionService->getPermission($id);
 
         if (!$permission) {
-            return $this->notFoundResponse();
+            return $this->respondError(__('acl::api.not_found'));
         }
         $permissionRes = new PermissionResource($permission);
 
-        return $this->successResponse($permissionRes);
+        return $this->respondSuccess(
+            __('acl::api.success'),
+            $permissionRes
+        );
     }
 }

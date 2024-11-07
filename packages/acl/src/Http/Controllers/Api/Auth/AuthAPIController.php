@@ -3,43 +3,43 @@
 namespace Workable\ACL\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
 use Workable\ACL\Http\Requests\LoginRequest;
 use Workable\ACL\Http\Requests\RegisterRequest;
 use Workable\ACL\Http\Resources\UserResource;
 use Workable\ACL\Models\UserApi;
+use Workable\Support\Traits\ResponseHelperTrait;
 
 class AuthAPIController extends Controller
 {
-    use ApiResponseTrait;
+    use ResponseHelperTrait;
 
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
 
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return $this->errorResponse("Thông tin đăng nhập không hợp lệ", 401);
+                return $this->respondError(__('acl::api.token_invalid'));
             }
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Không thể tạo token'], 500);
+            return $this->respondError(__('acl::api.login_failed'));
         }
 
         $currentUser = Auth::user();
         $userRes     = new UserResource($currentUser);
+
         $userRes->setToken($token);
 
-        return $this->successResponse($userRes, "Đăng nhập thành công.");
+        return $this->respondSuccess(__('acl::api.login_success'), $userRes);
     }
 
     public function register(RegisterRequest $request)
@@ -54,8 +54,9 @@ class AuthAPIController extends Controller
 
         $token   = JWTAuth::fromUser($user);
         $userRes = new UserResource($user);
+
         $userRes->setToken($token);
 
-        return $this->successResponse($userRes, "Người dùng đã đăng ký thành công.");
+        return $this->respondSuccess( __('acl::api.register_success'), $userRes);
     }
 }

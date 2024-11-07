@@ -64,12 +64,15 @@ class AccountTest extends TestCase
         $this->role->givePermissionTo($permission);
 
         $user->assignRole($this->role);
+        $this->createAccount();
 
         $token = $this->loginUser();
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
-        ])->json('GET', route('api.account.index'));
+        ])->json('GET', route('api.account.index', [
+            'with' => 'user'
+        ]));
 
         $response->assertStatus(200);
     }

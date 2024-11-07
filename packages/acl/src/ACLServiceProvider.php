@@ -19,12 +19,15 @@ class ACLServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/auth.php' => config_path('auth.php'),
         ], 'config');
+
         $this->setBasePath(base_path('packages' . DIRECTORY_SEPARATOR))
             ->setNamespace('acl')
             ->loadAndPublishConfigurations([
                 'jwt', 'permission', 'auth'
             ])
+            ->loadAndPublishViews()
             ->loadMigrations()
+            ->loadAndPublishTranslates()
             ->loadRoutes(['api']);
 
         config("acl:auth");

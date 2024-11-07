@@ -6,27 +6,33 @@ use App\Http\Controllers\Controller;
 use Workable\ACL\Core\Traits\ApiResponseTrait;
 use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\Bank\Enums\AccountEnum;
+use Workable\Bank\Http\Requests\AccountListRequest;
 use Workable\Bank\Http\Requests\AccountRequest;
 use Workable\Bank\Http\Resources\AccountCollection;
 use Workable\Bank\Http\Resources\AccountResource;
 use Workable\Bank\Models\Account;
+use Workable\Bank\Services\AccountService;
 
 class AccountController extends Controller
 {
     use ApiResponseTrait;
 
-    public function __construct()
+    protected $accountService;
+
+    public function __construct(AccountService $accountService)
     {
         $this->middleware('acl_permission:index_account')->only('index');
         $this->middleware('acl_permission:create_account')->only('store');
         $this->middleware('acl_permission:view_account')->only('show');
         $this->middleware('acl_permission:edit_account')->only('update');
         $this->middleware('acl_permission:delete_account')->only('destroy');
+        $this->accountService = $accountService;
     }
 
-    public function index()
+    public function index(AccountListRequest $request)
     {
-        $listAccounts = Account::query()->with(['user'])->get();
+        $listAccounts = $this->accountService->indexAccount($request->all());
+
         $listAccounts = new AccountCollection($listAccounts);
 
         return $this->successResponse($listAccounts);
@@ -34,22 +40,7 @@ class AccountController extends Controller
 
     public function store(AccountRequest $request)
     {
-        $user    = auth()->user();
-        $item    = $request->validated();
-        $account = Account::where('user_id', $user->id)->first();
-        if ($account) {
-            return $this->errorResponse("Bạn đã có tại khoản vui lòng xóa hủy tài khoản trước khi tạo mới.", ResponseMessageEnum::CODE_CONFLICT);
-        }
-        $account = Account::create([
-            'user_id'        => auth()->id(),
-            'account_number' => $this->createAccountNumber(),
-            'account_type'   => $item['account_type'],
-            'bank_name'      => $item['bank_name'],
-            'branch_name'    => $item['branch_name'],
-            'status'         => AccountEnum::STATUS_ACTIVE,
-            'created_at'     => now()->format("Y-m-d H:i:s"),
-            'updated_at'     => now()->format("Y-m-d H:i:s"),
-        ]);
+        $account = $this->accountService->createAccount($request->all());
 
         return $this->createdResponse(new AccountResource($account));
     }
@@ -63,6 +54,7 @@ class AccountController extends Controller
         if (is_null($account)) {
             return $this->notFoundResponse("Không tìm thấy tài khoản.");
         }
+
         $account->user = $user;
         $accountRes    = new AccountResource($account);
 
@@ -94,16 +86,5 @@ class AccountController extends Controller
         $account->delete();
 
         return $this->deletedResponse("Tài khoản được xóa thành công.");
-    }
-
-
-    private function createAccountNumber(): string
-    {
-        $randomString = '';
-
-        for ($i = 0; $i < 14; $i++) {
-            $randomString .= rand(0, 9);
-        }
-        return $randomString;
     }
 }

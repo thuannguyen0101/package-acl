@@ -2,13 +2,17 @@
 
 namespace Workable\ACL\Services;
 
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\Permission\Models\Permission;
+use Workable\ACL\Core\Traits\FilterApiTrait;
 
-class PermissionService
+class PermissionService extends BaseService
 {
-    public function getPermissions(array $filters = [])
+    use FilterApiTrait;
+
+    public function getPermissions(array $searches = [])
     {
+        $filters = $this->getFilterRelationsApi($searches);
+
         return $this->buildQuery($filters)->get();
     }
 
@@ -35,14 +39,9 @@ class PermissionService
         return $permission;
     }
 
-    private function buildQuery(array $filters = []): Builder
+    private function buildQuery(array $filters = [])
     {
-        $with = [];
-        if (isset($filters['with']['roles']) && (bool)$filters['with']['roles']) {
-            $with = ['roles'];
-        }
-
-        return Permission::query()
-            ->with($with);
+        $query = Permission::query();
+        return $this->applyBaseRelationsWithFields($query, $filters);
     }
 }

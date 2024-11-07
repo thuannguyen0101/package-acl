@@ -51,7 +51,7 @@ trait ApiResponseTrait
     protected function updatedResponse($data, string $message = ""): JsonResponse
     {
         $code    = ResponseMessageEnum::CODE_OK;
-        $message = $message ?: "Dữ liệu đã được cập nhật thành công.";
+        $message = $message ?: __('acl::api.permission.message_updated');
 
         return $this->successResponse($data, $message, $code);
     }
