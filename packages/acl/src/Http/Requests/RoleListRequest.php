@@ -4,12 +4,12 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
 use Workable\ACL\Rules\ValidFields;
+use Workable\Support\Traits\ResponseHelperTrait;
 
 class RoleListRequest extends FormRequest
 {
-    use ApiResponseTrait;
+    use ResponseHelperTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -42,8 +42,8 @@ class RoleListRequest extends FormRequest
     public function messages()
     {
         return [
-            'with.*' => 'Một hoặc nhiều mối quan hệ được yêu cầu không hợp lệ.',
-            'fields.permissions' => 'Một hoặc nhiều trường được yêu cầu không hợp lệ.',
+            'with.*'       => __('acl::api.validation_with'),
+            'fields.roles' => __('acl::api.validation_fields'),
         ];
     }
 }

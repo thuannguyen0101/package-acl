@@ -2,7 +2,6 @@
 
 namespace Workable\ACL\Services;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -15,37 +14,63 @@ class RoleService extends BaseService
 {
     use FilterApiTrait;
 
-    public function __construct()
-    {
-
-    }
-
-        public function getRoles(array $searches)
+    public function getRoles(array $searches)
     {
         $filters = $this->getFilterRelationsApi($searches);
-        return $this->buildQuery($filters)->get();
+
+        $roles = $this->buildQuery($filters)->get();
+
+        if ($roles->count() == 0) {
+            return [
+                'status'  => ResponseMessageEnum::CODE_NO_CONTENT,
+                'message' => __('acl::api.no_data'),
+                'roles'   => null,
+            ];
+        }
+
+        return [
+            'status'  => ResponseMessageEnum::CODE_OK,
+            'message' => __('acl::api.success'),
+            'roles'   => $roles,
+        ];
+    }
+
+    public function getRole($id)
+    {
+        $role = Role::query()->find($id);
+
+        if (!$role) {
+            return $this->notFoundResponseDefault();
+        }
+
+        return [
+            'status'  => ResponseMessageEnum::CODE_OK,
+            'message' => __('acl::api.success'),
+            'role'    => $role
+        ];
     }
 
     public function createRole($data): array
     {
         $permissions = [];
+
         if ($data['permission_ids'] ?? false) {
-            $permissions = Permission::query()->whereIn('id', $data['permission_ids'])->pluck('id')->toArray();
+            $permissions = Permission::query()
+                ->whereIn('id', $data['permission_ids'])
+                ->pluck('id')->toArray();
 
             if (count($permissions) < count($data['permission_ids'])) {
                 return [
                     'status'  => ResponseMessageEnum::CODE_NOT_FOUND,
-                    'message' => __('acl::api.not_found'),
+                    'message' => __('acl::api.permission.not_found'),
                     'role'    => null
                 ];
             }
         }
 
-        $data['guard_name'] = 'api';
-
         $role = Role::create([
             'name'       => $data['name'],
-            'guard_name' => $data['guard_name'],
+            'guard_name' => 'api',
         ]);
 
         if (!empty($permissions)) {
@@ -54,22 +79,8 @@ class RoleService extends BaseService
 
         return [
             'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => null,
+            'message' => __('acl::api.created'),
             'role'    => $role
-        ];
-    }
-
-    public function getRole($id)
-    {
-        return Role::query()->find($id);
-    }
-
-    private function defaultResNotFound(): array
-    {
-        return [
-            'status'  => ResponseMessageEnum::CODE_NOT_FOUND,
-            'message' => 'Không tìm thấy vai trò.',
-            'role'    => null
         ];
     }
 
@@ -78,7 +89,7 @@ class RoleService extends BaseService
         $role = Role::query()->find($id);
 
         if (!$role) {
-            return $this->defaultResNotFound();
+            return $this->notFoundResponseDefault();
         }
 
         if (!empty($data['name']) && $data['name'] !== $role->name) {
@@ -91,7 +102,7 @@ class RoleService extends BaseService
             if (count($permissions) < count($data['permission_ids'])) {
                 return [
                     'status'  => ResponseMessageEnum::CODE_NOT_FOUND,
-                    'message' => 'Không tìm thấy quyền.',
+                    'message' => __('acl::api.permission.not_found'),
                     'role'    => null
                 ];
             }
@@ -118,47 +129,66 @@ class RoleService extends BaseService
 
         return [
             'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => null,
+            'message' => __('acl::api.updated'),
             'role'    => $role->load('permissions')
         ];
     }
 
-    public function deleteRole($id): bool
+    public function deleteRole($id)
     {
         $role = Role::query()->find($id);
 
-        if (empty($role)) {
-            return false;
+        if (!$role) {
+            return $this->notFoundResponseDefault();
         }
 
         $role->syncPermissions([]);
 
         $role->delete();
 
-        return true;
+        return [
+            'status'  => ResponseMessageEnum::CODE_OK,
+            'message' => __('acl::api.deleted'),
+        ];
     }
 
     public function assignRoleForModel(int $userId, int $roleId): array
     {
         $user = UserApi::query()->find($userId);
-        if (empty($user)) {
+
+        if (!$user) {
             return [
                 'status'  => ResponseMessageEnum::CODE_NOT_FOUND,
-                'message' => "Không tìm thấy người dùng.",
-                'data'    => null
+                'message' => __('acl::api.user.not_found'),
+                'user'    => null
             ];
         }
+
         $role = Role::query()->find($roleId);
-        if (empty($role)) {
-            return $this->defaultResNotFound();
+
+        if (!$role) {
+            return [
+                'status'  => ResponseMessageEnum::CODE_NOT_FOUND,
+                'message' => __('acl::api.role.not_found'),
+                'user'    => null
+            ];
         }
 
         $user->assignRole($role);
 
         return [
             'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => null,
-            'data'    => $user
+            'message' => __('acl::api.data_updated'),
+            'user'    => $user
+        ];
+    }
+
+    private function notFoundResponseDefault(): array
+    {
+        return [
+            'status'  => ResponseMessageEnum::CODE_NOT_FOUND,
+            'message' => __('acl::api.not_found'),
+            'role'    => null
         ];
     }
 

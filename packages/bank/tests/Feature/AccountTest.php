@@ -1,9 +1,7 @@
 <?php
 
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 use Workable\ACL\Models\UserApi;
@@ -15,11 +13,15 @@ class AccountTest extends TestCase
     use RefreshDatabase;
 
     protected $user = null;
-    protected $role = null;
+    protected $admin = null;
+    protected $account = null;
+    protected $tokenUser = null;
+    protected $tokenAdmin = null;
 
     public function setUp(): void
     {
         parent::setUp();
+        $this->artisan('db:seed', ['--class' => 'Workable\\Bank\\Database\\Seeders\\PermissionBankSeeder']);
 
         $this->user = UserApi::create([
             'name'     => 'test case 1',
@@ -27,10 +29,24 @@ class AccountTest extends TestCase
             'password' => Hash::make('password'),
         ]);
 
+        $this->admin = UserApi::create([
+            'name'     => 'test case 1',
+            'email'    => 'test@admin.com',
+            'password' => Hash::make('password'),
+        ]);
+
         $this->role = Role::create([
             'name'       => 'admin',
             'guard_name' => 'api'
         ]);
+
+        $this->role->givePermissionTo(1, 2, 3, 4, 5);
+        $this->admin->assignRole($this->role);
+
+        $this->tokenUser  = $this->loginUser($this->user->email);
+        $this->tokenAdmin = $this->loginUser($this->admin->email);
+
+        $this->account = $this->createAccount($this->admin);
     }
 
     public function test_account_index_without_login()
@@ -42,10 +58,8 @@ class AccountTest extends TestCase
 
     public function test_account_index_login_not_permissions()
     {
-        $token = $this->loginUser();
-
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer ' . $this->tokenUser,
         ])->json('GET', route('api.account.index'));
 
         $response->assertStatus(403);
@@ -53,28 +67,29 @@ class AccountTest extends TestCase
 
     public function test_account_index()
     {
-        $user       = clone $this->user;
-        $permission = Permission::create([
-            'name'  => 'index_account',
-            'group' => 'account',
-        ]);
-
-        $this->user->assignRole('admin');
-
-        $this->role->givePermissionTo($permission);
-
-        $user->assignRole($this->role);
-        $this->createAccount();
-
-        $token = $this->loginUser();
-
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer ' . $this->tokenAdmin,
         ])->json('GET', route('api.account.index', [
             'with' => 'user'
         ]));
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    "accounts" => [
+                        '*' => [
+                            "account_id",
+                            "account_number",
+                            "balance",
+                            "account_type",
+                            "bank_name",
+                            "branch_name",
+                            "status",
+                            "user",
+                        ]
+                    ]
+                ]
+            ]);
     }
 
     public function test_account_create_without_login()
@@ -86,10 +101,8 @@ class AccountTest extends TestCase
 
     public function test_account_create_login_not_permissions()
     {
-        $token = $this->loginUser();
-
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer ' . $this->tokenUser,
         ])->json('POST', route('api.account.store'));
 
         $response->assertStatus(403);
@@ -97,38 +110,19 @@ class AccountTest extends TestCase
 
     public function test_account_create()
     {
-        $permission = Permission::create([
-            'name'  => 'create_account',
-            'group' => 'account',
-        ]);
-
-        $this->role->givePermissionTo($permission);
-        $this->user->assignRole('admin');
-
-        $token = $this->loginUser();
-
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer ' . $this->tokenAdmin,
         ])->json('POST', route('api.account.store'), [
             'account_type' => '1',
             'bank_name'    => '2',
             'branch_name'  => '1',
         ]);
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 
     public function test_account_failed_create()
     {
-        // setup data
-        $permission = Permission::create([
-            'name'  => 'create_account',
-            'group' => 'account',
-        ]);
-
-        $this->role->givePermissionTo($permission);
-        $this->user->assignRole('admin');
-
         $this->testValidate(route('api.account.store'));
     }
 
@@ -140,10 +134,8 @@ class AccountTest extends TestCase
 
     public function test_account_update_login_not_permissions()
     {
-        $token = $this->loginUser();
-
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer ' . $this->tokenUser,
         ])->putJson(route('api.account.update', ['id' => 1]));
 
         $response->assertStatus(403);
@@ -151,41 +143,23 @@ class AccountTest extends TestCase
 
     public function test_account_update()
     {
-        $permission = Permission::create([
-            'name'  => 'edit_account',
-            'group' => 'account',
-        ]);
-
-        $this->role->givePermissionTo($permission);
-        $this->user->assignRole('admin');
-
-        $account = $this->createAccount();
-
         $data = [
             'account_type' => 1,
             'bank_name'    => 2,
             'branch_name'  => 2,
         ];
 
-        $token    = $this->loginUser();
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
-        ])->putJson(route('api.account.update', ['id' => $account->id]), $data);
+            'Authorization' => 'Bearer ' . $this->tokenAdmin,
+        ])->putJson(route('api.account.update', ['id' =>  $this->account->id]), $data);
 
         $response->assertStatus(200);
     }
 
     public function test_account_update_failed()
     {
-        $permission = Permission::create([
-            'name'  => 'edit_account',
-            'group' => 'account',
-        ]);
+        $this->testValidate(route('api.account.update', [$this->account->id]), "PUT");
 
-        $this->role->givePermissionTo($permission);
-        $this->user->assignRole('admin');
-        $account = $this->createAccount();
-        $this->testValidate(route('api.account.update', [$account->id]), "PUT");
         $this->testNotFound(route('api.account.update', [99]), "PUT", [
             'account_type' => 1,
             'bank_name'    => 1,
@@ -202,10 +176,8 @@ class AccountTest extends TestCase
 
     public function test_account_delete_login_not_permissions()
     {
-        $token = $this->loginUser();
-
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer ' . $this->tokenUser,
         ])->deleteJson(route('api.account.destroy', ['id' => 1]));
 
         $response->assertStatus(403);
@@ -213,31 +185,15 @@ class AccountTest extends TestCase
 
     public function test_account_delete()
     {
-        $permission = Permission::create([
-            'name'  => 'delete_account',
-            'group' => 'account',
-        ]);
-        $this->role->givePermissionTo($permission);
-        $this->user->assignRole('admin');
-
-        $account  = $this->createAccount();
-        $token    = $this->loginUser();
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
-        ])->deleteJson(route('api.account.destroy', ['id' => $account->id]));
-        $response->assertStatus(204);
+            'Authorization' => 'Bearer ' . $this->tokenAdmin,
+        ])->deleteJson(route('api.account.destroy', ['id' => $this->account->id]));
+        $response->assertStatus(200);
     }
 
     public function test_account_delete_failed()
     {
-        $permission = Permission::create([
-            'name'  => 'delete_account',
-            'group' => 'account',
-        ]);
-        $this->role->givePermissionTo($permission);
-        $this->user->assignRole('admin');
-
-        $this->testNotFound(route('api.account.destroy', ['id' => 1]));
+        $this->testNotFound(route('api.account.destroy', ['id' => 99]));
     }
 
     public function test_account_show_without_login()
@@ -249,10 +205,8 @@ class AccountTest extends TestCase
 
     public function test_account_show_login_not_permissions()
     {
-        $token = $this->loginUser();
-
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer ' . $this->tokenUser,
         ])->getJson(route('api.account.show', ['id' => 1]));
 
         $response->assertStatus(403);
@@ -260,53 +214,54 @@ class AccountTest extends TestCase
 
     public function test_account_show()
     {
-        $permission = Permission::create([
-            'name'  => 'view_account',
-            'group' => 'account',
-        ]);
-        $this->role->givePermissionTo($permission);
-        $this->user->assignRole('admin');
-
-        $account = $this->createAccount();
-        $token   = $this->loginUser();
-
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
-        ])->getJson(route('api.account.show', ['id' => $account->id]));
+            'Authorization' => 'Bearer ' . $this->tokenAdmin,
+        ])->getJson(route('api.account.show', ['id' => $this->account->id]));
 
         $response->assertStatus(200);
     }
 
     public function test_account_show_failed()
     {
-        $permission = Permission::create([
-            'name'  => 'view_account',
-            'group' => 'account',
-        ]);
-        $this->role->givePermissionTo($permission);
-        $this->user->assignRole('admin');
-
-        $token = $this->loginUser();
-
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
-        ])->getJson(route('api.account.show', ['id' => 1]));
+            'Authorization' => 'Bearer ' . $this->tokenAdmin,
+        ])->getJson(route('api.account.show', ['id' => 2]));
 
-        $response->assertStatus(404);
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                'code'=> -1
+            ]);
     }
 
-    protected function loginUser()
+    public function test_account_not_owned()
     {
-        $user     = $this->user;
+        $this->account = $this->createAccount($this->user);
+        $data = [
+            'account_type' => 1,
+            'bank_name'    => 2,
+            'branch_name'  => 2,
+        ];
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->tokenAdmin,
+        ])->putJson(route('api.account.update', ['id' =>  $this->account->id]), $data);
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                'code'=> -1
+            ]);
+    }
+
+    protected function loginUser($email = null)
+    {
         $response = $this->postJson(route('api.auth.login'), [
-            'email'    => $user->email,
+            'email'    => $email,
             'password' => 'password',
         ]);
         $response->assertStatus(200);
         return $response->json('data.token');
     }
 
-    protected function createAccount(): Account
+    protected function createAccount($user = null): Account
     {
         $randomString = '';
 
@@ -314,7 +269,7 @@ class AccountTest extends TestCase
             $randomString .= rand(0, 9);
         }
         return Account::create([
-            'user_id'        => $this->user->id,
+            'user_id'        => $user->id,
             'account_number' => $randomString,
             'account_type'   => 1,
             'bank_name'      => 1,
@@ -327,7 +282,7 @@ class AccountTest extends TestCase
 
     protected function testValidate($route, $method = 'POST')
     {
-        $token     = $this->loginUser();
+        $token     = $this->tokenAdmin;
         $testCases = [
             [
                 'data'           => [],
@@ -390,12 +345,13 @@ class AccountTest extends TestCase
 
     protected function testNotFound($route, $method = 'DELETE', $data = [])
     {
-        $token = $this->loginUser();
-
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer ' . $this->tokenAdmin,
         ])->json($method, $route, $data);
 
-        $response->assertStatus(404);
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                'code'=> -1
+            ]);
     }
 }

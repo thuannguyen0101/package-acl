@@ -25,18 +25,20 @@ class RoleController
 
     public function index(RoleListRequest $request)
     {
-        $listRole = $this->roleService->getRoles($request->all());
+        list(
+            'status' => $status,
+            'message' => $message,
+            'roles' => $roles,
+            ) = $this->roleService->getRoles($request->all());
 
-        if ($listRole->count() === 0) {
-            return $this->respondError(__('acl::api.no_data'));
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->respondSuccess(
+                $message,
+                $roles
+            );
         }
 
-        $listRole = new RoleCollection($listRole);
-
-        return $this->respondSuccess(
-            __('acl::api.success'),
-            $listRole
-        );
+        return $this->respondSuccess($message, new RoleCollection($roles));
     }
 
     public function store(RoleRequest $request)
@@ -51,24 +53,22 @@ class RoleController
             return $this->respondError($message);
         }
 
-        return $this->respondSuccess(
-            __('acl::api.created'),
-            new RoleResource($role)
-        );
+        return $this->respondSuccess($message, new RoleResource($role));
     }
 
     public function show(int $id)
     {
-        $role = $this->roleService->getRole($id);
+        list(
+            'status' => $status,
+            'message' => $message,
+            'role' => $role
+            ) = $this->roleService->getRole($id);
 
-        if (empty($role)) {
-            return $this->respondError(__('acl::api.not_found'));
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->respondError($message);
         }
 
-        return $this->respondSuccess(
-            __('acl::api.success'),
-            new RoleResource($role)
-        );
+        return $this->respondSuccess($message, new RoleResource($role));
     }
 
     public function update(int $id, RoleRequest $request)
@@ -83,25 +83,21 @@ class RoleController
             return $this->respondError($message);
         }
 
-        $roleRes = new RoleResource($role);
-
-        return $this->respondSuccess(
-            __('acl::api.updated'),
-            new RoleResource($roleRes)
-        );
+        return $this->respondSuccess($message, new RoleResource($role));
     }
 
     public function destroy(int $id)
     {
-        $deleted = $this->roleService->deleteRole($id);
+        list(
+            'status' => $status,
+            'message' => $message,
+            ) = $this->roleService->deleteRole($id);
 
-        if (!$deleted) {
-            return $this->respondError(__('acl::api.not_found'));
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->respondError($message);
         }
 
-        return $this->respondSuccess(
-            __('acl::api.deleted'),
-        );
+        return $this->respondSuccess($message);
     }
 
     public function assignRoleForModel(RoleAssignModelRequest $request)
@@ -109,16 +105,13 @@ class RoleController
         list(
             'status' => $status,
             'message' => $message,
-            'data' => $user
+            'user' => $user
             ) = $this->roleService->assignRoleForModel($request->model_id, $request->role_id);
 
         if ($status != ResponseMessageEnum::CODE_OK) {
             return $this->respondError($message);
         }
 
-        return $this->respondSuccess(
-            __('acl::api.updated'),
-            new UserResource($user)
-        );
+        return $this->respondSuccess($message, new UserResource($user));
     }
 }

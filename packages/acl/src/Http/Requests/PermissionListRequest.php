@@ -4,12 +4,12 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
 use Workable\ACL\Rules\ValidFields;
+use Workable\Support\Traits\ResponseHelperTrait;
 
 class PermissionListRequest extends FormRequest
 {
-    use ApiResponseTrait;
+    use ResponseHelperTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -36,7 +36,7 @@ class PermissionListRequest extends FormRequest
         return [
             'with'         => ['nullable', new ValidFields('with', $validFields['with'])],
             'fields.roles' => ['nullable', new ValidFields('roles', $validFields['roles'])],
-            'filters'      => ['array'],
+            'filters'      => ['nullable', 'array'],
             'filters.*'    => 'string',
         ];
     }
@@ -44,10 +44,10 @@ class PermissionListRequest extends FormRequest
     public function messages()
     {
         return [
-            'with.*'       => 'Một hoặc nhiều mối quan hệ được yêu cầu không hợp lệ.',
-            'fields.roles' => 'Một hoặc nhiều trường được yêu cầu không hợp lệ.',
-            'filters'      => 'Bộ lọc vai trò phải là mảng.',
-            'filters.*'    => 'Bộ lọc vai trò phải là chuỗi.',
+            'with.*'       => __('acl::api.validation_with'),
+            'fields.roles' => __('acl::api.validation_fields'),
+            'filters'      => __('acl::api.array', ['attribute' => 'bộ lọc']),
+            'filters.*'    => __('acl::api.array.validation_data', ['attribute' => 'bộ lọc', 'type' => 'chuỗi']),
         ];
     }
 }

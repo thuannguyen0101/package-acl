@@ -4,11 +4,11 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
+use Workable\Support\Traits\ResponseHelperTrait;
 
 class RoleAssignModelRequest extends FormRequest
 {
-    use ApiResponseTrait;
+    use ResponseHelperTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -36,8 +36,8 @@ class RoleAssignModelRequest extends FormRequest
     public function messages()
     {
         return [
-            'role_id.required'  => 'Vãi trò không được để trống.',
-            'model_id.required' => 'Dữ liệu người dung không được để trống.',
+            'role_id.required'  => __('acl::api.required', ['attribute' => 'vai trò']),
+            'model_id.required' => __('acl::api.required', ['attribute' => 'người dùng']),
         ];
     }
 }

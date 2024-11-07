@@ -3,19 +3,17 @@
 namespace Workable\Bank\Http\Controllers\Api\Account;
 
 use App\Http\Controllers\Controller;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
 use Workable\ACL\Enums\ResponseMessageEnum;
-use Workable\Bank\Enums\AccountEnum;
 use Workable\Bank\Http\Requests\AccountListRequest;
 use Workable\Bank\Http\Requests\AccountRequest;
 use Workable\Bank\Http\Resources\AccountCollection;
 use Workable\Bank\Http\Resources\AccountResource;
-use Workable\Bank\Models\Account;
 use Workable\Bank\Services\AccountService;
+use Workable\Support\Traits\ResponseHelperTrait;
 
 class AccountController extends Controller
 {
-    use ApiResponseTrait;
+    use ResponseHelperTrait;
 
     protected $accountService;
 
@@ -26,65 +24,85 @@ class AccountController extends Controller
         $this->middleware('acl_permission:view_account')->only('show');
         $this->middleware('acl_permission:edit_account')->only('update');
         $this->middleware('acl_permission:delete_account')->only('destroy');
+
         $this->accountService = $accountService;
     }
 
     public function index(AccountListRequest $request)
     {
-        $listAccounts = $this->accountService->indexAccount($request->all());
+        list(
+            'status' => $status,
+            'message' => $message,
+            'accounts' => $accounts,
+            ) = $this->accountService->indexAccount($request->all());
 
-        $listAccounts = new AccountCollection($listAccounts);
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->respondSuccess(
+                $message,
+                $accounts
+            );
+        }
 
-        return $this->successResponse($listAccounts);
+        return $this->respondSuccess($message, new AccountCollection($accounts));
     }
 
     public function store(AccountRequest $request)
     {
-        $account = $this->accountService->createAccount($request->all());
+        list(
+            'status' => $status,
+            'message' => $message,
+            'account' => $account,
+            ) = $this->accountService->createAccount($request->all());
 
-        return $this->createdResponse(new AccountResource($account));
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->respondError($message);
+        }
+
+        return $this->respondSuccess($message, new AccountResource($account));
     }
 
     public function show($id)
     {
-        $user = auth()->user();
+        list(
+            'status' => $status,
+            'message' => $message,
+            'account' => $account,
+            ) = $this->accountService->getAccount($id);
 
-        $account = Account::query()->find($id);
-
-        if (is_null($account)) {
-            return $this->notFoundResponse("Không tìm thấy tài khoản.");
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->respondError($message);
         }
 
-        $account->user = $user;
-        $accountRes    = new AccountResource($account);
-
-        return $this->successResponse($accountRes, 'Tìm tài khoản thành công.');
+        return $this->respondSuccess($message, new AccountResource($account));
     }
 
     public function update(int $id, AccountRequest $request)
     {
-        $item    = $request->validated();
-        $account = Account::query()->find($id);
+        $data = $request->validated();
+        list(
+            'status' => $status,
+            'message' => $message,
+            'account' => $account,
+            ) = $this->accountService->updateAccount($id, $data);
 
-        if (is_null($account)) {
-            return $this->notFoundResponse("Không tìm thấy tài khoản.");
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->respondError($message);
         }
 
-        $account->update($item);
-
-        $accountRes = new AccountResource($account);
-
-        return $this->successResponse($accountRes, 'Tài khoản được cập nhật thành công.');
+        return $this->respondSuccess($message, new AccountResource($account));
     }
 
     public function destroy(int $id)
     {
-        $account = Account::query()->find($id);
-        if (!$account) {
-            return $this->notFoundResponse("Không tìm thấy tài khoản.");
-        }
-        $account->delete();
+        list(
+            'status' => $status,
+            'message' => $message,
+            ) = $this->accountService->destroyAccount($id);
 
-        return $this->deletedResponse("Tài khoản được xóa thành công.");
+        if ($status != ResponseMessageEnum::CODE_OK) {
+            return $this->respondError($message);
+        }
+
+        return $this->respondSuccess($message);
     }
 }

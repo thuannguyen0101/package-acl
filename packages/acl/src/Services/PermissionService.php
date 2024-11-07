@@ -4,6 +4,7 @@ namespace Workable\ACL\Services;
 
 use Spatie\Permission\Models\Permission;
 use Workable\ACL\Core\Traits\FilterApiTrait;
+use Workable\ACL\Enums\ResponseMessageEnum;
 
 class PermissionService extends BaseService
 {
@@ -13,30 +14,21 @@ class PermissionService extends BaseService
     {
         $filters = $this->getFilterRelationsApi($searches);
 
-        return $this->buildQuery($filters)->get();
-    }
+        $permissions = $this->buildQuery($filters)->get();
 
-    public function getPermission(int $id)
-    {
-        $permission = Permission::find($id);
-
-        if (is_null($permission)) {
-            return false;
-        }
-        return $permission;
-    }
-
-    public function updatePermission(int $id, array $data)
-    {
-        $permission = Permission::find($id);
-
-        if (is_null($permission)) {
-            return false;
+        if ($permissions->count() === 0) {
+            return [
+                'status' => ResponseMessageEnum::CODE_NO_CONTENT,
+                'message' => __('acl::api.no_data'),
+                'permissions' => $permissions,
+            ];
         }
 
-        $permission->syncRoles($data['role_ids']);
-
-        return $permission;
+        return [
+            'status' => ResponseMessageEnum::CODE_OK,
+            'message' => __('acl::api.success'),
+            'permissions' => $permissions,
+        ];
     }
 
     private function buildQuery(array $filters = [])

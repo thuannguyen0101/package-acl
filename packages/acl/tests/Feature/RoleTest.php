@@ -9,106 +9,126 @@ class RoleTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $role;
+    protected $permission;
+
     public function setUp(): void
     {
         parent::setUp();
-    }
 
-    public function test_read_list_role_api()
-    {
-        $role = Role::create([
+        $this->role = Role::create([
             'name' => 'SuperAdmin',
         ]);
 
+        $this->permission = Permission::create([
+            'name'  => 'view_account',
+            'group' => 'account',
+        ]);
+    }
+
+    public function test_list_role_api()
+    {
         $response = $this->getJson(route('api.role.index'));
 
         $response->assertStatus(200);
 
         $response->assertJsonFragment([
-            'id'   => $role->id,
+            'id'   => $this->role->id,
             'name' => 'SuperAdmin'
-        ]);
-
-        $this->assertDatabaseHas('roles', [
-            'id' => $role->id,
         ]);
     }
 
     public function test_created_role_api()
     {
-        $data = [
-            'name' => 'SuperAdmin',
-        ];
+        $data = ['name' => 'SuperAdmin_2'];
 
         $response = $this->postJson(route('api.role.store'), $data);
-
-        $response->assertStatus(201);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    "role" => [
+                        "id",
+                        "name",
+                        "guard_name",
+                        "permissions",
+                    ]
+                ]
+            ]);
 
         $this->assertDatabaseHas('roles', $data);
     }
 
-    public function test_created_failed_role_api()
+    public function test_create_role_and_add_permission()
     {
-        $data = [];
-
-        $response = $this->postJson(route('api.role.store'), $data);
-
-        $response->assertStatus(422);
-
-        $data['name'] = 'SuperAdmin';
-
-        Role::create($data);
-
-        $response = $this->postJson(route('api.role.store'), $data);
-        $response->assertStatus(422);
-    }
-
-    public function test_created_role_and_assign_permission_api()
-    {
-        $view = Permission::create([
-            'name'  => 'view_account',
-            'group' => 'account',
-        ]);
-
-        $edit = Permission::create([
-            'name'  => 'edit_account',
-            'group' => 'account',
-        ]);
-
         $data = [
-            'name'           => 'SuperAdmin',
-            'permission_ids' => [
-                $view->id,
-                $edit->id
-            ],
+            'name' => 'SuperAdmin_2',
+            'permission_ids' => [$this->permission->id]
         ];
 
         $response = $this->postJson(route('api.role.store'), $data);
-        $response->assertStatus(201);
-
-        $response->assertJsonFragment([
-            'name'        => $data['name'],
-            'permissions' => [
-                $view->id,
-                $edit->id
-            ],
-        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    "role" => [
+                        "id",
+                        "name",
+                        "guard_name",
+                        "permissions" => [
+                            '*' => []
+                        ],
+                    ]
+                ]
+            ]);
     }
+
+    public function test_create_role_failed_api()
+    {
+        $data = ['name' => ''];
+        $response = $this->postJson(route('api.role.store'), $data);
+
+        $response->assertStatus(422)
+            ->assertJsonFragment(['code' => -1])
+            ->assertJsonValidationErrors([
+                'name',
+            ]);
+
+        $data = ['name' => 'SuperAdmin'];
+
+        $response = $this->postJson(route('api.role.store'), $data);
+        $response->assertStatus(422)
+            ->assertJsonFragment(['code' => -1])
+            ->assertJsonValidationErrors([
+                'name',
+            ]);
+    }
+
+    public function test_create_role_and_add_permission_failed_api()
+    {
+        $data = [
+            'name' => 'SuperAdmin_2',
+            'permission_ids' => [99]
+        ];
+
+        $response = $this->postJson(route('api.role.store'), $data);
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['code' => -1]);
+    }
+
+
 
     public function test_updated_role_api()
     {
-        $role = Role::create([
-            'name' => 'SuperAdmin',
-        ]);
-
         $data = [
             'name' => 'SuperAdmin_2',
         ];
 
-        $response = $this->putJson(route('api.role.update', $role->id), $data);
+        $response = $this->putJson(route('api.role.update', $this->role->id), $data);
 
         $response->assertStatus(200);
+
         $response->assertJsonFragment($data);
+
         $this->assertDatabaseHas('roles', $data);
     }
 
@@ -118,21 +138,17 @@ class RoleTest extends TestCase
             'name' => 'SuperAdmin_2',
         ];
 
-        $response = $this->putJson(route('api.role.update', 1), $data);
-        $response->assertStatus(404);
+        $response = $this->putJson(route('api.role.update', 99), $data);
+
+        $response->assertStatus(200);
+
         $response->assertJsonFragment([
-            'status' => 'error',
+            'code' => -1,
         ]);
     }
 
     public function test_updated_role_and_assign_permission_api()
     {
-        $view = Permission::create([
-            //1
-            'name'  => 'view_account',
-            'group' => 'account',
-        ]);
-
         $create = Permission::create([
             //2
             'name'  => 'create_account',
@@ -145,18 +161,15 @@ class RoleTest extends TestCase
             'group' => 'account',
         ]);
 
-        $role = Role::create([
-            'name' => 'SuperAdmin',
-        ]);
 
-        $role->givePermissionTo([$view, $create]);
+        $this->role->givePermissionTo([$this->permission->id, $create]);
 
         $data = [
             'name'           => 'SuperAdmin',
             'permission_ids' => [$create->id, $edit->id],
         ];
 
-        $response = $this->putJson(route('api.role.update', $role->id), $data);
+        $response = $this->putJson(route('api.role.update', $this->role->id), $data);
 
         $response->assertStatus(200);
 
@@ -168,54 +181,41 @@ class RoleTest extends TestCase
 
     public function test_updated_failed_role_and_assign_revoke_permission_api()
     {
-        $role = Role::create([
-            'name' => 'SuperAdmin',
-        ]);
-
-        $view = Permission::create([
-            'name'  => 'view_account',
-            'group' => 'account',
-        ]);
-
         $edit = Permission::create([
             'name'  => 'edit_account',
             'group' => 'account',
         ]);
 
-        $role->givePermissionTo([$view, $edit]);
+        $this->role->givePermissionTo([$this->permission, $edit]);
 
         $data = [
             'name'           => 'SuperAdmin',
             'permission_ids' => [$edit->id, 10],
         ];
 
-        $response = $this->putJson(route('api.role.update', $role->id), $data);
+        $response = $this->putJson(route('api.role.update', $this->role->id), $data);
 
-        $response->assertStatus(404);
+        $response->assertStatus(200);
+
         $response->assertJsonFragment([
-            'status'  => 'error',
-            'message' => 'Không tìm thấy quyền.',
+            'code'  => -1,
         ]);
 
         $data['name'] = 'SuperAdmin_2';
         $response     = $this->putJson(route('api.role.update', 20), $data);
 
-        $response->assertStatus(404);
+        $response->assertStatus(200);
+
         $response->assertJsonFragment([
-            'status'  => 'error',
-            'message' => 'Không tìm thấy vai trò.',
+            'code'  => -1,
         ]);
     }
 
     public function test_deleted_role_api()
     {
-        $role = Role::create([
-            'name' => 'SuperAdmin',
-        ]);
+        $response = $this->deleteJson(route('api.role.destroy', $this->role->id));
 
-        $response = $this->deleteJson(route('api.role.destroy', $role->id));
-
-        $response->assertStatus(204);
+        $response->assertStatus(200);
         $this->assertDatabaseMissing('roles', [
             'name' => 'SuperAdmin',
         ]);

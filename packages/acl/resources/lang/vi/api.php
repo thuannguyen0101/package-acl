@@ -14,6 +14,9 @@ return [
     'server_error'           => 'Lỗi máy chủ, vui lòng thử lại sau.',
 
     // Lỗi xác thực (Validation)
+    'validation_with'        => 'Một hoặc nhiều mối quan hệ được yêu cầu không hợp lệ.',
+    'validation_data'        => 'Dữ liệu :attribute phải là :type.',
+    'validation_fields'      => 'Một hoặc nhiều trường được yêu cầu không hợp lệ.',
     'validation_failed'      => 'Dữ liệu không hợp lệ.',
     'required'               => 'Trường :attribute là bắt buộc.',
     'email'                  => 'Trường :attribute phải là địa chỉ email hợp lệ.',
@@ -21,6 +24,7 @@ return [
     'min_length'             => 'Trường :attribute phải chứa ít nhất :min ký tự.',
     'unique'                 => 'Trường :attribute đã tồn tại.',
     'exists'                 => 'Trường :attribute không tồn tại.',
+    'array'                 =>  'Trường :attribute phải là một mảng .',
     'password_mismatch'      => 'Mật khẩu không khớp.',
 
     // Xác thực người dùng (Authentication)
@@ -33,7 +37,7 @@ return [
     'token_expired'          => 'Mã xác thực đã hết hạn.',
     'token_invalid'          => 'Mã xác thực không hợp lệ.',
     'account_disabled'       => 'Tài khoản của bạn đã bị vô hiệu hóa.',
-
+    'account_not_owned'      => 'Tài khoản này không thuộc về bạn.',
     // Quyền truy cập (Authorization)
     'no_permission'          => 'Bạn không có quyền thực hiện hành động này.',
 
@@ -49,15 +53,37 @@ return [
     'invalid_credentials'    => 'Thông tin đăng nhập không chính xác.',
     'csrf_token_mismatch'    => 'Yêu cầu không hợp lệ do mã CSRF không khớp.',
 
+    'conflict' => [
+        'account_exists' => 'Tài khoản đã tồn tại.',
+
+        'email_taken'         => 'Email đã được sử dụng để đăng ký tài khoản. Vui lòng sử dụng email khác hoặc đăng nhập.',
+        'action_conflict'     => 'Hành động này không thể thực hiện vì có xung đột với dữ liệu hiện tại.',
+        'pending_action'      => 'Bạn đã có thao tác chờ xử lý. Vui lòng hủy thao tác trước đó để tiếp tục.',
+        'subscription_exists' => 'Bạn đã có gói đăng ký đang hoạt động. Vui lòng hủy gói hiện tại trước khi đăng ký gói mới.',
+        'duplicate_request'   => 'Yêu cầu đã được thực hiện trước đó. Vui lòng chờ xử lý hoặc thử lại sau.',
+        'already_subscribed'  => 'Bạn đã đăng ký dịch vụ này. Không thể thực hiện lại thao tác.',
+        ''
+    ],
+
+
     // Các thông báo khác...
 
-    'no_data' => 'Không có dữ liệu nào được tìm thấy.',
+    'no_data'    => 'Không có dữ liệu nào được tìm thấy.',
 
     // Các thông báo khác...
 
     // permission
-    'permission'             => [
+    'permission' => [
+        'not_found'         => 'Không tìm thấy quyền.',
         'message_not_found' => 'Không có dữ liệu.',
         'message_updated'   => 'Dữ liệu đã được cập nhật thành công.'
     ],
+
+    'user' => [
+        'not_found' => 'Không tìm thấy người dùng.'
+    ],
+
+    'role' => [
+        'not_found' => 'Không tìm thấy vai trò.'
+    ]
 ];

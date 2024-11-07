@@ -4,11 +4,11 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
+use Workable\Support\Traits\ResponseHelperTrait;
 
 class LoginRequest extends FormRequest
 {
-    use ApiResponseTrait;
+    use ResponseHelperTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +27,6 @@ class LoginRequest extends FormRequest
      */
     public function rules(Request $request)
     {
-
         return [
             'email'    => 'email|required',
             'password' => 'required|min:6',
@@ -37,10 +36,13 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required'    => 'Tên đăng nhập không được để trống.',
-            'email.email'       => 'Email không hợp lệ. Vui lòng nhập một địa chỉ email hợp lệ.',
-            'password.required' => 'Mật khẩu không được để trống.',
-            'password.min'      => 'Mật khẩu phải có ít nhất gồm 6 ký tự.',
+            'email.required'    => __('acl::api.required', ['attribute' => 'email']),
+            'email.email'       => __('acl::api.email', ['attribute' => 'email']),
+            'password.required' => __('acl::api.required', ['attribute' => 'mật khẩu']),
+            'password.min'      => __('acl::api.min_length', [
+                'attribute' => 'mật khẩu',
+                'min'       => '6',
+            ]),
         ];
     }
 }

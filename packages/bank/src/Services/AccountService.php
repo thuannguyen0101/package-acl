@@ -2,7 +2,6 @@
 
 namespace Workable\Bank\Services;
 
-
 use Workable\ACL\Core\Traits\FilterApiTrait;
 use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\ACL\Services\BaseService;
@@ -16,23 +15,39 @@ class AccountService extends BaseService
     public function indexAccount(array $searches = [])
     {
         $filters = $this->getFilterRelationsApi($searches);
-        return $this->buildQuery($filters)->get();
+
+        $accounts = $this->buildQuery($filters)->get();
+
+        if ($accounts->count() == 0) {
+            return [
+                'status'  => ResponseMessageEnum::CODE_NO_CONTENT,
+                'message' => __('acl:api.no_data'),
+                'accounts' => null
+            ];
+        }
+
+        return [
+            'status'  => ResponseMessageEnum::CODE_OK,
+            'message' => __('acl:api.success'),
+            'accounts' => $accounts
+        ];
     }
 
     public function createAccount(array $data)
     {
         $user    = auth()->user();
+
         $account = Account::where('user_id', $user->id)->first();
 
         if ($account) {
             return [
                 'status'  => ResponseMessageEnum::CODE_CONFLICT,
-                'message' => 'Bạn đã có tài khoản.',
-                'account'    => $account
+                'message' => __('acl::api.conflict.account_exists'),
+                'account' => $account
             ];
         }
 
-        $account = Account::query()->create([
+        $account       = Account::query()->create([
             'user_id'        => auth()->id(),
             'account_number' => $this->createAccountNumber(),
             'account_type'   => $data['account_type'],
@@ -43,7 +58,100 @@ class AccountService extends BaseService
             'updated_at'     => now()->format("Y-m-d H:i:s"),
         ]);
 
-        dd($account);
+        $account->user = $user;
+
+        return [
+            'status'  => ResponseMessageEnum::CODE_OK,
+            'message' => __('acl::api.created'),
+            'account' => $account
+        ];
+    }
+
+    public function getAccount($id)
+    {
+        $account = Account::query()->find($id);
+
+        if (!$account) {
+            return $this->notFoundResponseDefault();
+        }
+
+        $user = auth()->user();
+
+        if ($account->user_id != $user->id) {
+            return $this->conflictResponseDefault();
+        }
+
+        $account->user = $user;
+
+        return [
+            'status'  => ResponseMessageEnum::CODE_OK,
+            'message' => __('acl:api.created'),
+            'account' => $account
+        ];
+    }
+
+    public function updateAccount($id, array $data)
+    {
+        $account = Account::query()->find($id);
+
+        if (!$account) {
+            return $this->notFoundResponseDefault();
+        }
+
+        $user = auth()->user();
+
+        if ($account->user_id != $user->id) {
+            return $this->conflictResponseDefault();
+        }
+
+        $account->update($data);
+        $account->user = $user;
+
+        return [
+            'status'  => ResponseMessageEnum::CODE_OK,
+            'message' => __('acl:api.updated'),
+            'account' => $account
+        ];
+    }
+
+    public function destroyAccount($id)
+    {
+        $account = Account::query()->find($id);
+
+        if (!$account) {
+            return $this->notFoundResponseDefault();
+        }
+
+        $user = auth()->user();
+
+        if ($account->user_id != $user->id) {
+            return $this->conflictResponseDefault();
+        }
+
+        $account->delete();
+
+        return [
+            'status'  => ResponseMessageEnum::CODE_OK,
+            'message' => __('acl:api.deleted'),
+        ];
+    }
+
+    private function notFoundResponseDefault(): array
+    {
+        return [
+            'status'  => ResponseMessageEnum::CODE_NOT_FOUND,
+            'message' => __('acl::api.not_found'),
+            'account' => null
+        ];
+    }
+
+    private function conflictResponseDefault(): array
+    {
+        return [
+            'status'  => ResponseMessageEnum::CODE_CONFLICT,
+            'message' => __('acl::api.account_not_owned'),
+            'account' => null
+        ];
     }
 
     private function buildQuery(array $filters = [])
