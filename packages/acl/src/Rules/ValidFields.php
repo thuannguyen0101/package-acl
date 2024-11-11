@@ -1,5 +1,6 @@
 <?php
-namespace  Workable\ACL\Rules;
+
+namespace Workable\ACL\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
@@ -11,19 +12,19 @@ class ValidFields implements Rule
     public function __construct($entity, array $validFields)
     {
         $this->validFields = $validFields;
-        $this->entity = $entity;
+        $this->entity      = $entity;
     }
 
     /**
      * Kiểm tra xem validation có pass hay không.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
-        $fields = explode(',', $value);
+        $fields = array_filter(explode(",", ($value)));
 
         foreach ($fields as $field) {
             if (!in_array($field, $this->validFields)) {
@@ -41,6 +42,6 @@ class ValidFields implements Rule
      */
     public function message()
     {
-        return "Một hoặc nhiều trường không hợp lệ cho {$this->entity}.";
+        return __('acl.api.validation_fields') . " {$this->entity}.";
     }
 }

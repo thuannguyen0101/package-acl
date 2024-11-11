@@ -4,12 +4,12 @@ namespace Workable\Bank\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
 use Workable\Bank\Enums\AccountEnum;
+use Workable\Support\Traits\ResponseHelperTrait;
 
 class AccountRequest extends FormRequest
 {
-    use ApiResponseTrait;
+    use ResponseHelperTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -38,17 +38,17 @@ class AccountRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'account_type.required' => 'Loại tài khoản là bắt buộc.',
-            'account_type.numeric'  => 'Loại tài khoản phải là các loại đã được chỉ định.',
-            'account_type.in'       => 'Loại tài khoản không hợp lệ. Vui lòng chọn một trong các giá trị đã đưa ra.',
+            'account_type.required' => __('acl::api.required', ['attribute' => 'loại tài khoản']),
+            'account_type.numeric'  => __('acl::api.numeric', ['attribute' => 'loại tài khoản']),
+            'account_type.in'       => __('acl::api.in', ['attribute' => 'loại tài khoản']),
 
-            'bank_name.required' => 'Tên ngân hàng là bắt buộc.',
-            'bank_name.numeric'  => 'Tên ngân hàng phải là các tên đã được chỉ định.',
-            'bank_name.in'       => 'Tên ngân hàng không hợp lệ. Vui lòng chọn một trong các giá trị đã đưa ra.',
+            'bank_name.required' => __('acl::api.required', ['attribute' => 'tên ngân hàng']),
+            'bank_name.numeric'  => __('acl::api.numeric', ['attribute' => 'tên ngân hàng']),
+            'bank_name.in'       => __('acl::api.in', ['attribute' => 'tên ngân hàng']),
 
-            'branch_name.required' => 'Tên chi nhánh là bắt buộc.',
-            'branch_name.numeric'  => 'Tên chi nhánh phải là các chi nhánh đã được chỉ định',
-            'branch_name.in'       => 'Tên chi nhánh không hợp lệ. Vui lòng chọn một trong các giá trị đã đưa ra.',
+            'branch_name.required' => __('acl::api.required', ['attribute' => 'tên chi nhánh']),
+            'branch_name.numeric'  => __('acl::api.numeric', ['attribute' => 'tên chi nhánh']),
+            'branch_name.in'       => __('acl::api.in', ['attribute' => 'tên chi nhánh']),
         ];
     }
 }

@@ -5,7 +5,7 @@ use Workable\Bank\Http\Controllers\Api\Account\AccountController;
 
 Route::group([
     'prefix'     => 'api/v1',
-    'middleware' => 'acl_jwt_check'
+    'middleware' => 'jwt_auth_check'
 ], function () {
     // feature
     Route::prefix('account')->group(function () {

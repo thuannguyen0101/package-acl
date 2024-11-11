@@ -4,19 +4,18 @@ namespace Workable\ACL\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
-use Workable\ACL\Enums\ResponseMessageEnum;
 
 class ACLPermissionMiddleware
 {
-    use ApiResponseTrait;
-
     public function handle(Request $request, Closure $next, $permission, $guard = null)
     {
         $authGuard = app('auth')->guard($guard);
 
         if ($authGuard->guest()) {
-            return $this->errorResponse("", ResponseMessageEnum::CODE_UNAUTHORIZED);
+            return response()->json([
+                'status'  => 'error',
+                'message' => __('acl::api.unauthorized'),
+            ], 401);
         }
 
         $permissions = is_array($permission)
@@ -29,6 +28,10 @@ class ACLPermissionMiddleware
             }
         }
 
-        return $this->errorResponse("", ResponseMessageEnum::CODE_FORBIDDEN);
+        return response()->json([
+            'status'  => 'error',
+            'message' => __('acl::api.forbidden'),
+        ], 403);
+
     }
 }

@@ -16,7 +16,5 @@ class BankServiceProvider extends ServiceProvider
             ->setNamespace('bank')
             ->loadMigrations()
             ->loadRoutes(['api']);
-
-        config("acl:auth");
     }
 }

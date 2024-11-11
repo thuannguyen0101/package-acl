@@ -1,0 +1,39 @@
+{
+    "name": "workable/user-tenant",
+    "description": "A Laravel package for managing User Tenant",
+    "keywords": [
+        "laravel",
+        "User",
+        "Tenant"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "thuannn",
+            "email": "thuannguyen0101.work@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Workable\\UserTenant\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Workable\\UserTenant\\UserTenantServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php artisan package:discover --ansi"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

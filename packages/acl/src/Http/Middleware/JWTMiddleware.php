@@ -9,11 +9,11 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
+use Workable\Support\Traits\ResponseHelperTrait;
 
 class JWTMiddleware extends BaseMiddleware
 {
-    use ApiResponseTrait;
+    use ResponseHelperTrait;
 
     /**
      * Handle an incoming request.
@@ -26,14 +26,26 @@ class JWTMiddleware extends BaseMiddleware
     {
         try {
             if (!JWTAuth::parseToken()->authenticate()) {
-                return $this->errorResponse("Token không hợp lệ.", 401);
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => __('acl::api.unauthorized'),
+                ], 401);
             }
         } catch (TokenExpiredException $e) {
-            return $this->errorResponse("Token đã hết hạn.", 401);
+            return response()->json([
+                'status'  => 'error',
+                'message' => __('acl::api.token_expired'),
+            ], 401);
         } catch (TokenInvalidException $e) {
-            return $this->errorResponse("Token không hợp lệ.", 401);
+            return response()->json([
+                'status'  => 'error',
+                'message' => __('acl::api.unauthorized'),
+            ], 401);
         } catch (JWTException $e) {
-            return $this->errorResponse("Không thể xác thực token.", 401);
+            return response()->json([
+                'status'  => 'error',
+                'message' => __('acl::api.server_error'),
+            ], 401);
 
         }
 

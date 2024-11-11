@@ -13,7 +13,8 @@
         "laravel/tinker": "^2.5",
         "workable/acl": "dev-main",
         "workable/bank": "dev-main",
-        "workable/platform": "dev-master"
+        "workable/platform": "dev-master",
+        "workable/user-tenant": "dev-main"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -28,7 +29,8 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Workable\\ACL\\": "packages/acl/src/",
-            "Workable\\Bank\\": "packages/back/src/"
+            "Workable\\Bank\\": "packages/back/src/",
+            "Workable\\UserTenant\\": "packages/user-tenant/src/"
         }
     },
     "autoload-dev": {

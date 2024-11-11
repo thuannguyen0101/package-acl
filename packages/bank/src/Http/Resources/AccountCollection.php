@@ -3,12 +3,12 @@
 namespace Workable\Bank\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Workable\ACL\Core\Traits\FilterApiTrait;
 use Workable\Bank\Enums\AccountEnum;
+use Workable\Support\Traits\FilterBuilderTrait;
 
 class AccountCollection extends ResourceCollection
 {
-    use FilterApiTrait;
+    use FilterBuilderTrait;
 
     public function toArray($request): array
     {

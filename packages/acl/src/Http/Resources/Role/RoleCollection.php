@@ -3,11 +3,11 @@
 namespace Workable\ACL\Http\Resources\Role;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Workable\ACL\Core\Traits\FilterApiTrait;
+use Workable\Support\Traits\FilterBuilderTrait;
 
 class RoleCollection extends ResourceCollection
 {
-    use FilterApiTrait;
+    use FilterBuilderTrait;
 
     public function toArray($request): array
     {

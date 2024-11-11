@@ -2,8 +2,6 @@
 
 namespace Workable\ACL\Services;
 
-use Illuminate\Database\Query\Builder;
-
 abstract class BaseService
 {
     protected function applyBaseRelationsWithFields($query, array $filters)

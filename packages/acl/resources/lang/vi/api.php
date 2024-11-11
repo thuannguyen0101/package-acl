@@ -9,9 +9,10 @@ return [
     // Lỗi chung
     'error'                  => 'Đã xảy ra lỗi, vui lòng thử lại sau.',
     'not_found'              => 'Không tìm thấy tài nguyên yêu cầu.',
-    'unauthorized'           => 'Bạn không có quyền truy cập.',
+    'unauthorized'           => 'Bạn không có quyền truy cập vào tài nguyên này. Vui lòng xác thực trước khi tiếp tục.',
     'forbidden'              => 'Bạn không được phép thực hiện thao tác này.',
     'server_error'           => 'Lỗi máy chủ, vui lòng thử lại sau.',
+
 
     // Lỗi xác thực (Validation)
     'validation_with'        => 'Một hoặc nhiều mối quan hệ được yêu cầu không hợp lệ.',
@@ -24,8 +25,10 @@ return [
     'min_length'             => 'Trường :attribute phải chứa ít nhất :min ký tự.',
     'unique'                 => 'Trường :attribute đã tồn tại.',
     'exists'                 => 'Trường :attribute không tồn tại.',
-    'array'                 =>  'Trường :attribute phải là một mảng .',
+    'array'                  => 'Trường :attribute phải là một mảng .',
     'password_mismatch'      => 'Mật khẩu không khớp.',
+    'numeric'                => 'Trường :attribute phải là các loại đã được chỉ định.',
+    'in'                     => 'Trường :attribute không hợp lệ. Vui lòng chọn một trong các giá trị đã đưa ra.',
 
     // Xác thực người dùng (Authentication)
     'login_failed'           => 'Đăng nhập không thành công, vui lòng kiểm tra lại thông tin đăng nhập.',
@@ -62,7 +65,6 @@ return [
         'subscription_exists' => 'Bạn đã có gói đăng ký đang hoạt động. Vui lòng hủy gói hiện tại trước khi đăng ký gói mới.',
         'duplicate_request'   => 'Yêu cầu đã được thực hiện trước đó. Vui lòng chờ xử lý hoặc thử lại sau.',
         'already_subscribed'  => 'Bạn đã đăng ký dịch vụ này. Không thể thực hiện lại thao tác.',
-        ''
     ],
 
 

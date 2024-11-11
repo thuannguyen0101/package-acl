@@ -2,12 +2,12 @@
 
 namespace Workable\ACL\Http\Resources\Permission;
 
-use Workable\ACL\Core\Traits\FilterApiTrait;
 use Workable\ACL\Http\Resources\BaseResource;
+use Workable\Support\Traits\FilterBuilderTrait;
 
 class PermissionResource extends BaseResource
 {
-    use FilterApiTrait;
+    use FilterBuilderTrait;
 
     public function toArray($request): array
     {

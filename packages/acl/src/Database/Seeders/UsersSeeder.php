@@ -15,15 +15,8 @@ class UsersSeeder extends Seeder
         UserApi::query()->truncate();
 
         UserApi::create([
-            'name'     => 'Admin Thuannn',
-            'email'    => 'thuannn@admin.com',
-            'password' => Hash::make('password123'),
-        ]);
-
-
-        UserApi::create([
-            'name'     => 'User Thuannn',
-            'email'    => 'thuannn@user.com',
+            'name'     => 'System Thuannn',
+            'email'    => 'thuannn@system.com',
             'password' => Hash::make('password123'),
         ]);
     }

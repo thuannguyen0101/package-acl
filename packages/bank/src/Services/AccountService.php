@@ -2,17 +2,17 @@
 
 namespace Workable\Bank\Services;
 
-use Workable\ACL\Core\Traits\FilterApiTrait;
 use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\ACL\Services\BaseService;
 use Workable\Bank\Enums\AccountEnum;
 use Workable\Bank\Models\Account;
+use Workable\Support\Traits\FilterBuilderTrait;
 
 class AccountService extends BaseService
 {
-    use FilterApiTrait;
+    use FilterBuilderTrait;
 
-    public function indexAccount(array $searches = [])
+    public function indexAccount(array $searches = []): array
     {
         $filters = $this->getFilterRelationsApi($searches);
 
@@ -20,22 +20,22 @@ class AccountService extends BaseService
 
         if ($accounts->count() == 0) {
             return [
-                'status'  => ResponseMessageEnum::CODE_NO_CONTENT,
-                'message' => __('acl:api.no_data'),
+                'status'   => ResponseMessageEnum::CODE_NO_CONTENT,
+                'message'  => __('acl:api.no_data'),
                 'accounts' => null
             ];
         }
 
         return [
-            'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => __('acl:api.success'),
+            'status'   => ResponseMessageEnum::CODE_OK,
+            'message'  => __('acl:api.success'),
             'accounts' => $accounts
         ];
     }
 
-    public function createAccount(array $data)
+    public function createAccount(array $data): array
     {
-        $user    = auth()->user();
+        $user = auth()->user();
 
         $account = Account::where('user_id', $user->id)->first();
 
@@ -47,7 +47,7 @@ class AccountService extends BaseService
             ];
         }
 
-        $account       = Account::query()->create([
+        $account = Account::query()->create([
             'user_id'        => auth()->id(),
             'account_number' => $this->createAccountNumber(),
             'account_type'   => $data['account_type'],
@@ -67,7 +67,7 @@ class AccountService extends BaseService
         ];
     }
 
-    public function getAccount($id)
+    public function getAccount($id): array
     {
         $account = Account::query()->find($id);
 
@@ -90,7 +90,7 @@ class AccountService extends BaseService
         ];
     }
 
-    public function updateAccount($id, array $data)
+    public function updateAccount($id, array $data): array
     {
         $account = Account::query()->find($id);
 
@@ -114,7 +114,7 @@ class AccountService extends BaseService
         ];
     }
 
-    public function destroyAccount($id)
+    public function destroyAccount($id): array
     {
         $account = Account::query()->find($id);
 

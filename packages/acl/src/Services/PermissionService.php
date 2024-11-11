@@ -3,12 +3,12 @@
 namespace Workable\ACL\Services;
 
 use Spatie\Permission\Models\Permission;
-use Workable\ACL\Core\Traits\FilterApiTrait;
 use Workable\ACL\Enums\ResponseMessageEnum;
+use Workable\Support\Traits\FilterBuilderTrait;
 
 class PermissionService extends BaseService
 {
-    use FilterApiTrait;
+    use FilterBuilderTrait;
 
     public function getPermissions(array $searches = [])
     {

@@ -4,13 +4,12 @@ namespace Workable\Bank\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\ApiResponseTrait;
 use Workable\ACL\Rules\ValidFields;
-use Workable\Bank\Enums\AccountEnum;
+use Workable\Support\Traits\ResponseHelperTrait;
 
 class AccountListRequest extends FormRequest
 {
-    use ApiResponseTrait;
+    use ResponseHelperTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -43,8 +42,8 @@ class AccountListRequest extends FormRequest
     public function messages()
     {
         return [
-            'with.*'      => 'Một hoặc nhiều mối quan hệ được yêu cầu không hợp lệ.',
-            'fields.user' => 'Một hoặc nhiều trường được yêu cầu không hợp lệ.',
+            'with.*'      => __('acl::api.validation_with'),
+            'fields.user' => __('acl::api.validation_fields'),
         ];
     }
 }

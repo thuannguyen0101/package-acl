@@ -6,13 +6,13 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
-use Workable\ACL\Core\Traits\FilterApiTrait;
 use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\ACL\Models\UserApi;
+use Workable\Support\Traits\FilterBuilderTrait;
 
 class RoleService extends BaseService
 {
-    use FilterApiTrait;
+    use FilterBuilderTrait;
 
     public function getRoles(array $searches)
     {
