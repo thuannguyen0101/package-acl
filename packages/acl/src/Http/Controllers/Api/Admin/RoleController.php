@@ -2,6 +2,7 @@
 
 namespace Workable\ACL\Http\Controllers\Api\Admin;
 
+use App\Http\Controllers\Controller;
 use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\ACL\Http\Requests\RoleAssignModelRequest;
 use Workable\ACL\Http\Requests\RoleListRequest;
@@ -12,14 +13,23 @@ use Workable\ACL\Http\Resources\UserResource;
 use Workable\ACL\Services\RoleService;
 use Workable\Support\Traits\ResponseHelperTrait;
 
-class RoleController
+class RoleController extends Controller
 {
     use ResponseHelperTrait;
 
     protected $roleService;
 
-    public function __construct(RoleService $roleService)
+    public function __construct(
+        RoleService $roleService
+    )
     {
+        $this->middleware('acl_permission:role_list')->only('index');
+        $this->middleware('acl_permission:role_create')->only('store');
+        $this->middleware('acl_permission:role_show')->only('show');
+        $this->middleware('acl_permission:role_update')->only('update');
+        $this->middleware('acl_permission:role_delete')->only('destroy');
+        $this->middleware('acl_permission:role_assign_model')->only('assignRoleForModel');
+
         $this->roleService = $roleService;
     }
 

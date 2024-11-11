@@ -4,12 +4,13 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Workable\ACL\Core\Traits\MessageValidateTrait;
 use Workable\ACL\Rules\ValidFields;
 use Workable\Support\Traits\ResponseHelperTrait;
 
 class PermissionListRequest extends FormRequest
 {
-    use ResponseHelperTrait;
+    use ResponseHelperTrait, MessageValidateTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -43,11 +44,11 @@ class PermissionListRequest extends FormRequest
 
     public function messages()
     {
-        return [
-            'with.*'       => __('acl::api.validation_with'),
-            'fields.roles' => __('acl::api.validation_fields'),
-            'filters'      => __('acl::api.array', ['attribute' => 'bộ lọc']),
-            'filters.*'    => __('acl::api.array.validation_data', ['attribute' => 'bộ lọc', 'type' => 'chuỗi']),
+        $rules = [
+            'filters'   => ['array'],
+            'filters.*' => ['string'],
         ];
+
+        return $this->getMessage($rules);
     }
 }

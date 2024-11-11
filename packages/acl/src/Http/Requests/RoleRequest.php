@@ -4,11 +4,12 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Workable\ACL\Core\Traits\MessageValidateTrait;
 use Workable\Support\Traits\ResponseHelperTrait;
 
 class RoleRequest extends FormRequest
 {
-    use ResponseHelperTrait;
+    use ResponseHelperTrait, MessageValidateTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -28,18 +29,18 @@ class RoleRequest extends FormRequest
     public function rules(Request $request)
     {
         return [
-            'name'           => 'required|unique:roles,name,' . $request->id ?? 0,
-            'permission_ids' => 'nullable|array',
+            'name'           => ['required', 'unique:roles,name,' . $request->id ?? 0],
+            'permission_ids' => ['nullable', 'array'],
         ];
     }
 
     public function messages()
     {
-        return [
-            'name.required' => __('acl::api.required', ['attribute' => 'tên vai trò']),
-            'name.unique'   => __('acl::api.unique', ['attribute' => 'tên vai trò']),
-
-            'permission_ids.array' => __('acl::api.array', ['attribute' => 'quyền']),
+        $rules = [
+            'name'           => ['unique'],
+            'permission_ids' => ['array'],
         ];
+
+        return $this->getMessage($rules);
     }
 }

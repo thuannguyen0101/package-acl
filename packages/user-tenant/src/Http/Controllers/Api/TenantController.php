@@ -4,8 +4,8 @@ namespace Workable\UserTenant\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\Support\Traits\ResponseHelperTrait;
+use Workable\UserTenant\Enums\ResponseEnum;
 use Workable\UserTenant\Http\Requests\TenantRequest;
 use Workable\UserTenant\Http\Resources\TenantCollection;
 use Workable\UserTenant\Http\Resources\TenantResource;
@@ -32,7 +32,7 @@ class TenantController extends Controller
             'tenants' => $tenants,
             ) = $this->tenantService->getTenants($request->all());
 
-        if ($status != ResponseMessageEnum::CODE_OK) {
+        if ($status != ResponseEnum::CODE_OK) {
             return $this->respondSuccess($message);
         }
 
@@ -40,6 +40,17 @@ class TenantController extends Controller
             $message,
             new TenantCollection($tenants)
         );
+    }
+
+    public function show(int $id)
+    {
+        list(
+            'status' => $status,
+            'message' => $message,
+            'tenant' => $tenant,
+            ) = $this->tenantService->getTenant($id);
+
+        return $this->baseResponse($status, $message, $tenant);
     }
 
     public function store(TenantRequest $request)
@@ -64,17 +75,6 @@ class TenantController extends Controller
         return $this->baseResponse($status, $message, $tenant);
     }
 
-    public function show(int $id)
-    {
-        list(
-            'status' => $status,
-            'message' => $message,
-            'tenant' => $tenant,
-            ) = $this->tenantService->getTenant($id);
-
-        return $this->baseResponse($status, $message, $tenant);
-    }
-
     public function destroy(int $id)
     {
         list(
@@ -88,7 +88,7 @@ class TenantController extends Controller
 
     private function baseResponse($status, $message, $tenant)
     {
-        if ($status != ResponseMessageEnum::CODE_OK) {
+        if ($status != ResponseEnum::CODE_OK) {
             return $this->respondError($message);
         }
 

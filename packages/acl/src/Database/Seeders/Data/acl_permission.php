@@ -1,9 +1,15 @@
 <?php
 return [
-    'system' => [
-        'permission_list',
-        'tenant_create',
-        'user_create',
-        'assign_role',
+    'permissions' => [
+        'permission_list'
+    ],
+
+    'roles' => [
+        'role_list',
+        'role_create',
+        'role_update',
+        'role_show',
+        'role_delete',
+        'role_assign_model',
     ]
 ];

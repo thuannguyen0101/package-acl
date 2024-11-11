@@ -2,115 +2,117 @@
 
 namespace Workable\UserTenant\Services;
 
+use Illuminate\Support\Facades\Hash;
 use Workable\Support\Traits\FilterBuilderTrait;
 use Workable\UserTenant\Enums\ResponseEnum;
-use Workable\UserTenant\Enums\TenantEnum;
-use Workable\UserTenant\Models\Tenant;
+use Workable\UserTenant\Enums\UserEnum;
+use Workable\UserTenant\Models\User;
 
-class TenantService
+class UserService
 {
     use FilterBuilderTrait;
 
-    public function getTenants($request): array
+    public function getUsers($request): array
     {
         $filter = $this->getFilterRequest($request);
-        $query  = Tenant::query();
+        $query  = User::query();
 
         if (!empty($filter['with'])) {
             $query->with($filter['with']);
         }
 
-        $listTenant = $query->get();
+        $listUsers = $query->get();
 
-        if ($listTenant->count() === 0) {
+        if ($listUsers->count() === 0) {
             return [
                 'status'  => ResponseEnum::CODE_NO_CONTENT,
                 'message' => __('user-tenant::api.no_data'),
-                'tenants' => $listTenant,
+                'users'   => $listUsers,
             ];
         }
 
         return [
             'status'  => ResponseEnum::CODE_OK,
             'message' => __('user-tenant::api.success'),
-            'tenants' => $listTenant,
+            'users'   => $listUsers,
         ];
     }
 
-    public function getTenant($id): array
+    public function getUser($id): array
     {
-        $tenant = Tenant::query()->find($id);
+        $user = User::query()->find($id);
 
-        if (!$tenant) {
+        if (!$user) {
             return [
                 'status'  => ResponseEnum::CODE_NOT_FOUND,
                 'message' => __('user-tenant::api.data_not_found'),
-                'tenant'  => $tenant,
+                'user'    => $user,
             ];
         }
 
         return [
             'status'  => ResponseEnum::CODE_OK,
             'message' => __('user-tenant::api.updated'),
-            'tenant'  => $tenant,
+            'user'    => $user,
         ];
     }
 
-    public function createTenant($data): array
+    public function createUser($data): array
     {
-        $data['status'] = TenantEnum::STATUS_ACTIVE;
-
-        $tenant = Tenant::query()->create($data);
+        $data['status']   = UserEnum::STATUS_ACTIVE;
+        $data['password'] = Hash::make($data['password']);
+        $user             = User::query()->create($data);
 
         return [
             'status'  => ResponseEnum::CODE_OK,
             'message' => __('user-tenant::api.created'),
-            'tenant'  => $tenant,
+            'user'    => $user,
         ];
     }
 
-    public function updateTenant($id, $data): array
+    public function updateUser($id, $data): array
     {
-        $tenant = Tenant::query()->find($id);
+        $user = User::query()->find($id);
 
-        if (!$tenant) {
+        if (!$user) {
             return [
                 'status'  => ResponseEnum::CODE_NOT_FOUND,
                 'message' => __('user-tenant::api.data_not_found'),
-                'tenant'  => $tenant,
+                'user'    => $user,
             ];
         }
-        $tenant->fill($data);
 
-        if ($tenant->isDirty()) {
-            $tenant->update();
+        $user->fill($data);
+
+        if ($user->isDirty()) {
+            $user->update();
         }
 
         return [
             'status'  => ResponseEnum::CODE_OK,
             'message' => __('user-tenant::api.updated'),
-            'tenant'  => $tenant,
+            'user'    => $user,
         ];
     }
 
-    public function deleteTenant($id): array
+    public function deleteUser($id): array
     {
-        $tenant = Tenant::query()->find($id);
+        $user = User::query()->find($id);
 
-        if (!$tenant) {
+        if (!$user) {
             return [
                 'status'  => ResponseEnum::CODE_NOT_FOUND,
                 'message' => __('user-tenant::api.data_not_found'),
-                'tenant'  => $tenant,
+                'user'    => $user,
             ];
         }
 
-        $tenant->delete();
+        $user->delete();
 
         return [
             'status'  => ResponseEnum::CODE_OK,
             'message' => __('user-tenant::api.deleted'),
-            'tenant'  => null,
+            'user'    => null,
         ];
     }
 }

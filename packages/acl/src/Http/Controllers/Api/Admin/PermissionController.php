@@ -19,6 +19,8 @@ class PermissionController extends Controller
         PermissionService $permissionService
     )
     {
+        $this->middleware('acl_permission:permission_list')->only('index');
+
         $this->permissionService = $permissionService;
     }
 

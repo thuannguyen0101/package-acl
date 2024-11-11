@@ -2,10 +2,10 @@
 
 namespace Workable\UserTenant\Http\Resources;
 
-use Workable\ACL\Http\Resources\BaseResource;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Workable\UserTenant\Enums\TenantEnum;
 
-class TenantResource extends BaseResource
+class TenantResource extends JsonResource
 {
     public function toArray($request): array
     {

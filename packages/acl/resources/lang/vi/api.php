@@ -1,5 +1,40 @@
 <?php
 return [
+
+    'field_validates' => [
+        'required'        => 'Trường :attribute là bắt buộc.',
+        'string'          => 'Trường :attribute phải là chuỗi ký tự.',
+        'email'           => 'Trường :attribute phải là địa chỉ email hợp lệ.',
+        'max'             => 'Trường :attribute không được dài hơn :max ký tự.',
+        'min'             => 'Trường :attribute phải chứa ít nhất :min ký tự.',
+        'unique'          => 'Trường :attribute đã tồn tại.',
+        'validation_data' => 'Dữ liệu :attribute phải là :type.',
+        'in'              => 'Dữ liệu :attribute phải là các lựa chọn được đưa ra.',
+        'date'            => 'Trường :attribute phải là ngày hợp lệ.',
+        'numeric'         => 'Trường :attribute phải là số.',
+        'confirmed'       => 'Trường xác nhận phải khớp với trường mật khẩu.',
+        'alpha_num'       => 'Trường :attribute chỉ chấp nhận các ký tự chữ và số (không có ký tự đặc biệt).',
+        'array'           => 'Trường :attribute phải là một mảng.'
+    ],
+
+    'fields'                 => [
+        'string'   => 'chuỗi',
+        'email'    => 'email',
+        'numeric'  => 'số',
+        'checkbox' => 'một trong các lựa chọn đã đưa ra. ',
+
+        'name'      => 'tên của chủ sở hữu',
+        'username'  => 'tên đăng nhập của người dùng',
+        'avatar'    => 'dường dẫn hình ảnh',
+        'password'  => 'mật khẩu',
+        'phone'     => 'số điện thoại',
+        'status'    => 'trạng thái',
+        'filters'   => 'bộ lọc',
+        'filters.*' => 'giá trị bộ lọc',
+        'role_id'   => 'vai trò',
+        'model_id'  => 'người dùng',
+    ],
+
     // Thông báo thành công
     'success'                => 'Thao tác thành công.',
     'created'                => 'Tạo mới thành công.',
@@ -29,6 +64,7 @@ return [
     'password_mismatch'      => 'Mật khẩu không khớp.',
     'numeric'                => 'Trường :attribute phải là các loại đã được chỉ định.',
     'in'                     => 'Trường :attribute không hợp lệ. Vui lòng chọn một trong các giá trị đã đưa ra.',
+    'alpha_num'              => 'Trường :attribute chỉ chấp nhận các ký tự chữ và số (không có ký tự đặc biệt).',
 
     // Xác thực người dùng (Authentication)
     'login_failed'           => 'Đăng nhập không thành công, vui lòng kiểm tra lại thông tin đăng nhập.',

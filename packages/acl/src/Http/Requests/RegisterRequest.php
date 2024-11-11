@@ -4,11 +4,12 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Workable\ACL\Core\Traits\MessageValidateTrait;
 use Workable\Support\Traits\ResponseHelperTrait;
 
 class RegisterRequest extends FormRequest
 {
-    use ResponseHelperTrait;
+    use ResponseHelperTrait, MessageValidateTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -28,9 +29,9 @@ class RegisterRequest extends FormRequest
     public function rules(Request $request)
     {
         return [
-            'email'    => 'email|required|unique:users,email,' . request('id', 0),
-            'password' => 'required|min:6',
-            'name'     => 'required',
+            'email'    => ['email', 'required', 'unique:users,email,' . request('id', 0)],
+            'password' => ['required','min:6'],
+            'name'     => ['required'],
         ];
     }
 

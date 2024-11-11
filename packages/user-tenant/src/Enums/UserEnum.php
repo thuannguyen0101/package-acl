@@ -2,7 +2,7 @@
 
 namespace Workable\UserTenant\Enums;
 
-class TenantEnum
+class UserEnum
 {
     const MALE   = '1';
     const FEMALE = '2';
@@ -26,17 +26,16 @@ class TenantEnum
 
     public static function getStatus($status = null)
     {
-        return isset($status) ? __('user-tenant::api.status_text.' . TenantEnum::STATUS[$status]) : null;
+        return isset($status) ? __('user-tenant::api.status_text.' . UserEnum::STATUS[$status]) : null;
     }
 
     public static function getGender($gender)
     {
-        return isset($gender) ? __('user-tenant::api.gender_text.' . TenantEnum::GENDER[$gender]) : null;
+        return isset($gender) ? __('user-tenant::api.gender_text.' . UserEnum::GENDER[$gender]) : null;
     }
 
     public static function convertDate($date)
     {
         return isset($date) ? $date->format('d-m-Y') : null;
     }
-
 }

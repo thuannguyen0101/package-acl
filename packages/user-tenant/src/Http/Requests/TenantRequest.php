@@ -42,65 +42,34 @@ class TenantRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
-            'name.required' => __('acl::api.required', [
-                'attribute' => __('user-tenant::tenant.fields.name')
-            ]),
-            'name.string'   => __('acl::api.validation_data', [
-                'attribute' => __('user-tenant::tenant.fields.name'),
-                'type'      => __('user-tenant::tenant.fields.string')
-            ]),
-            'name.min'      => __('acl::api.min_length', [
-                'attribute' => __('user-tenant::tenant.fields.name')
-            ]),
-            'name.max'      => __('acl::api.max_length', [
-                'attribute' => __('user-tenant::tenant.fields.name')
-            ]),
+        return $this->getMessage(
+            [
+                'name'       => ['required', 'string', 'min:3', 'max:255'],
+                'email'      => ['required', 'string', 'email', 'max:255', 'unique'],
+                'phone'      => ['required', 'string', 'min:10', 'max:11', 'unique'],
+                'address'    => ['string'],
+                'gender'     => ['numeric', 'in'],
+                'birthday'   => ['date'],
+                'size'       => ['numeric'],
+                'citizen_id' => ['string'],
+            ]
+        );
+    }
 
-            'email.required' => __('acl::api.required', [
-                'attribute' => __('user-tenant::tenant.fields.email')
-            ]),
-            'email.string'   => __('acl::api.validation_data', [
-                'attribute' => __('user-tenant::tenant.fields.email'),
-                'type'      => __('user-tenant::tenant.fields.string')
-            ]),
-            'email.max'      => __('acl::api.max_length', [
-                'attribute' => __('user-tenant::tenant.fields.email')
-            ]),
-            'email.email'    => __('acl::api.email', [
-                'attribute' => __('user-tenant::tenant.fields.email')
-            ]),
-            'email.unique'   => __('acl::api.unique', [
-                'attribute' => __('user-tenant::tenant.fields.email')
-            ]),
-
-            'phone.required' => __('acl::api.required', [
-                'attribute' => __('user-tenant::tenant.fields.phone')
-            ]),
-            'phone.string'   => __('acl::api.validation_data', [
-                'attribute' => __('user-tenant::tenant.fields.phone'),
-                'type'      => __('user-tenant::tenant.fields.string')
-            ]),
-            'phone.min'      => __('acl::api.min_length', [
-                'attribute' => __('user-tenant::tenant.fields.phone')
-            ]),
-            'phone.max'      => __('acl::api.max_length', [
-                'attribute' => __('user-tenant::tenant.fields.phone')
-            ]),
-            'phone.unique'   => __('acl::api.unique', [
-                'attribute' => __('user-tenant::tenant.fields.phone')
-            ]),
-
-
-            'address.string' => __('acl::api.validation_data', [
-                'attribute' => __('user-tenant::tenant.fields.address'),
-                'type'      => __('user-tenant::tenant.fields.string')
-            ]),
-
-            'gender.numeric' => __('acl::api.validation_data', [
-                'attribute' => __('user-tenant::tenant.fields.address'),
-                'type'      => __('user-tenant::tenant.fields.string')
-            ])
-        ];
+    public function getMessage(array $validates = []): array
+    {
+        $messages = [];
+        foreach ($validates as $key => $rules) {
+            foreach ($rules as $v) {
+                $rule                      = explode(":", ($v ?? ''));
+                $messages["$key.$rule[0]"] = __('user-tenant::api.field_validates.' . $rule[0], [
+                    'attribute' => __('user-tenant::api.fields.' . $key),
+                    'type'      => __('user-tenant::api.fields.' . $v),
+                    'max'       => $rule[1] ?? 0,
+                    'min'       => $rule[1] ?? 0
+                ]);
+            }
+        }
+        return $messages;
     }
 }

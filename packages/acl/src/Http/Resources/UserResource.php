@@ -20,11 +20,9 @@ class UserResource extends BaseResource
     {
         return [
             "user"  => [
-                "id"          => $this->id,
-                "name"        => $this->name,
-                "email"       => $this->email,
-                'roles'       => $this->getRoleNames(),
-                'permissions' => $this->getAllPermissions()->pluck('name')
+                "id"       => $this->id,
+                "username" => $this->name ?? $this->username,
+                "email"    => $this->email,
             ],
             "token" => $this->getToken()
         ];

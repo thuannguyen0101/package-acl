@@ -4,11 +4,12 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Workable\ACL\Core\Traits\MessageValidateTrait;
 use Workable\Support\Traits\ResponseHelperTrait;
 
 class LoginRequest extends FormRequest
 {
-    use ResponseHelperTrait;
+    use ResponseHelperTrait, MessageValidateTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -28,21 +29,18 @@ class LoginRequest extends FormRequest
     public function rules(Request $request)
     {
         return [
-            'email'    => 'email|required',
-            'password' => 'required|min:6',
+            'username' => ['required', 'alpha_num', 'string', 'min:3', 'max:255'],
+            'password' => ['required', 'string', 'min:8',],
         ];
     }
 
     public function messages()
     {
-        return [
-            'email.required'    => __('acl::api.required', ['attribute' => 'email']),
-            'email.email'       => __('acl::api.email', ['attribute' => 'email']),
-            'password.required' => __('acl::api.required', ['attribute' => 'mật khẩu']),
-            'password.min'      => __('acl::api.min_length', [
-                'attribute' => 'mật khẩu',
-                'min'       => '6',
-            ]),
+        $rules = [
+            'username' => ['required', 'alpha_num', 'string', 'min:3', 'max:255'],
+            'password' => ['required', 'string', 'min:8'],
         ];
+
+        return $this->getMessage($rules);
     }
 }

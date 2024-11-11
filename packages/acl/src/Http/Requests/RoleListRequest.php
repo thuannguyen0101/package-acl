@@ -4,12 +4,13 @@ namespace Workable\ACL\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Workable\ACL\Core\Traits\MessageValidateTrait;
 use Workable\ACL\Rules\ValidFields;
 use Workable\Support\Traits\ResponseHelperTrait;
 
 class RoleListRequest extends FormRequest
 {
-    use ResponseHelperTrait;
+    use ResponseHelperTrait, MessageValidateTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -42,8 +43,8 @@ class RoleListRequest extends FormRequest
     public function messages()
     {
         return [
-            'with.*'       => __('acl::api.validation_with'),
-            'fields.roles' => __('acl::api.validation_fields'),
+            'with.*'             => __('acl::api.validation_with'),
+            'fields.permissions' => __('acl::api.validation_fields'),
         ];
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Workable\Support\Traits\FilterBuilderTrait;
 use Workable\UserTenant\Enums\TenantEnum;
 
-class TenantCollection extends ResourceCollection
+class UserCollection extends ResourceCollection
 {
     use FilterBuilderTrait;
 
@@ -17,17 +17,17 @@ class TenantCollection extends ResourceCollection
         $this->collection->transform(function ($item) use ($relations) {
             $dataRes = [
                 'id'         => $item->id,
-                'name'       => $item->name,
+                'username'   => $item->username,
                 'email'      => $item->email,
                 'phone'      => $item->phone,
-                'status'     => TenantEnum::getStatus($item->status),
                 'address'    => $item->address,
+                'status'     => TenantEnum::getStatus($item->status),
                 'gender'     => TenantEnum::getGender($item->gender),
                 'birthday'   => TenantEnum::convertDate($item->birthday),
-                'size'       => $item->size,
-                'citizen_id' => $item->citizen_id,
-                'start_at'   => $item->start_at,
-                'expiry_at'  => $item->expiry_at
+                'avatar'     => $item->avatar ?? '',
+                'tenant'     => $item->tenant ?? [],
+                'created_by' => '',
+                'updated_by' => '',
             ];
 
             if (!empty($relations['with'])) {
@@ -37,9 +37,8 @@ class TenantCollection extends ResourceCollection
             }
             return $dataRes;
         });
-
         return [
-            "tenants" => $this->collection
+            "users" => $this->collection
         ];
     }
 }

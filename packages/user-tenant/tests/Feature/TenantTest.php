@@ -104,6 +104,16 @@ class TenantTest extends TestCase
         $this->testValidate($this->updateUrl, "PUT");
     }
 
+    public function test_update_tenant_not_found()
+    {
+        $response = $this->putJson(route('api.tenants.update', 10), $this->tenantData);
+
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                'code' => -1,
+            ]);
+    }
+
     public function test_delete_tenant()
     {
         $response = $this->deleteJson($this->updateUrl);
@@ -113,7 +123,7 @@ class TenantTest extends TestCase
             ]);
     }
 
-    public function test_delete_tenant_failed()
+    public function test_delete_tenant_not_found()
     {
         $response = $this->deleteJson(route('api.tenants.destroy', 10));
         $response->assertStatus(200)
@@ -160,7 +170,42 @@ class TenantTest extends TestCase
                 'code' => 1,
                 'data' => []
             ]);
-        
+
+    }
+
+    public function test_show_tenant()
+    {
+        $response = $this->getJson($this->updateUrl);
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                'code' => 1,
+            ])->assertJsonStructure([
+                'data' => [
+                    "tenant" => [
+                        'name',
+                        'email',
+                        'phone',
+                        'status',
+                        'address',
+                        'gender',
+                        'birthday',
+                        'size',
+                        'citizen_id',
+                        'start_at',
+                        'expiry_at'
+                    ]
+                ]
+            ]);
+    }
+
+    public function test_show_tenant_not_found()
+    {
+        $response = $this->getJson(route('api.tenants.show', 10));
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                'code' => -1,
+                'data' => []
+            ]);
     }
 
     protected function testValidate($route, $method = 'POST')
