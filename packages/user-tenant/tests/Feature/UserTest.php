@@ -36,6 +36,7 @@ class UserTest extends TestCase
             'email'   => 'testtenant01@test.com',
             'phone'   => '0103456789',
             'status'  => TenantEnum::STATUS_ACTIVE,
+            'full_name'  => 'Công ty VNP GROUP'
         ]);
 
         $this->user->update([

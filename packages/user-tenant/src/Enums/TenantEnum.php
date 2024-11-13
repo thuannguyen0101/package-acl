@@ -69,6 +69,7 @@ class TenantEnum
     {
         return self::getDataEnum($gender, self::GENDER, "user-tenant::api.gender_text");
     }
+
     public static function getWordDay($workDay = null): array
     {
         return self::getDataEnum($workDay, self::WORK_DAY_TEXT_ARRAY, "user-tenant::api.work_day_text");
@@ -90,6 +91,16 @@ class TenantEnum
                 "position"    => null,
             ];
         }
+
+        $metaAttribute = json_decode($metaAttribute, true);
+
+        return [
+            "established" => $metaAttribute['established'] ?? null,
+            "work_day"    => self::getWordDay($metaAttribute['work_day']),
+            "uniform"     => $metaAttribute['uniform'],
+            "skype"       => $metaAttribute['skype'],
+            "position"    => self::getLevel($metaAttribute['position']),
+        ];
     }
 
     public static function getDataEnum($field = null, $arrayEnum = null, $keyLang = null): array

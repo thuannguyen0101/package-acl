@@ -74,6 +74,7 @@ class TenantService
         $data['start_at'] = date("Y-m-d H:i:s");
         $data['user_id']  = $user->id;
 
+
         $tenant = Tenant::query()->create($data);
 
         $user->update(['tenant_id' => $tenant->id]);

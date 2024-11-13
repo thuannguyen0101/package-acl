@@ -95,7 +95,7 @@ class AuthTest extends TestCase
     {
         $data     = [
             'username'              => 'thuannn0101',
-            'email'                 => 'thuannn01@test.com',
+            'email'                 => 'thuannn99@test.com',
             'password'              => 'password',
             'phone'                 => '0222456789',
             'address'               => 'Số 09 tôn thất thuyết, cầu giấy, hà nội',
