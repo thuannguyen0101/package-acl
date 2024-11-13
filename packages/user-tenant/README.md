@@ -1,3 +1,6 @@
+
+
+
 ### Bước 1.
 -   chay "php artisan jwt:secret"
 

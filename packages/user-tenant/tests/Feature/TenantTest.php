@@ -45,6 +45,7 @@ class TenantTest extends TestCase
             'name'  => 'Test Tenant',
             'email' => 'testtenant@test.com',
             'phone' => '0123456789',
+            'full_name'  => 'Công ty VNP GROUP'
         ];
 
         $this->tenant = Tenant::create([
@@ -53,6 +54,7 @@ class TenantTest extends TestCase
             'email'   => 'testtenant01@test.com',
             'phone'   => '0103456789',
             'status'  => TenantEnum::STATUS_ACTIVE,
+            'full_name'  => 'Công ty VNP GROUP'
         ]);
 
         $this->storeUrl  = route('api.tenants.store');
@@ -102,6 +104,7 @@ class TenantTest extends TestCase
             'name'  => 'Test Tenant',
             'email' => 'testtenant@test.com',
             'phone' => '0999999999',
+            'full_name'  => 'Công ty VNP GROUP'
         ];
 
         $response = $this->putJson($this->updateUrl, $data);
@@ -230,6 +233,7 @@ class TenantTest extends TestCase
                         'name',
                         'email',
                         'phone',
+                        'full_name'
                     ]
             ],
             [
@@ -238,6 +242,7 @@ class TenantTest extends TestCase
                     [
                         'email',
                         'phone',
+                        'full_name',
                     ]
             ],
             [
@@ -246,6 +251,7 @@ class TenantTest extends TestCase
                     [
                         'name',
                         'phone',
+                        'full_name',
                     ]
             ],
             [
@@ -254,6 +260,16 @@ class TenantTest extends TestCase
                     [
                         'email',
                         'name',
+                        'full_name',
+                    ]
+            ],
+            [
+                'data'           => ['full_name' => 'Công ty VNP GROUP'],
+                'expectedErrors' =>
+                    [
+                        'email',
+                        'name',
+                        'phone',
                     ]
             ],
             // case sai dữ liệu
@@ -262,12 +278,14 @@ class TenantTest extends TestCase
                     'name'  => '1',
                     'email' => '1',
                     'phone' => '1',
+                    'full_name' => 0,
                 ],
                 'expectedErrors' =>
                     [
                         'name',
                         'email',
-                        'phone'
+                        'phone',
+                        'full_name'
                     ]
             ],
             [

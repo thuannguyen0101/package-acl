@@ -2,7 +2,6 @@
 
 namespace Workable\UserTenant\Services;
 
-use Workable\Support\Traits\CheckPermissionTrait;
 use Workable\Support\Traits\FilterBuilderTrait;
 use Workable\UserTenant\Enums\ResponseEnum;
 use Workable\UserTenant\Enums\TenantEnum;
@@ -10,7 +9,7 @@ use Workable\UserTenant\Models\Tenant;
 
 class TenantService
 {
-    use FilterBuilderTrait, CheckPermissionTrait;
+    use FilterBuilderTrait;
 
     public function getTenants($request): array
     {
@@ -61,7 +60,7 @@ class TenantService
 
     public function createTenant($data): array
     {
-        $user = $this->getUser();
+        $user = get_user();
 
         if (isset($user->tenant_id)) {
             return [

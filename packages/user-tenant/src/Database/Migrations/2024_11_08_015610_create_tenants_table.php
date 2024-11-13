@@ -15,22 +15,20 @@ class CreateTenantsTable extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->unsignedBigInteger('user_id');
-
-            $table->string('full_name')->nullable();
-            $table->string('description')->nullable();
-            $table->string('business_phone')->nullable();
-            $table->longText('meta_attribute')->nullable();
-
+            $table->string('citizen_id', 50)->nullable();
+            $table->string('name');
+            $table->string('full_name');
+            $table->string('business_phone', 12)->nullable();
             $table->string('email')->unique();
             $table->string('phone')->unique();
-            $table->smallInteger('status');
             $table->string('address')->nullable();
-            $table->smallInteger('gender')->nullable();
+            $table->tinyInteger('gender')->nullable();
             $table->date('birthday')->nullable();
             $table->integer('size')->nullable();
-            $table->string('citizen_id')->nullable();
+            $table->text('description')->nullable();
+            $table->longText('meta_attribute')->nullable();
+            $table->tinyInteger('status');
             $table->date('start_at')->nullable();
             $table->date('expiry_at')->nullable();
             $table->timestamps();

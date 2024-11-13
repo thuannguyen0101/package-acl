@@ -18,7 +18,7 @@ class AddFieldToUsersTable extends Migration
             $table->string('username')->unique()->after('name');
             $table->unsignedBigInteger('tenant_id')->nullable()->after('id');
             $table->string('phone')->unique()->nullable()->after('password');
-            $table->smallInteger('status')->nullable()->after('phone');
+            $table->tinyInteger('status')->nullable()->after('phone');
             $table->string('address')->nullable()->after('status');
             $table->smallInteger('gender')->nullable()->after('address');
             $table->date('birthday')->nullable()->after('gender');

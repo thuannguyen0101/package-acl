@@ -8,12 +8,11 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\ACL\Models\User;
-use Workable\Support\Traits\CheckPermissionTrait;
 use Workable\Support\Traits\FilterBuilderTrait;
 
 class RoleService
 {
-    use FilterBuilderTrait, CheckPermissionTrait;
+    use FilterBuilderTrait;
 
     public function getRoles(array $searches)
     {

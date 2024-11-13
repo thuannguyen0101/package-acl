@@ -61,6 +61,28 @@ return [
         'other'  => 'Khác',
     ],
 
+    'size_text' => [
+        "under_10"   => 'Dưới 10',
+        "10_25"      => '10 - 25 ',
+        "25_50"      => '25 - 50',
+        "50_100"     => '50 - 100',
+        "100_200"    => '100 - 200',
+        "200_500"    => '200 - 500',
+        "500_1000"   => '500 - 1000',
+        "above_1000" => 'Trên 1000',
+    ],
+
+    'work_day_text' => [
+        "monday_friday" => "Thứ hai - Thứ sáu",
+        "monday_friday_morning" => "Thứ Hai - Sáng thứ Sáu",
+        "monday-saturday" => "Thứ Hai - Thứ Bảy",
+        "full_week" => "Cả tuần",
+        "flexible" => "Linh hoạt",
+        "other" => "Khác",
+    ],
+
+
+
     'auth' => [
         'unauthorized'  => 'Bạn không có quyền truy cập vào tài nguyên này. Vui lòng xác thực trước khi tiếp tục.',
         'forbidden'     => 'Bạn không được phép thực hiện thao tác này.',
