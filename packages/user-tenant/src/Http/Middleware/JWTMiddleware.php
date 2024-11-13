@@ -1,6 +1,6 @@
 <?php
 
-namespace Workable\ACL\Http\Middleware;
+namespace Workable\UserTenant\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -28,25 +28,24 @@ class JWTMiddleware extends BaseMiddleware
             if (!JWTAuth::parseToken()->authenticate()) {
                 return response()->json([
                     'status'  => 'error',
-                    'message' => __('acl::api.unauthorized'),
+                    'message' => __('user-tenant::api.auth.unauthorized'),
                 ], 401);
             }
         } catch (TokenExpiredException $e) {
             return response()->json([
                 'status'  => 'error',
-                'message' => __('acl::api.token_expired'),
+                'message' => __('user-tenant::api.auth.token_expired'),
             ], 401);
         } catch (TokenInvalidException $e) {
             return response()->json([
                 'status'  => 'error',
-                'message' => __('acl::api.unauthorized'),
+                'message' => __('user-tenant::api.auth.unauthorized'),
             ], 401);
         } catch (JWTException $e) {
             return response()->json([
                 'status'  => 'error',
-                'message' => __('acl::api.server_error'),
+                'message' => __('user-tenant::api.auth.server_error'),
             ], 401);
-
         }
 
         return $next($request);

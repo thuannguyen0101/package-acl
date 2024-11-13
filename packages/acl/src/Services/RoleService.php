@@ -7,18 +7,25 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 use Workable\ACL\Enums\ResponseMessageEnum;
-use Workable\ACL\Models\UserApi;
+use Workable\ACL\Models\User;
+use Workable\Support\Traits\CheckPermissionTrait;
 use Workable\Support\Traits\FilterBuilderTrait;
 
-class RoleService extends BaseService
+class RoleService
 {
-    use FilterBuilderTrait;
+    use FilterBuilderTrait, CheckPermissionTrait;
 
     public function getRoles(array $searches)
     {
-        $filters = $this->getFilterRelationsApi($searches);
+        $filters = $this->getFilterRequest($searches);
 
-        $roles = $this->buildQuery($filters)->get();
+        $query = Role::query();
+
+        if (!empty($filters['with'])) {
+            $query->with($filters['with']);
+        }
+
+        $roles = $query->get();
 
         if ($roles->count() == 0) {
             return [
@@ -154,7 +161,7 @@ class RoleService extends BaseService
 
     public function assignRoleForModel(int $userId, int $roleId): array
     {
-        $user = UserApi::query()->find($userId);
+        $user = User::query()->find($userId);
 
         if (!$user) {
             return [
@@ -190,11 +197,5 @@ class RoleService extends BaseService
             'message' => __('acl::api.not_found'),
             'role'    => null
         ];
-    }
-
-    private function buildQuery(array $filters = [])
-    {
-        $query = Role::query();
-        return $this->applyBaseRelationsWithFields($query, $filters);
     }
 }

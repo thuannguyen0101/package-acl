@@ -6,34 +6,33 @@ use Spatie\Permission\Models\Permission;
 use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\Support\Traits\FilterBuilderTrait;
 
-class PermissionService extends BaseService
+class PermissionService
 {
     use FilterBuilderTrait;
 
     public function getPermissions(array $searches = [])
     {
-        $filters = $this->getFilterRelationsApi($searches);
+        $filters = $this->getFilterRequest($searches);
+        $query   = Permission::query();
 
-        $permissions = $this->buildQuery($filters)->get();
+        if (!empty($filters['with'])) {
+            $query->with($filters['with']);
+        }
+
+        $permissions = $query->get();
 
         if ($permissions->count() === 0) {
             return [
-                'status' => ResponseMessageEnum::CODE_NO_CONTENT,
-                'message' => __('acl::api.no_data'),
+                'status'      => ResponseMessageEnum::CODE_NO_CONTENT,
+                'message'     => __('acl::api.no_data'),
                 'permissions' => $permissions,
             ];
         }
 
         return [
-            'status' => ResponseMessageEnum::CODE_OK,
-            'message' => __('acl::api.success'),
+            'status'      => ResponseMessageEnum::CODE_OK,
+            'message'     => __('acl::api.success'),
             'permissions' => $permissions,
         ];
-    }
-
-    private function buildQuery(array $filters = [])
-    {
-        $query = Permission::query();
-        return $this->applyBaseRelationsWithFields($query, $filters);
     }
 }

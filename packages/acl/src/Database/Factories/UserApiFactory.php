@@ -4,11 +4,11 @@ namespace Workable\ACL\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Workable\ACL\Models\UserApi;
+use Workable\ACL\Models\User;
 
 class UserApiFactory extends Factory
 {
-    protected $model = UserApi::class;
+    protected $model = User::class;
 
     public function definition()
     {

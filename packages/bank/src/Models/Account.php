@@ -5,7 +5,7 @@ namespace Workable\Bank\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Workable\ACL\Models\UserApi;
+use Workable\ACL\Models\User;
 
 class Account extends Model
 {
@@ -25,6 +25,6 @@ class Account extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(UserApi::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

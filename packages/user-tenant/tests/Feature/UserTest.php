@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
-use Workable\UserTenant\Enums\UserEnum;
+use Workable\UserTenant\Enums\TenantEnum;
+use Workable\UserTenant\Models\Tenant;
 use Workable\UserTenant\Models\User;
 
 class UserTest extends TestCase
@@ -12,53 +14,81 @@ class UserTest extends TestCase
     protected $userData = [];
     protected $user = null;
     protected $storeUrl = null;
+    protected $formatData = [];
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->artisan('migrate');
+
+        $this->user = User::create([
+            'username' => 'thuannn',
+            'email' => 'thuannn@gmail.com',
+            'password' =>Hash::make('password'),
+            'phone'   => '0123456789',
+            'address' => 'Số 8 tôn thất thuyết, cầu giấy, hà nội'
+        ]);
+
+        $this->tenant = Tenant::create([
+            'name'    => 'Test Tenant 01',
+            'user_id' => 1,
+            'email'   => 'testtenant01@test.com',
+            'phone'   => '0103456789',
+            'status'  => TenantEnum::STATUS_ACTIVE,
+        ]);
+
+        $this->user->update([
+            'tenant_id' => $this->tenant->id,
+        ]);
+
+        $response = $this->postJson(route('api.auth.login'), [
+            'username' => 'thuannn',
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(200);
+
+        $this->token = $response->json('data.token');
+
+        $this->withHeader('Authorization', 'Bearer ' . $this->token);
+
+
         $this->userData = [
             'email'                 => 'email@email.com',
             'username'              => 'ThuanNguyen',
             'password'              => 'password',
-            'phone'                 => '0123456789',
+            'phone'                 => '0123456799',
             'address'               => 'Số 8 Thất Thuyết, Cầu Giấy, Hà Nội.',
             'password_confirmation' => 'password'
         ];
 
-        $this->user = User::create([
-            'email'                 => 'email01@email.com',
-            'username'              => 'ThuanNguyen01',
-            'password'              => 'password',
-            'phone'                 => '0223456789',
-            'address'               => 'Số 8 Thất Thuyết, Cầu Giấy, Hà Nội.',
-            'password_confirmation' => 'password',
-            'status'                => UserEnum::STATUS_ACTIVE,
-        ]);
-
         $this->storeUrl  = route('api.users.store');
         $this->updateUrl = route('api.users.update', $this->user->id);
+        $this->formatData = [
+            'id',
+            'username',
+            'email',
+            'phone',
+            'status',
+            'address',
+            'gender',
+            'birthday',
+            'avatar',
+            'tenant',
+            'created_by',
+            'updated_by',
+        ];
     }
 
     public function test_create_user()
     {
         $response = $this->postJson($this->storeUrl, $this->userData);
+
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    "user" => [
-                        'id',
-                        'username',
-                        'email',
-                        'phone',
-                        'status',
-                        'address',
-                        'gender',
-                        'birthday',
-                        'avatar',
-                        'tenant',
-                        'created_by',
-                        'updated_by',
-                    ]
+                    "user" => $this->formatData
                 ]
             ]);
 
@@ -161,16 +191,6 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function test_index_user_not_content()
-    {
-        $this->user->delete();
-        $response = $this->getJson(route('api.users.index'));
-        $response->assertStatus(200)
-            ->assertJsonFragment([
-                'code' => 1,
-                'data' => []
-            ]);
-    }
 
     public function test_show_user()
     {

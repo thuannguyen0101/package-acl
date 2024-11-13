@@ -1,8 +1,10 @@
 <?php
 
-namespace Workable\ACL\Http\Resources;
+namespace Workable\UserTenant\Http\Resources;
 
-class UserResource extends BaseResource
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class LoginResource extends JsonResource
 {
     protected $token = '';
 
@@ -21,7 +23,7 @@ class UserResource extends BaseResource
         return [
             "user"  => [
                 "id"       => $this->id,
-                "username" => $this->name ?? $this->username,
+                "username" => $this->username,
                 "email"    => $this->email,
             ],
             "token" => $this->getToken()

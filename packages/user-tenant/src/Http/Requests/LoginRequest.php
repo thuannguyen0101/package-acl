@@ -1,10 +1,10 @@
 <?php
 
-namespace Workable\ACL\Http\Requests;
+namespace Workable\UserTenant\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
-use Workable\ACL\Core\Traits\MessageValidateTrait;
+use Workable\UserTenant\Traits\MessageValidateTrait;
 use Workable\Support\Traits\ResponseHelperTrait;
 
 class LoginRequest extends FormRequest
@@ -30,7 +30,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'username' => ['required', 'alpha_num', 'string', 'min:3', 'max:255'],
-            'password' => ['required', 'string', 'min:8',],
+            'password' => ['required', 'string', 'min:8'],
         ];
     }
 
@@ -41,6 +41,6 @@ class LoginRequest extends FormRequest
             'password' => ['required', 'string', 'min:8'],
         ];
 
-        return $this->getMessage($rules);
+        return $this->getMessage($rules, "user-tenant::api");
     }
 }

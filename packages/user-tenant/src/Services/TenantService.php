@@ -2,6 +2,7 @@
 
 namespace Workable\UserTenant\Services;
 
+use Workable\Support\Traits\CheckPermissionTrait;
 use Workable\Support\Traits\FilterBuilderTrait;
 use Workable\UserTenant\Enums\ResponseEnum;
 use Workable\UserTenant\Enums\TenantEnum;
@@ -9,12 +10,13 @@ use Workable\UserTenant\Models\Tenant;
 
 class TenantService
 {
-    use FilterBuilderTrait;
+    use FilterBuilderTrait, CheckPermissionTrait;
 
     public function getTenants($request): array
     {
         $filter = $this->getFilterRequest($request);
-        $query  = Tenant::query();
+
+        $query = Tenant::query()->where('id', get_tenant_id());
 
         if (!empty($filter['with'])) {
             $query->with($filter['with']);
@@ -39,7 +41,8 @@ class TenantService
 
     public function getTenant($id): array
     {
-        $tenant = Tenant::query()->find($id);
+        $tenant = Tenant::query()
+            ->find($id);
 
         if (!$tenant) {
             return [
@@ -58,9 +61,23 @@ class TenantService
 
     public function createTenant($data): array
     {
-        $data['status'] = TenantEnum::STATUS_ACTIVE;
+        $user = $this->getUser();
+
+        if (isset($user->tenant_id)) {
+            return [
+                'status'  => ResponseEnum::CODE_OK,
+                'message' => __('user-tenant::api.tenants.conflict'),
+                'tenant'  => null,
+            ];
+        }
+
+        $data['status']   = TenantEnum::STATUS_ACTIVE;
+        $data['start_at'] = date("Y-m-d H:i:s");
+        $data['user_id']  = $user->id;
 
         $tenant = Tenant::query()->create($data);
+
+        $user->update(['tenant_id' => $tenant->id]);
 
         return [
             'status'  => ResponseEnum::CODE_OK,
@@ -71,7 +88,8 @@ class TenantService
 
     public function updateTenant($id, $data): array
     {
-        $tenant = Tenant::query()->find($id);
+        $tenant = Tenant::query()
+            ->find($id);
 
         if (!$tenant) {
             return [
@@ -95,7 +113,8 @@ class TenantService
 
     public function deleteTenant($id): array
     {
-        $tenant = Tenant::query()->find($id);
+        $tenant = Tenant::query()
+            ->find($id);
 
         if (!$tenant) {
             return [

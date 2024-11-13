@@ -23,7 +23,7 @@ class ACLServiceProvider extends ServiceProvider
         $this->setBasePath(base_path('packages' . DIRECTORY_SEPARATOR))
             ->setNamespace('acl')
             ->loadAndPublishConfigurations([
-                'jwt', 'permission', 'auth'
+                'permission', 'auth'
             ])
             ->loadAndPublishViews()
             ->loadMigrations()

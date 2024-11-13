@@ -15,6 +15,7 @@ class AddFieldToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('name')->nullable()->change();
+            $table->string('username')->unique()->after('name');
             $table->unsignedBigInteger('tenant_id')->nullable()->after('id');
             $table->string('phone')->unique()->nullable()->after('password');
             $table->smallInteger('status')->nullable()->after('phone');
@@ -25,12 +26,6 @@ class AddFieldToUsersTable extends Migration
             $table->unsignedBigInteger('created_by')->nullable()->after('avatar');
             $table->unsignedBigInteger('updated_by')->nullable()->after('created_by');
         });
-
-        if (!Schema::hasColumn('users', 'username')) {
-            Schema::table('users', function (Blueprint $table) {
-                $table->string('username')->unique()->after('name');
-            });
-        }
     }
 
     /**

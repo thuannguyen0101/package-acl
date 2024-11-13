@@ -6,10 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Workable\Support\Traits\ResponseHelperTrait;
 use Workable\UserTenant\Enums\TenantEnum;
+use Workable\UserTenant\Traits\MessageValidateTrait;
 
 class TenantRequest extends FormRequest
 {
-    use ResponseHelperTrait;
+    use ResponseHelperTrait, MessageValidateTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -29,14 +30,18 @@ class TenantRequest extends FormRequest
     public function rules(Request $request): array
     {
         return [
-            'name'       => ['required', 'string', 'min:3', 'max:255'],
-            'email'      => ['required', 'string', 'email', 'max:255', 'unique:tenants,email,' . request('id', 0)],
-            'phone'      => ['required', 'string', 'min:10', 'max:11', 'unique:tenants,phone,' . request('id', 0)],
-            'address'    => ['nullable', 'string'],
-            'gender'     => ['nullable', 'numeric', 'in:' . implode(',', array_keys(TenantEnum::GENDER))],
-            'birthday'   => ['nullable', 'date'],
-            'size'       => ['nullable', 'numeric'],
-            'citizen_id' => ['nullable', 'string'],
+            'name'           => ['required', 'string', 'min:3', 'max:255'],
+            'email'          => ['required', 'string', 'email', 'max:255', 'unique:tenants,email,' . request('id', 0)],
+            'phone'          => ['required', 'string', 'min:10', 'max:11', 'unique:tenants,phone,' . request('id', 0)],
+            'address'        => ['nullable', 'string'],
+            'full_name'      => ['nullable', 'string'],
+            'description'    => ['nullable', 'string'],
+            'business_phone' => ['nullable', 'min:10', 'max:11', 'unique:tenants,business_phone,' . request('id', 0)],
+            'meta_attribute' => ['nullable', 'string', 'max:5000'],
+            'gender'         => ['nullable', 'numeric', 'in:' . implode(',', array_keys(TenantEnum::GENDER))],
+            'birthday'       => ['nullable', 'date'],
+            'size'           => ['nullable', 'numeric'],
+            'citizen_id'     => ['nullable', 'string'],
         ];
     }
 
@@ -44,32 +49,20 @@ class TenantRequest extends FormRequest
     {
         return $this->getMessage(
             [
-                'name'       => ['required', 'string', 'min:3', 'max:255'],
-                'email'      => ['required', 'string', 'email', 'max:255', 'unique'],
-                'phone'      => ['required', 'string', 'min:10', 'max:11', 'unique'],
-                'address'    => ['string'],
-                'gender'     => ['numeric', 'in'],
-                'birthday'   => ['date'],
-                'size'       => ['numeric'],
-                'citizen_id' => ['string'],
-            ]
+                'name'           => ['required', 'string', 'min:3', 'max:255'],
+                'email'          => ['required', 'string', 'email', 'max:255', 'unique'],
+                'phone'          => ['required', 'string', 'min:10', 'max:11', 'unique'],
+                'address'        => ['string'],
+                'full_name'      => ['nullable', 'string'],
+                'description'    => ['nullable', 'string'],
+                'business_phone' => ['nullable', 'min:10', 'max:11', 'unique'],
+                'meta_attribute' => ['nullable', 'numeric', 'max:5000'],
+                'gender'         => ['numeric', 'in'],
+                'birthday'       => ['date'],
+                'size'           => ['numeric'],
+                'citizen_id'     => ['string'],
+            ],
+            'user-tenant::api'
         );
-    }
-
-    public function getMessage(array $validates = []): array
-    {
-        $messages = [];
-        foreach ($validates as $key => $rules) {
-            foreach ($rules as $v) {
-                $rule                      = explode(":", ($v ?? ''));
-                $messages["$key.$rule[0]"] = __('user-tenant::api.field_validates.' . $rule[0], [
-                    'attribute' => __('user-tenant::api.fields.' . $key),
-                    'type'      => __('user-tenant::api.fields.' . $v),
-                    'max'       => $rule[1] ?? 0,
-                    'min'       => $rule[1] ?? 0
-                ]);
-            }
-        }
-        return $messages;
     }
 }

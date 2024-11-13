@@ -1,10 +1,12 @@
 {
     "name": "workable/user-tenant",
-    "description": "A Laravel package for managing User Tenant",
+    "description": "A Laravel package for managing User Tenant, and JWT authentication.",
     "keywords": [
         "laravel",
         "User",
-        "Tenant"
+        "Tenant",
+        "jwt",
+        "auth"
     ],
     "type": "library",
     "license": "MIT",
@@ -15,7 +17,8 @@
         }
     ],
     "require": {
-        "php": "^7.4"
+        "php": "^7.4",
+        "tymon/jwt-auth": "^1.0"
     },
     "autoload": {
         "psr-4": {

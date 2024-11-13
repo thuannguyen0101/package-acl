@@ -2,11 +2,10 @@
 
 namespace Workable\ACL\Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Workable\ACL\Enums\UserEnum;
 
 class PermsTableSeeder extends Seeder
 {
@@ -30,14 +29,14 @@ class PermsTableSeeder extends Seeder
             Log::warning('Danh sách phân quyền trống.');
             return;
         }
-        $guardName = 'api';
+        $guardName = 'acl';
 
         foreach ($groupPerms as $group => $perms) {
             if (empty($perms)) {
                 continue;
             }
-            $newPermissions      = [];
-            $updatedPermissions  = [];
+            $newPermissions     = [];
+            $updatedPermissions = [];
 
             $existingPermissions = Permission::query()
                 ->whereIn('name', $perms)
@@ -51,6 +50,8 @@ class PermsTableSeeder extends Seeder
                         'group'      => $group,
                         'name'       => $perm,
                         'guard_name' => $guardName,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
                     ];
                 } elseif ($existingPermissions[$perm]->group !== $group) {
                     $updatedPermissions[] = $existingPermissions[$perm]->id;

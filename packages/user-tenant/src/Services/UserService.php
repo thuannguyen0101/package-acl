@@ -15,7 +15,8 @@ class UserService
     public function getUsers($request): array
     {
         $filter = $this->getFilterRequest($request);
-        $query  = User::query();
+        $query  = User::query()
+            ->where('tenant_id', get_tenant_id());
 
         if (!empty($filter['with'])) {
             $query->with($filter['with']);
@@ -40,7 +41,8 @@ class UserService
 
     public function getUser($id): array
     {
-        $user = User::query()->find($id);
+        $user = User::query()
+            ->where('tenant_id', get_tenant_id())->find($id);
 
         if (!$user) {
             return [
@@ -57,11 +59,16 @@ class UserService
         ];
     }
 
-    public function createUser($data): array
+    public function createUser($data, bool $hasTenantId = false): array
     {
         $data['status']   = UserEnum::STATUS_ACTIVE;
         $data['password'] = Hash::make($data['password']);
-        $user             = User::query()->create($data);
+
+        if ($hasTenantId) {
+            $data['tenant_id'] = get_tenant_id();
+        }
+
+        $user = User::query()->create($data);
 
         return [
             'status'  => ResponseEnum::CODE_OK,
@@ -72,7 +79,9 @@ class UserService
 
     public function updateUser($id, $data): array
     {
-        $user = User::query()->find($id);
+        $user = User::query()
+            ->where('tenant_id', get_tenant_id())
+            ->find($id);
 
         if (!$user) {
             return [
@@ -97,7 +106,9 @@ class UserService
 
     public function deleteUser($id): array
     {
-        $user = User::query()->find($id);
+        $user = User::query()
+            ->where('tenant_id', get_tenant_id())
+            ->find($id);
 
         if (!$user) {
             return [

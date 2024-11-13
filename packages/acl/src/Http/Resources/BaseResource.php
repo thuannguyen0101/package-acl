@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 abstract class BaseResource extends JsonResource
 {
     protected $message = '';
+
     /**
      * Chuyển đổi resource thành một mảng dữ liệu có thể trả về.
      *
@@ -19,17 +20,6 @@ abstract class BaseResource extends JsonResource
         return parent::toArray($request);
     }
 
-    public function setMessage(string $message = '')
-    {
-        $this->message = $message;
-    }
-
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-
     /**
      * Phương thức trả về metadata cho response.
      *
@@ -41,7 +31,7 @@ abstract class BaseResource extends JsonResource
         return
             [
                 'success' => true,
-                'message' => $this->getMessage() ?? "success",
+                'message' => "success",
             ];
     }
 
@@ -52,19 +42,12 @@ abstract class BaseResource extends JsonResource
      * @param mixed $data
      * @return array
      */
-    public static function handleError(string $message,array $data = []): array
+    public static function handleError(string $message, array $data = []): array
     {
         return [
             'success' => false,
             'message' => $message,
             'errors'  => $data,
-        ];
-    }
-    public static function handleDelete(string $message): array
-    {
-        return [
-            'success' => true,
-            'message' => $message,
         ];
     }
 }

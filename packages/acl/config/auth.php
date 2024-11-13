@@ -1,17 +1,21 @@
 <?php
 return [
     'guards' => [
-        'jwt-role-permission' => [
-            'driver' => 'jwt',
-            'provider' => 'users_api',
-            'hash' => false,
+        'acl' => [
+            'driver'   => 'session',
+            'provider' => 'acl_users',
         ],
     ],
 
     'providers' => [
-        'users_api' => [
+        'acl_users' => [
             'driver' => 'eloquent',
-            'model' => \Workable\ACL\Models\UserApi::class,
+            'model'  => Workable\ACL\Models\User::class,
         ],
     ],
+
+    'middleware' => [
+        'jwt_auth_check',
+        'tenant_id_check',
+    ]
 ];

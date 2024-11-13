@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'api',
+        'guard'     => 'api',
         'passwords' => 'users',
     ],
 
@@ -37,13 +37,17 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
+            'driver'   => 'session',
             'provider' => 'users',
         ],
         'api' => [
-            'driver' => 'jwt',
+            'driver'   => 'jwt',
             'provider' => 'users',
-            'hash' => false,
+            'hash'     => false,
+        ],
+        'acl' => [
+            'driver'   => 'session',
+            'provider' => 'acl_users',
         ],
     ],
 
@@ -65,11 +69,16 @@ return [
     */
 
     'providers' => [
+
         'users' => [
             'driver' => 'eloquent',
-            'model' => \Workable\ACL\Models\UserApi::class,
+            'model'  => \Workable\UserTenant\Models\User::class,
         ],
 
+        'acl_users' => [
+            'driver' => 'eloquent',
+            'model'  => \Workable\ACL\Models\User::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
@@ -94,8 +103,8 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => 'password_resets',
-            'expire' => 60,
+            'table'    => 'password_resets',
+            'expire'   => 60,
             'throttle' => 60,
         ],
     ],

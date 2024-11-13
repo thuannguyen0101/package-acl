@@ -2,11 +2,9 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
-use Workable\ACL\Models\UserApi;
 
 class PermissionTest extends TestCase
 {
@@ -22,22 +20,14 @@ class PermissionTest extends TestCase
         DB::setDefaultConnection('sqlite');
 
         $this->artisan('db:seed', ['--class' => 'Workable\\ACL\\Database\\Seeders\\PermsSeeder']);
+        $this->artisan('db:seed', ['--class' => 'Workable\\ACL\\Database\\Seeders\\UsersSeeder']);
         $this->artisan('migrate');
 
-        $permission = Permission::all()->pluck('id')->toArray();
-
-        $user = $this->admin = UserApi::create([
-            'username' => 'thuannn',
-            'email'    => 'thuannn@gmail.com',
-            'password' => Hash::make('password'),
-        ]);
-
-        $user->givePermissionTo($permission);
-
         $response = $this->postJson(route('api.auth.login'), [
-            'username' => $user->username,
-            'password' => 'password',
+            'username' => 'thuannn',
+            'password' => 'password123',
         ]);
+
         $response->assertStatus(200);
 
         $this->token = $response->json('data.token');

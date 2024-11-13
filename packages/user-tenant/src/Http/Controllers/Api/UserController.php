@@ -59,7 +59,7 @@ class UserController extends Controller
             'status' => $status,
             'message' => $message,
             'user' => $user,
-            ) = $this->userService->createUser($request->all());
+            ) = $this->userService->createUser($request->all(), true);
 
         return $this->baseResponse($status, $message, $user);
     }

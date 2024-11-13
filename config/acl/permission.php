@@ -158,4 +158,8 @@ return [
 
         'store' => 'default',
     ],
+
+    'defaults' => [
+        'guard' => 'acl',
+    ],
 ];

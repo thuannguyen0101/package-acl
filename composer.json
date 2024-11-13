@@ -32,7 +32,10 @@
             "Workable\\ACL\\": "packages/acl/src/",
             "Workable\\Bank\\": "packages/back/src/",
             "Workable\\UserTenant\\": "packages/user-tenant/src/"
-        }
+        },
+        "files": [
+            "packages/user-tenant/helpers/function.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

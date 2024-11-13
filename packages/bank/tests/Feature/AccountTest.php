@@ -4,7 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
-use Workable\ACL\Models\UserApi;
+use Workable\ACL\Models\User;
 use Workable\Bank\Enums\AccountEnum;
 use Workable\Bank\Models\Account;
 
@@ -23,13 +23,13 @@ class AccountTest extends TestCase
         parent::setUp();
         $this->artisan('db:seed', ['--class' => 'Workable\\Bank\\Database\\Seeders\\PermissionBankSeeder']);
 
-        $this->user = UserApi::create([
+        $this->user = User::create([
             'name'     => 'test case 1',
             'email'    => 'test@test.com',
             'password' => Hash::make('password'),
         ]);
 
-        $this->admin = UserApi::create([
+        $this->admin = User::create([
             'name'     => 'test case 1',
             'email'    => 'test@admin.com',
             'password' => Hash::make('password'),

@@ -6,10 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Workable\Support\Traits\ResponseHelperTrait;
 use Workable\UserTenant\Enums\TenantEnum;
+use Workable\UserTenant\Traits\MessageValidateTrait;
 
 class UserRequest extends FormRequest
 {
-    use ResponseHelperTrait;
+    use ResponseHelperTrait, MessageValidateTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -65,24 +66,6 @@ class UserRequest extends FormRequest
             $rules['password'] = ['nullable', 'string', 'min:8', 'confirmed'];
         }
 
-        return $this->getMessage($rules);
-    }
-
-    public function getMessage(array $validates = []): array
-    {
-        $messages = [];
-
-        foreach ($validates as $key => $rules) {
-            foreach ($rules as $v) {
-                $rule                      = explode(":", ($v ?? ''));
-                $messages["$key.$rule[0]"] = __('user-tenant::api.field_validates.' . $rule[0], [
-                    'attribute' => __('user-tenant::api.fields.' . $key),
-                    'type'      => __('user-tenant::api.fields.' . $v),
-                    'max'       => $rule[1] ?? 0,
-                    'min'       => $rule[1] ?? 0
-                ]);
-            }
-        }
-        return $messages;
+        return $this->getMessage($rules, 'user-tenant::api');
     }
 }

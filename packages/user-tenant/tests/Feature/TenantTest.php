@@ -1,21 +1,45 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use Workable\UserTenant\Enums\TenantEnum;
 use Workable\UserTenant\Models\Tenant;
+use Workable\UserTenant\Models\User;
 
 class TenantTest extends TestCase
 {
     use RefreshDatabase;
 
     protected $tenantData = [];
+    protected $user = null;
     protected $tenant = [];
     protected $storeUrl = null;
+    protected $formatData = [];
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->artisan('migrate');
+
+        $this->user = User::query()->create([
+            'username' => 'thuannn',
+            'email'    => 'thuannn@gmail.com',
+            'password' => Hash::make('password'),
+            'phone'    => '0123456789',
+            'address'  => 'Số 8 tôn thất thuyết, cầu giấy, hà nội'
+        ]);
+
+        $response = $this->postJson(route('api.auth.login'), [
+            'username' => 'thuannn',
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(200);
+
+        $this->token = $response->json('data.token');
+
+        $this->withHeader('Authorization', 'Bearer ' . $this->token);
 
         $this->tenantData = [
             'name'  => 'Test Tenant',
@@ -24,21 +48,33 @@ class TenantTest extends TestCase
         ];
 
         $this->tenant = Tenant::create([
-            'name'   => 'Test Tenant 01',
-            'email'  => 'testtenant01@test.com',
-            'phone'  => '0103456789',
-            'status' => TenantEnum::STATUS_ACTIVE,
+            'name'    => 'Test Tenant 01',
+            'user_id' => $this->user,
+            'email'   => 'testtenant01@test.com',
+            'phone'   => '0103456789',
+            'status'  => TenantEnum::STATUS_ACTIVE,
         ]);
-
-//        $this->tenant = Tenant::create([
-//            'name'   => 'Test Tenant 02',
-//            'email'  => 'testtenant02@test.com',
-//            'phone'  => '0203456789',
-//            'status' => TenantEnum::STATUS_ACTIVE,
-//        ]);
 
         $this->storeUrl  = route('api.tenants.store');
         $this->updateUrl = route('api.tenants.update', $this->tenant->id);
+
+        $this->formatData = [
+            'id',
+            'name',
+            'email',
+            'phone',
+            'status',
+            'address',
+            'full_name',
+            'description',
+            'business_phone',
+            'meta_attribute',
+            'gender',
+            'birthday',
+            'citizen_id',
+            'start_at',
+            'expiry_at',
+        ];
     }
 
     public function test_create_tenant()
@@ -47,19 +83,7 @@ class TenantTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    "tenant" => [
-                        'name',
-                        'email',
-                        'phone',
-                        'status',
-                        'address',
-                        'gender',
-                        'birthday',
-                        'size',
-                        'citizen_id',
-                        'start_at',
-                        'expiry_at'
-                    ]
+                    "tenant" => $this->formatData
                 ]
             ]);
     }
@@ -71,6 +95,9 @@ class TenantTest extends TestCase
 
     public function test_update_tenant()
     {
+        $this->user->update([
+            'tenant_id' => $this->tenant->id,
+        ]);
         $data = [
             'name'  => 'Test Tenant',
             'email' => 'testtenant@test.com',
@@ -82,30 +109,24 @@ class TenantTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    "tenant" => [
-                        'name',
-                        'email',
-                        'phone',
-                        'status',
-                        'address',
-                        'gender',
-                        'birthday',
-                        'size',
-                        'citizen_id',
-                        'start_at',
-                        'expiry_at'
-                    ]
+                    "tenant" => $this->formatData
                 ]
             ]);
     }
 
     public function test_update_tenant_failed()
     {
+        $this->user->update([
+            'tenant_id' => $this->tenant->id,
+        ]);
         $this->testValidate($this->updateUrl, "PUT");
     }
 
     public function test_update_tenant_not_found()
     {
+        $this->user->update([
+            'tenant_id' => $this->tenant->id,
+        ]);
         $response = $this->putJson(route('api.tenants.update', 10), $this->tenantData);
 
         $response->assertStatus(200)
@@ -116,6 +137,9 @@ class TenantTest extends TestCase
 
     public function test_delete_tenant()
     {
+        $this->user->update([
+            'tenant_id' => $this->tenant->id,
+        ]);
         $response = $this->deleteJson($this->updateUrl);
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -125,6 +149,9 @@ class TenantTest extends TestCase
 
     public function test_delete_tenant_not_found()
     {
+        $this->user->update([
+            'tenant_id' => $this->tenant->id,
+        ]);
         $response = $this->deleteJson(route('api.tenants.destroy', 10));
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -135,6 +162,9 @@ class TenantTest extends TestCase
 
     public function test_list_tenants()
     {
+        $this->user->update([
+            'tenant_id' => $this->tenant->id,
+        ]);
         $response = $this->getJson(route('api.tenants.index'));
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -161,45 +191,27 @@ class TenantTest extends TestCase
             ]);
     }
 
-    public function test_list_not_content_tenants()
-    {
-        $this->tenant->delete();
-        $response = $this->getJson(route('api.tenants.index'));
-        $response->assertStatus(200)
-            ->assertJsonFragment([
-                'code' => 1,
-                'data' => []
-            ]);
-
-    }
-
     public function test_show_tenant()
     {
+        $this->user->update([
+            'tenant_id' => $this->tenant->id,
+        ]);
         $response = $this->getJson($this->updateUrl);
         $response->assertStatus(200)
             ->assertJsonFragment([
                 'code' => 1,
             ])->assertJsonStructure([
                 'data' => [
-                    "tenant" => [
-                        'name',
-                        'email',
-                        'phone',
-                        'status',
-                        'address',
-                        'gender',
-                        'birthday',
-                        'size',
-                        'citizen_id',
-                        'start_at',
-                        'expiry_at'
-                    ]
+                    "tenant" => $this->formatData
                 ]
             ]);
     }
 
     public function test_show_tenant_not_found()
     {
+        $this->user->update([
+            'tenant_id' => $this->tenant->id,
+        ]);
         $response = $this->getJson(route('api.tenants.show', 10));
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -260,14 +272,17 @@ class TenantTest extends TestCase
             ],
             [
                 'data'           => [
-                    'name'       => '1',
-                    'email'      => '1',
-                    'phone'      => '1',
-                    'address'    => 1,
-                    'gender'     => 'male',
-                    'birthday'   => 'female',
-                    'size'       => 'test',
-                    'citizen_id' => 1
+                    'name'           => 1,
+                    'email'          => 1,
+                    'phone'          => 1,
+                    'address'        => 1,
+                    'full_name'      => 1,
+                    'description'    => 1,
+                    'business_phone' => 1,
+                    'meta_attribute' => 1,
+                    'gender'         => 'a',
+                    'birthday'       => 'a',
+                    'citizen_id'     => 1,
                 ],
                 'expectedErrors' =>
                     [
@@ -275,10 +290,13 @@ class TenantTest extends TestCase
                         'email',
                         'phone',
                         'address',
+                        'full_name',
+                        'description',
+                        'business_phone',
+                        'meta_attribute',
                         'gender',
                         'birthday',
-                        'size',
-                        'citizen_id'
+                        'citizen_id',
                     ]
             ]
         ];
