@@ -16,15 +16,16 @@ class RoleTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        DB::setDefaultConnection('sqlite');
 
         $this->artisan('migrate');
+
+        $this->artisan('db:seed', ['--class' => 'Workable\\UserTenant\\Database\\Seeders\\UserSeeder']);
         $this->artisan('db:seed', ['--class' => 'Workable\\ACL\\Database\\Seeders\\PermsSeeder']);
-        $this->artisan('db:seed', ['--class' => 'Workable\\ACL\\Database\\Seeders\\UsersSeeder']);
+        $this->artisan('db:seed', ['--class' => 'Workable\\ACL\\Database\\Seeders\\UsersPermsSeeder']);
 
         $response = $this->postJson(route('api.auth.login'), [
             'username' => 'thuannn',
-            'password' => 'password123',
+            'password' => 'password',
         ]);
 
         $response->assertStatus(200);
@@ -35,6 +36,7 @@ class RoleTest extends TestCase
 
         $this->role = Role::create([
             'name' => 'SuperAdmin',
+            'tenant_id' => 1
         ]);
 
         $this->permission = Permission::create([

@@ -94,11 +94,11 @@ class AuthTest extends TestCase
     public function test_register()
     {
         $data     = [
-            'username'              => 'thuannn01',
-            'email'                 => 'thuannn01@gmail.com',
+            'username'              => 'thuannn0101',
+            'email'                 => 'thuannn01@test.com',
             'password'              => 'password',
-            'phone'                 => '0223456789',
-            'address'               => 'Số 9 tôn thất thuyết, cầu giấy, hà nội',
+            'phone'                 => '0222456789',
+            'address'               => 'Số 09 tôn thất thuyết, cầu giấy, hà nội',
             'password_confirmation' => 'password'
         ];
         $response = $this->postJson(route('api.auth.register'), $data);

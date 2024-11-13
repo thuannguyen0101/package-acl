@@ -19,7 +19,8 @@ class RoleService
     {
         $filters = $this->getFilterRequest($searches);
 
-        $query = Role::query();
+        $query = Role::query()
+            ->where('tenant_id', get_tenant_id());
 
         if (!empty($filters['with'])) {
             $query->with($filters['with']);
@@ -44,7 +45,9 @@ class RoleService
 
     public function getRole($id)
     {
-        $role = Role::query()->find($id);
+        $role = Role::query()
+            ->where('tenant_id', get_tenant_id())
+            ->find($id);
 
         if (!$role) {
             return $this->notFoundResponseDefault();
@@ -78,6 +81,7 @@ class RoleService
         $role = Role::create([
             'name'       => $data['name'],
             'guard_name' => 'api',
+            'tenant_id'  => get_tenant_id()
         ]);
 
         if (!empty($permissions)) {
@@ -93,7 +97,9 @@ class RoleService
 
     public function updateRole($id, $data): array
     {
-        $role = Role::query()->find($id);
+        $role = Role::query()
+            ->where('tenant_id', get_tenant_id())
+            ->find($id);
 
         if (!$role) {
             return $this->notFoundResponseDefault();
@@ -143,7 +149,9 @@ class RoleService
 
     public function deleteRole($id)
     {
-        $role = Role::query()->find($id);
+        $role = Role::query()
+            ->where('tenant_id', get_tenant_id())
+            ->find($id);
 
         if (!$role) {
             return $this->notFoundResponseDefault();
@@ -161,7 +169,9 @@ class RoleService
 
     public function assignRoleForModel(int $userId, int $roleId): array
     {
-        $user = User::query()->find($userId);
+        $user = User::query()
+            ->where('tenant_id', get_tenant_id())
+            ->find($userId);
 
         if (!$user) {
             return [
@@ -171,7 +181,9 @@ class RoleService
             ];
         }
 
-        $role = Role::query()->find($roleId);
+        $role = Role::query()
+            ->where('tenant_id', get_tenant_id())
+            ->find($roleId);
 
         if (!$role) {
             return [

@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -17,15 +16,16 @@ class PermissionTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        DB::setDefaultConnection('sqlite');
 
-        $this->artisan('db:seed', ['--class' => 'Workable\\ACL\\Database\\Seeders\\PermsSeeder']);
-        $this->artisan('db:seed', ['--class' => 'Workable\\ACL\\Database\\Seeders\\UsersSeeder']);
         $this->artisan('migrate');
+
+        $this->artisan('db:seed', ['--class' => 'Workable\\UserTenant\\Database\\Seeders\\UserSeeder']);
+        $this->artisan('db:seed', ['--class' => 'Workable\\ACL\\Database\\Seeders\\PermsSeeder']);
+        $this->artisan('db:seed', ['--class' => 'Workable\\ACL\\Database\\Seeders\\UsersPermsSeeder']);
 
         $response = $this->postJson(route('api.auth.login'), [
             'username' => 'thuannn',
-            'password' => 'password123',
+            'password' => 'password',
         ]);
 
         $response->assertStatus(200);
