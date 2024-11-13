@@ -28,11 +28,12 @@ class TenantCollection extends ResourceCollection
                 'birthday'       => TenantEnum::convertDate($item->birthday),
                 'size'           => TenantEnum::getSize($item->size),
                 'gender'         => TenantEnum::getGender($item->gender),
-                'meta_attribute' => TenantEnum::getMetaAttribute($item->meta_attribute),
                 'status'         => TenantEnum::getStatus($item->status),
                 'start_at'       => $item->start_at,
                 'expiry_at'      => $item->expiry_at
             ];
+
+            $dataRes = array_merge($dataRes, TenantEnum::getMetaAttribute($item->meta_attribute));
 
             if (!empty($relations['with'])) {
                 foreach ($relations['with'] as $relation) {

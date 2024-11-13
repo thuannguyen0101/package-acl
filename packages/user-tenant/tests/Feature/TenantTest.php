@@ -42,19 +42,31 @@ class TenantTest extends TestCase
         $this->withHeader('Authorization', 'Bearer ' . $this->token);
 
         $this->tenantData = [
-            'name'  => 'Test Tenant',
-            'email' => 'testtenant@test.com',
-            'phone' => '0123456789',
-            'full_name'  => 'Công ty VNP GROUP'
+            'name'           => 'Test Tenant',
+            'email'          => 'testtenant@test.com',
+            'phone'          => '0123456789',
+            'full_name'      => 'Công ty VNP GROUP',
+            'address'        => 'Số 8 tôn thất thuyết, cầu giấy, hà nội',
+            'description'    => 'Gitignore là gì ? Tại sao nó lại rất quan trọng trong',
+            'business_phone' => '0101010101',
+            'gender'         => 1,
+            'birthday'       => '2013/01/01',
+            'size'           => 2,
+            'citizen_id'     => '060202020001',
+            "established"    => '2017',
+            "work_day"       => 1,
+            "uniform"        => '1001+ Mẫu Áo đồng phục công ty',
+            "skype"          => '0929427881',
+            "position"       => 1,
         ];
 
         $this->tenant = Tenant::create([
-            'name'    => 'Test Tenant 01',
-            'user_id' => $this->user,
-            'email'   => 'testtenant01@test.com',
-            'phone'   => '0103456789',
-            'status'  => TenantEnum::STATUS_ACTIVE,
-            'full_name'  => 'Công ty VNP GROUP'
+            'name'      => 'Test Tenant 01',
+            'user_id'   => $this->user,
+            'email'     => 'testtenant01@test.com',
+            'phone'     => '0103456789',
+            'status'    => TenantEnum::STATUS_ACTIVE,
+            'full_name' => 'Công ty VNP GROUP'
         ]);
 
         $this->storeUrl  = route('api.tenants.store');
@@ -70,7 +82,6 @@ class TenantTest extends TestCase
             'full_name',
             'description',
             'business_phone',
-            'meta_attribute',
             'gender',
             'birthday',
             'citizen_id',
@@ -88,6 +99,8 @@ class TenantTest extends TestCase
                     "tenant" => $this->formatData
                 ]
             ]);
+
+        dd($response->json('data.tenant'));
     }
 
     public function test_create_tenant_failed()
@@ -101,10 +114,22 @@ class TenantTest extends TestCase
             'tenant_id' => $this->tenant->id,
         ]);
         $data = [
-            'name'  => 'Test Tenant',
-            'email' => 'testtenant@test.com',
-            'phone' => '0999999999',
-            'full_name'  => 'Công ty VNP GROUP'
+            'name'           => 'Test Tenant',
+            'email'          => 'testtenant@test.com',
+            'phone'          => '0999999999',
+            'full_name'      => 'Công ty VNP GROUP',
+            'address'        => 'Số 8 tôn thất thuyết, cầu giấy, hà nội',
+            'description'    => 'Gitignore là gì ? Tại sao nó lại rất quan trọng trong',
+            'business_phone' => '0101010101',
+            'gender'         => 1,
+            'birthday'       => '2013/01/01',
+            'size'           => 2,
+            'citizen_id'     => '060202020001',
+            "established"    => '2017',
+            "work_day"       => 1,
+            "uniform"        => '1001+ Mẫu Áo đồng phục công ty',
+            "skype"          => '0929427881',
+            "position"       => 1,
         ];
 
         $response = $this->putJson($this->updateUrl, $data);
@@ -275,9 +300,9 @@ class TenantTest extends TestCase
             // case sai dữ liệu
             [
                 'data'           => [
-                    'name'  => '1',
-                    'email' => '1',
-                    'phone' => '1',
+                    'name'      => '1',
+                    'email'     => '1',
+                    'phone'     => '1',
                     'full_name' => 0,
                 ],
                 'expectedErrors' =>
@@ -297,10 +322,15 @@ class TenantTest extends TestCase
                     'full_name'      => 1,
                     'description'    => 1,
                     'business_phone' => 1,
-                    'meta_attribute' => 1,
                     'gender'         => 'a',
                     'birthday'       => 'a',
+                    'size'           => 'a',
                     'citizen_id'     => 1,
+                    "established"    => 'a',
+                    "work_day"       => 'a',
+                    "uniform"        => 1,
+                    "skype"          => 1,
+                    "position"       => 'a',
                 ],
                 'expectedErrors' =>
                     [
@@ -311,10 +341,15 @@ class TenantTest extends TestCase
                         'full_name',
                         'description',
                         'business_phone',
-                        'meta_attribute',
                         'gender',
                         'birthday',
+                        'size',
                         'citizen_id',
+                        "established",
+                        "work_day",
+                        "uniform",
+                        "skype",
+                        "position",
                     ]
             ]
         ];

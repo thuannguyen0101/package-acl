@@ -46,7 +46,14 @@ return [
         'full_name'      => 'tên người dùng',
         'description'    => 'mô tả',
         'business_phone' => 'số điện thoại công ty',
-        'meta_attribute' => 'meta attribute'
+        'meta_attribute' => 'meta attribute',
+        "established"    => 'năm thành lập',
+        "work_day"       => 'ngày làm việc',
+        "uniform"        => 'đồng phục',
+        "skype"          => 'skype',
+        "position"       => 'chức vụ',
+
+
     ],
 
     'status_text' => [
@@ -73,15 +80,24 @@ return [
     ],
 
     'work_day_text' => [
-        "monday_friday" => "Thứ hai - Thứ sáu",
+        "monday_friday"         => "Thứ hai - Thứ sáu",
         "monday_friday_morning" => "Thứ Hai - Sáng thứ Sáu",
-        "monday-saturday" => "Thứ Hai - Thứ Bảy",
-        "full_week" => "Cả tuần",
-        "flexible" => "Linh hoạt",
-        "other" => "Khác",
+        "monday-saturday"       => "Thứ Hai - Thứ Bảy",
+        "full_week"             => "Cả tuần",
+        "flexible"              => "Linh hoạt",
+        "other"                 => "Khác",
     ],
 
-
+    'level_text' => [
+        "staff"           => 'Nhân viên',
+        "team_leader"     => 'Trưởng nhóm',
+        "deputy_manager"  => "Phó Giám đốc",
+        "manager"         => "Người quản lý",
+        "deputy_director" => "Phó Giám đốc",
+        "director"        => "Giám đốc",
+        "ceo"             => "Giám đốc điều hành",
+        "other"           => "Khác",
+    ],
 
     'auth' => [
         'unauthorized'  => 'Bạn không có quyền truy cập vào tài nguyên này. Vui lòng xác thực trước khi tiếp tục.',

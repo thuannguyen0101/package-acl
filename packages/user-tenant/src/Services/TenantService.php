@@ -70,10 +70,19 @@ class TenantService
             ];
         }
 
-        $data['status']   = TenantEnum::STATUS_ACTIVE;
+        $data['status'] = TenantEnum::STATUS_ACTIVE;
+
+        foreach (array_keys(TenantEnum::META_ATTR) as $key) {
+            if (isset($data[$key])) {
+                $data['meta_attribute'][$key] = $data[$key];
+                unset($data[$key]);
+            }
+        }
+
+        $data['meta_attribute'] = json_encode($data['meta_attribute']);
+
         $data['start_at'] = date("Y-m-d H:i:s");
         $data['user_id']  = $user->id;
-
 
         $tenant = Tenant::query()->create($data);
 
@@ -98,6 +107,16 @@ class TenantService
                 'tenant'  => $tenant,
             ];
         }
+
+        foreach (array_keys(TenantEnum::META_ATTR) as $key) {
+            if (isset($data[$key])) {
+                $data['meta_attribute'][$key] = $data[$key];
+                unset($data[$key]);
+            }
+        }
+
+        $data['meta_attribute'] = json_encode($data['meta_attribute']);
+
         $tenant->fill($data);
 
         if ($tenant->isDirty()) {

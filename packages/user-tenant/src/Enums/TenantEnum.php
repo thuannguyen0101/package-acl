@@ -2,6 +2,8 @@
 
 namespace Workable\UserTenant\Enums;
 
+use Carbon\Carbon;
+
 class TenantEnum
 {
     const MALE   = '1';
@@ -45,14 +47,22 @@ class TenantEnum
     ];
 
     const LEVEL_TEXT_ARRAY = [
-        1  => "Staff",
-        2  => "Team Leader",
-        3  => "Deputy Manager",
-        4  => "Manager",
-        5  => "Deputy Director",
-        6  => "Director",
-        7  => "CEO",
-        10 => "Other",
+        1  => "staff",
+        2  => "team_leader",
+        3  => "deputy_manager",
+        4  => "manager",
+        5  => "deputy_director",
+        6  => "director",
+        7  => "ceo",
+        10 => "other",
+    ];
+
+    const META_ATTR = [
+        "established" => null,
+        "work_day"    => 'getWordDay',
+        "uniform"     => null,
+        "skype"       => null,
+        "position"    => 'getLevel',
     ];
 
     public static function getStatus($status = null): array
@@ -77,30 +87,35 @@ class TenantEnum
 
     public static function getLevel($level = null): array
     {
-        return self::getDataEnum($level, self::LEVEL_TEXT_ARRAY, "user-tenant::api.work_day_text");
+        return self::getDataEnum($level, self::LEVEL_TEXT_ARRAY, "user-tenant::api.level_text");
     }
 
     public static function getMetaAttribute(string $metaAttribute = null): array
     {
+        $data = [];
         if (!isset($metaAttribute)) {
-            return [
-                "established" => null,
-                "work_day"    => null,
-                "uniform"     => null,
-                "skype"       => null,
-                "position"    => null,
-            ];
+            foreach (array_keys(self::META_ATTR) as $key) {
+                $data[$key] = null;
+            }
+            return $data;
+
         }
 
         $metaAttribute = json_decode($metaAttribute, true);
 
-        return [
-            "established" => $metaAttribute['established'] ?? null,
-            "work_day"    => self::getWordDay($metaAttribute['work_day']),
-            "uniform"     => $metaAttribute['uniform'],
-            "skype"       => $metaAttribute['skype'],
-            "position"    => self::getLevel($metaAttribute['position']),
-        ];
+        foreach (self::META_ATTR as $key => $value) {
+            $data[$key] = null;
+            if (isset($metaAttribute[$key])) {
+                $data[$key] = $metaAttribute[$key];
+                if (method_exists(self::class, $value)) {
+                    // Gọi hàm động
+                    $data[$key] = self::$value($metaAttribute[$key]);
+                }
+            }
+
+        }
+
+        return $data;
     }
 
     public static function getDataEnum($field = null, $arrayEnum = null, $keyLang = null): array
@@ -120,9 +135,9 @@ class TenantEnum
         return $data;
     }
 
-    public static function convertDate($date)
+    public static function convertDate($date): ?string
     {
-        return isset($date) ? $date->format('d-m-Y') : null;
+        return isset($date) ? Carbon::parse($date)->format('d-m-Y') : null;
     }
 
 }
