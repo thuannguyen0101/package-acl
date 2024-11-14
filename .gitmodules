@@ -1,6 +1,6 @@
-; [submodule "platform/core"]
-; 	path = platform/core
-; 	url = git@gitlab.com:workable_packages/platform.git
+[submodule "platform/core"]
+	path = platform/core
+	url = git@gitlab.com:workable_packages/platform.git
 
 [submodule "packages/user-tenant"]
 	path = packages/user-tenant
