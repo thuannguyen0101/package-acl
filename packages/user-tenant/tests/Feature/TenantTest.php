@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use Workable\UserTenant\Enums\TenantEnum;
@@ -9,7 +9,7 @@ use Workable\UserTenant\Models\User;
 
 class TenantTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected $tenantData = [];
     protected $user = null;
@@ -19,6 +19,7 @@ class TenantTest extends TestCase
 
     protected function setUp(): void
     {
+
         parent::setUp();
         $this->artisan('migrate');
 
@@ -62,7 +63,7 @@ class TenantTest extends TestCase
 
         $this->tenant = Tenant::create([
             'name'      => 'Test Tenant 01',
-            'user_id'   => $this->user,
+            'user_id'   => $this->user->id,
             'email'     => 'testtenant01@test.com',
             'phone'     => '0103456789',
             'status'    => TenantEnum::STATUS_ACTIVE,
@@ -99,8 +100,6 @@ class TenantTest extends TestCase
                     "tenant" => $this->formatData
                 ]
             ]);
-
-        dd($response->json('data.tenant'));
     }
 
     public function test_create_tenant_failed()
