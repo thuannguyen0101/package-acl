@@ -29,7 +29,7 @@ class LoginRequest extends FormRequest
     public function rules(Request $request)
     {
         return [
-            'username' => ['required', 'alpha_num', 'string', 'min:3', 'max:255'],
+            'login'    => ['required', 'alpha_num', 'string', 'min:3', 'max:255'],
             'password' => ['required', 'string', 'min:8'],
         ];
     }
@@ -37,7 +37,7 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         $rules = [
-            'username' => ['required', 'alpha_num', 'string', 'min:3', 'max:255'],
+            'login'    => ['required', 'alpha_num', 'string', 'min:3', 'max:255'],
             'password' => ['required', 'string', 'min:8'],
         ];
 

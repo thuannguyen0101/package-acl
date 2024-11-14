@@ -23,7 +23,7 @@ class AuthTest extends TestCase
     public function test_login()
     {
         $response = $this->postJson(route('api.auth.login'), [
-            'username' => 'thuannn',
+            'login' => 'thuannn',
             'password' => 'password',
         ]);
 
@@ -47,7 +47,7 @@ class AuthTest extends TestCase
     public function test_login_failed()
     {
         $response = $this->postJson(route('api.auth.login'), [
-            'username' => 'thuannn',
+            'login' => 'thuannn',
             'password' => 'password123',
         ]);
 
@@ -64,11 +64,11 @@ class AuthTest extends TestCase
                 'data'           => [],
                 'expectedErrors' =>
                     [
-                        'username', 'password',
+                        'login', 'password',
                     ]
             ],
             [
-                'data'           => ['username' => 'thuannn'],
+                'data'           => ['login' => 'thuannn'],
                 'expectedErrors' =>
                     [
                         'password',
@@ -78,7 +78,7 @@ class AuthTest extends TestCase
                 'data'           => ['password' => 'password123'],
                 'expectedErrors' =>
                     [
-                        'username'
+                        'login'
                     ]
             ]
         ];

@@ -13,8 +13,10 @@ class AuthService
     public function login(array $request): array
     {
         try {
+            $loginType = filter_var($request['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
             $credentials = [
-                'username' => $request['username'] ?? '',
+                $loginType => $request['login'] ?? '',
                 'password' => $request['password'] ?? '',
             ];
 

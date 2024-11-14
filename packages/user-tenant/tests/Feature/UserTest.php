@@ -44,7 +44,7 @@ class UserTest extends TestCase
         ]);
 
         $response = $this->postJson(route('api.auth.login'), [
-            'username' => 'thuannn',
+            'login' => 'thuannn',
             'password' => 'password',
         ]);
 

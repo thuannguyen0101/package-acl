@@ -24,7 +24,7 @@ class RoleTest extends TestCase
         $this->artisan('db:seed', ['--class' => 'Workable\\ACL\\Database\\Seeders\\UsersPermsSeeder']);
 
         $response = $this->postJson(route('api.auth.login'), [
-            'username' => 'thuannn',
+            'login' => 'thuannn',
             'password' => 'password',
         ]);
 

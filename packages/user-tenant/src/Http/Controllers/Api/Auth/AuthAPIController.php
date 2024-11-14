@@ -32,7 +32,7 @@ class AuthAPIController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $credentials = $request->only('username', 'password');
+        $credentials = $request->only('login', 'password');
 
         list(
             'status' => $status,

@@ -52,8 +52,7 @@ return [
         "uniform"        => 'đồng phục',
         "skype"          => 'skype',
         "position"       => 'chức vụ',
-
-
+        'login'          => 'tên đăng nhập'
     ],
 
     'status_text' => [
