@@ -6,5 +6,8 @@
 	path = packages/user-tenant
 	url = git@gitlab.com:vnpgroup.net/vnp_user_tenant.git
 
+[submodule "packages/acl"]
+	path = packages/acl
+	url = git@gitlab.com:vnpgroup.net/acl.git
 
 
