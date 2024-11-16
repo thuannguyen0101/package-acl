@@ -25,7 +25,20 @@ class BaseAuthTest extends TestCase
     protected function login()
     {
         $response = $this->postJson(route('api.auth.login'), [
-            'login'    => 'thuannn',
+            'email'    => 'thuannn@gmail.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(200);
+
+        $this->token = $response->json('data.token');
+
+        $this->withHeader('Authorization', 'Bearer ' . $this->token);
+    }
+    protected function loginUserNotTenant()
+    {
+        $response = $this->postJson(route('api.auth.login'), [
+            'email'    => 'thuannn01@gmail.com',
             'password' => 'password',
         ]);
 
