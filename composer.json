@@ -31,7 +31,8 @@
             "Database\\Factories\\": "database/factories/",
             "Workable\\ACL\\": "platform/packages/acl/src/",
             "Workable\\Bank\\": "platform/packages/bank/src/",
-            "Workable\\UserTenant\\": "platform/packages/user-tenant/src/"
+            "Workable\\UserTenant\\": "platform/packages/user-tenant/src/",
+            "Workable\\UserTenant\\Tests\\": "platform/packages/user-tenant/tests/"
         },
         "files": [
             "platform/packages/user-tenant/helpers/function.php"

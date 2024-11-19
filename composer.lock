@@ -6333,7 +6333,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/bank",
-                "reference": "6a8f24532126b6a98ce35670f776f1ec56560dae"
+                "reference": "228de2ff92b6d1cdb3373a2fad0b6d5279d6470e"
             },
             "require": {
                 "php": "^7.4"
@@ -6428,7 +6428,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/user-tenant",
-                "reference": "7c77b204c38e5c562d05644e5f55ef7d31b1b80f"
+                "reference": "0253031604e49c9ff3b6d706d67f97404d7eab15"
             },
             "require": {
                 "firebase/php-jwt": "^5.0",
@@ -6445,7 +6445,8 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Workable\\UserTenant\\": "src"
+                    "Workable\\UserTenant\\": "src",
+                    "Workable\\UserTenant\\Tests": "tests"
                 }
             },
             "scripts": {

@@ -1,15 +1,17 @@
 <?php
 
-
-use Tests\BaseAuthTest;
 use Workable\Bank\Enums\AccountEnum;
 use Workable\Bank\Models\Account;
+use Workable\UserTenant\Tests\BaseAuthTest;
 
 class AccountTest extends BaseAuthTest
 {
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->artisan('db:seed', ['--class' => 'Workable\\Bank\\Database\\Seeders\\PermissionBankSeeder']);
+        $this->artisan('db:seed', ['--class' => 'Workable\\UserTenant\\Database\\Seeders\\UserSeeder']);
 
         $this->login();
 
