@@ -29,12 +29,12 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Workable\\ACL\\": "packages/acl/src/",
-            "Workable\\Bank\\": "packages/back/src/",
-            "Workable\\UserTenant\\": "packages/user-tenant/src/"
+            "Workable\\ACL\\": "platform/packages/acl/src/",
+            "Workable\\Bank\\": "platform/packages/bank/src/",
+            "Workable\\UserTenant\\": "platform/packages/user-tenant/src/"
         },
         "files": [
-            "packages/user-tenant/helpers/function.php"
+            "platform/packages/user-tenant/helpers/function.php"
         ]
     },
     "autoload-dev": {
@@ -79,7 +79,7 @@
         },
         {
             "type": "path",
-            "url": "./packages/*",
+            "url": "./platform/packages/*",
             "options": {
                 "symlink": true
             }

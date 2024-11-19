@@ -2,12 +2,14 @@
 	path = platform/core
 	url = git@gitlab.com:workable_packages/platform.git
 
-[submodule "packages/user-tenant"]
-	path = packages/user-tenant
+[submodule "platform/packages/user-tenant"]
+	path = platform/packages/user-tenant
 	url = git@gitlab.com:vnpgroup.net/vnp_user_tenant.git
 
-[submodule "packages/acl"]
-	path = packages/acl
+[submodule "platform/packages/acl"]
+	path = platform/packages/acl
 	url = git@gitlab.com:vnpgroup.net/acl.git
 
-
+[submodule "platform/packages/bank"]
+	path = platform/packages/bank
+	url = git@gitlab.com:vnpgroup.net/bank.git
