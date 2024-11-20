@@ -12,13 +12,13 @@
             <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
         <testsuite name="Acl">
-            <directory suffix="Test.php">./packages/acl/tests/Feature</directory>
+            <directory suffix="Test.php">./platform/packages/acl/tests/Feature</directory>
         </testsuite>
-<!--        <testsuite name="Bank">-->
-<!--            <directory suffix="Test.php">./packages/bank/tests/Feature</directory>-->
-<!--        </testsuite>-->
+        <testsuite name="Bank">
+            <directory suffix="Test.php">./platform/packages/bank/tests/Feature</directory>
+        </testsuite>
         <testsuite name="UserTenant">
-            <directory suffix="Test.php">./packages/user-tenant/tests/Feature</directory>
+            <directory suffix="Test.php">./platform/packages/user-tenant/tests/Feature</directory>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">

@@ -62,9 +62,5 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'jwt_auth_check' => \Workable\UserTenant\Http\Middleware\JWTMiddleware::class,
-        'tenant_all' => \Workable\UserTenant\Http\Middleware\CheckTenantAllMiddleware::class,
-        'tenant_own' => \Workable\UserTenant\Http\Middleware\CheckTenantOwnerMiddleware::class,
-        'acl_permission' => \Workable\ACL\Http\Middleware\ACLPermissionMiddleware::class,
     ];
 }

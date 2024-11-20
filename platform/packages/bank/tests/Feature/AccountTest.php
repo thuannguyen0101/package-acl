@@ -32,11 +32,28 @@ class AccountTest extends BaseAuthTest
             'branch_name'  => '1',
         ];
 
-        $this->account = $this->createAccount();
+        $randomString = '';
+
+        for ($i = 0; $i < 14; $i++) {
+            $randomString .= rand(0, 9);
+        }
+
+        $this->account = Account::create([
+            'user_id'        => $this->user->id,
+            'tenant_id'      => $this->user->tenant_id,
+            'account_number' => $randomString,
+            'account_type'   => 1,
+            'bank_name'      => 1,
+            'branch_name'    => 1,
+            'status'         => AccountEnum::STATUS_ACTIVE,
+            'created_at'     => now()->format("Y-m-d H:i:s"),
+            'updated_at'     => now()->format("Y-m-d H:i:s"),
+        ]);
     }
 
     public function test_account_index()
     {
+
         $response = $this->json('GET', route('api.account.index', [
             'with' => 'user'
         ]));
@@ -90,13 +107,15 @@ class AccountTest extends BaseAuthTest
         ]);
     }
 
-    public function test_account_create_no_permission(){
+    public function test_account_create_no_permission()
+    {
         $this->failPermission = true;
         $this->loginUserMemberNotPermission();
         $this->test_account_create();
     }
 
-    public function test_account_create_has_permission(){
+    public function test_account_create_has_permission()
+    {
         $this->loginUserMemberHasPermission();
         $this->test_account_create();
     }
@@ -124,13 +143,15 @@ class AccountTest extends BaseAuthTest
             ]);
     }
 
-    public function test_account_update_no_permission(){
+    public function test_account_update_no_permission()
+    {
         $this->failPermission = true;
         $this->loginUserMemberNotPermission();
         $this->test_account_update();
     }
 
-    public function test_account_update_has_permission(){
+    public function test_account_update_has_permission()
+    {
         $this->loginUserMemberHasPermission();
         $this->test_account_update();
     }
@@ -150,13 +171,15 @@ class AccountTest extends BaseAuthTest
             ]);;
     }
 
-    public function test_account_delete_no_permission(){
+    public function test_account_delete_no_permission()
+    {
         $this->failPermission = true;
         $this->loginUserMemberNotPermission();
         $this->test_account_delete();
     }
 
-    public function test_account_delete_has_permission(){
+    public function test_account_delete_has_permission()
+    {
         $this->loginUserMemberHasPermission();
         $this->test_account_delete();
     }
@@ -178,36 +201,17 @@ class AccountTest extends BaseAuthTest
             ]);
     }
 
-    public function test_account_show_no_permission(){
+    public function test_account_show_no_permission()
+    {
         $this->failPermission = true;
         $this->loginUserMemberNotPermission();
         $this->test_account_show();
     }
 
-    public function test_account_show_has_permission(){
+    public function test_account_show_has_permission()
+    {
         $this->loginUserMemberHasPermission();
         $this->test_account_show();
-    }
-
-    protected function createAccount($user = null): Account
-    {
-        $randomString = '';
-
-        for ($i = 0; $i < 14; $i++) {
-            $randomString .= rand(0, 9);
-        }
-
-        return Account::create([
-            'user_id'        => $this->user->id,
-            'tenant_id'      => $this->user->tenant_id,
-            'account_number' => $randomString,
-            'account_type'   => 1,
-            'bank_name'      => 1,
-            'branch_name'    => 1,
-            'status'         => AccountEnum::STATUS_ACTIVE,
-            'created_at'     => now()->format("Y-m-d H:i:s"),
-            'updated_at'     => now()->format("Y-m-d H:i:s"),
-        ]);
     }
 
     protected function testValidate($route, $method = 'POST')
