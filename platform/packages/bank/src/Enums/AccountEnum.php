@@ -71,8 +71,8 @@ class AccountEnum
             'user'           => $user
         ];
 
-        if (!empty($relations['with'])) {
-            foreach ($relations['with'] as $relation) {
+        if (!empty($relations['withs'])) {
+            foreach ($relations['withs'] as $relation) {
                 $data[$relation] = null;
                 if (isset($item->$relation)) {
                     $data[$relation] = $item->$relation->makeHidden(['pivot', 'created_at', 'updated_at', 'password', 'remember_token']);

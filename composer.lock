@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ce9b381f2b4a3d5defcb240abc9314e",
+    "content-hash": "727d808fb66c205d3895d3bcdfc8840a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6333,7 +6333,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/bank",
-                "reference": "228de2ff92b6d1cdb3373a2fad0b6d5279d6470e"
+                "reference": "90365e129f407927831614081794249b29a1cd6d"
             },
             "require": {
                 "php": "^7.4"
@@ -6368,6 +6368,55 @@
             "description": "A Laravel package for managing Bank",
             "keywords": [
                 "Bank",
+                "laravel"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "workable/budget",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./platform/packages/budget",
+                "reference": "9aef5415063ae4a1015def40c5e491925e1af589"
+            },
+            "require": {
+                "php": "^7.4",
+                "spatie/laravel-permission": "^5.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\Budget\\BudgetServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\Budget\\": "src"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php artisan package:discover --ansi"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "thuannn",
+                    "email": "thuannguyen0101.work@gmail.com"
+                }
+            ],
+            "description": "A Laravel package for managing budgets",
+            "keywords": [
+                "budgets",
                 "laravel"
             ],
             "transport-options": {
@@ -6428,7 +6477,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/user-tenant",
-                "reference": "0253031604e49c9ff3b6d706d67f97404d7eab15"
+                "reference": "327937c65b076f2e26f231e9852330b9eaf0475b"
             },
             "require": {
                 "firebase/php-jwt": "^5.0",
@@ -6446,7 +6495,7 @@
             "autoload": {
                 "psr-4": {
                     "Workable\\UserTenant\\": "src",
-                    "Workable\\UserTenant\\Tests": "tests"
+                    "Workable\\UserTenant\\Tests\\": "tests"
                 }
             },
             "scripts": {
@@ -8778,6 +8827,7 @@
     "stability-flags": {
         "workable/acl": 20,
         "workable/bank": 20,
+        "workable/budget": 20,
         "workable/platform": 20,
         "workable/user-tenant": 20
     },

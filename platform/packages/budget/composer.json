@@ -1,0 +1,39 @@
+{
+    "name": "workable/budget",
+    "description": "A Laravel package for managing budgets",
+    "keywords": [
+        "laravel",
+        "budgets"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "thuannn",
+            "email": "thuannguyen0101.work@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "spatie/laravel-permission": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Workable\\Budget\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+               "Workable\\Budget\\BudgetServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php artisan package:discover --ansi"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

@@ -14,6 +14,7 @@
         "laravel/tinker": "^2.5",
         "workable/acl": "dev-main",
         "workable/bank": "dev-main",
+        "workable/budget": "dev-main",
         "workable/platform": "dev-master",
         "workable/user-tenant": "dev-main"
     },
@@ -31,6 +32,7 @@
             "Database\\Factories\\": "database/factories/",
             "Workable\\ACL\\": "platform/packages/acl/src/",
             "Workable\\Bank\\": "platform/packages/bank/src/",
+            "Workable\\Budget\\": "platform/packages/budget/src/",
             "Workable\\UserTenant\\": "platform/packages/user-tenant/src/",
             "Workable\\UserTenant\\Tests\\": "platform/packages/user-tenant/tests/"
         },
