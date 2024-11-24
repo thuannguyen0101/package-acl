@@ -1,9 +1,10 @@
 <?php
 
 use Tests\BaseAuthTest;
-use Workable\Budget\Models\AccountMoney;
+use Workable\Budget\Enums\ExpenseCategoryEnum;
+use Workable\Budget\Models\ExpenseCategory;
 
-class AccountMoneyTest extends BaseAuthTest
+class ExpenseCategoryTest extends BaseAuthTest
 {
     public function setUp(): void
     {
@@ -12,8 +13,9 @@ class AccountMoneyTest extends BaseAuthTest
         $this->login();
 
         $this->data = [
-            'name'        => 'Test Account Money',
-            'description' => 'Test Account Money description',
+            'name'        => 'Test ExpenseCategory',
+            'description' => 'Test ExpenseCategory',
+            'status'      => ExpenseCategoryEnum::STATUS_ACTIVE,
         ];
 
         $this->formatData   = [
@@ -21,28 +23,31 @@ class AccountMoneyTest extends BaseAuthTest
             'tenant_id',
             'name',
             'description',
+            'status',
             'created_at',
         ];
-        $this->accountMoney = AccountMoney::create([
+        $this->expenseCategory = ExpenseCategory::create([
             'tenant_id'      => get_tenant_id(),
-            'name'           => 'Test Account Money 02',
-            'description'    => 'Test Account Money description 02',
+            'name'           => 'Test ExpenseCategory 02',
+            'description'    => 'Test ExpenseCategory description 02',
+            'status'         => ExpenseCategoryEnum::STATUS_ACTIVE,
             'area_id'        => 0,
             'area_source_id' => 0,
             'created_by'     => get_user_id(),
             'updated_by'     => get_user_id(),
         ]);
 
-        $this->updateUrl = route('api.account_money.update', $this->accountMoney->id);
+        $this->updateUrl = route('api.expense_category.update', $this->expenseCategory->id);
     }
 
     public function test_create()
     {
-        $response = $this->postJson(route('api.account_money.index'), $this->data);
+        $response = $this->postJson(route('api.expense_category.index'), $this->data);
+
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    "account_money" => $this->formatData
+                    "expense_category" => $this->formatData
                 ]
             ]);
     }
@@ -62,7 +67,7 @@ class AccountMoneyTest extends BaseAuthTest
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    "account_money" => $this->formatData
+                    "expense_category" => $this->formatData
                 ]
             ]);
     }
@@ -77,7 +82,7 @@ class AccountMoneyTest extends BaseAuthTest
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    "account_money" => $this->formatData
+                    "expense_category" => $this->formatData
                 ]
             ]);
     }
@@ -94,10 +99,11 @@ class AccountMoneyTest extends BaseAuthTest
 
     public function test_index()
     {
-        $response = $this->json('GET', route('api.account_money.index'));
+        $response = $this->json('GET', route('api.expense_category.index'));
+
         $response->assertJsonStructure([
             'data' => [
-                "account_moneys" => [
+                "expense_categories" => [
                     '*' => $this->formatData
                 ]
             ]
