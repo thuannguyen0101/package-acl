@@ -34,14 +34,7 @@ class AccountMoneyController extends Controller
             'account_monies' => $account_monies,
             ) = $this->accountMoneyService->index($request->all());
 
-        if ($status != ResponseEnum::CODE_OK) {
-            return $this->respondSuccess(
-                $message,
-                $account_monies
-            );
-        }
-
-        return $this->respondSuccess($message, []);
+        return $this->respondSuccess($message, $account_monies);
     }
 
     public function store(AccountMoneyRequest $request)
@@ -56,22 +49,22 @@ class AccountMoneyController extends Controller
             return $this->respondError($message);
         }
 
-        return $this->respondSuccess($message, []);
+        return $this->respondSuccess($message, $account_money);
     }
 
-    public function show($id)
+    public function show($id, AccountMoneyListRequest $request)
     {
         list(
             'status' => $status,
             'message' => $message,
             'account_money' => $account_money,
-            ) = $this->accountMoneyService->show($id);
+            ) = $this->accountMoneyService->show($id, $request->all());
 
         if ($status != ResponseEnum::CODE_OK) {
             return $this->respondError($message);
         }
 
-        return $this->respondSuccess($message, []);
+        return $this->respondSuccess($message, $account_money);
     }
 
     public function update(int $id, AccountMoneyRequest $request)
@@ -87,7 +80,7 @@ class AccountMoneyController extends Controller
             return $this->respondError($message);
         }
 
-        return $this->respondSuccess($message, []);
+        return $this->respondSuccess($message, $account_money);
     }
 
     public function destroy(int $id)

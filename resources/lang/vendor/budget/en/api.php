@@ -49,4 +49,3 @@ return [
     'server_error'           => 'Server error, please try again later.',
 ];
 
-

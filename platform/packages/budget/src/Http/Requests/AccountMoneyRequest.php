@@ -32,9 +32,4 @@ class AccountMoneyRequest extends formRequest
             'description' => ['nullable', 'string'],
         ];
     }
-
-    public function messages()
-    {
-
-    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Workable\ACL\Rules;
+namespace Workable\Budget\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
