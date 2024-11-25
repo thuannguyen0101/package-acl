@@ -17,11 +17,11 @@ class AccountMoneyController extends Controller
 
     public function __construct(AccountMoneyService $accountMoneyService)
     {
-//        $this->middleware('acl_permission:index_account')->only('index');
-//        $this->middleware('acl_permission:create_account')->only('store');
-//        $this->middleware('acl_permission:view_account')->only('show');
-//        $this->middleware('acl_permission:edit_account')->only('update');
-//        $this->middleware('acl_permission:delete_account')->only('destroy');
+        $this->middleware('acl_permission:account_money_list')->only('index');
+        $this->middleware('acl_permission:account_money_create')->only('store');
+        $this->middleware('acl_permission:account_money_update')->only('show');
+        $this->middleware('acl_permission:account_money_show')->only('update');
+        $this->middleware('acl_permission:account_money_delete')->only('destroy');
 
         $this->accountMoneyService = $accountMoneyService;
     }

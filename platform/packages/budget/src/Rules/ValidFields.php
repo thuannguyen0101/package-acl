@@ -42,6 +42,6 @@ class ValidFields implements Rule
      */
     public function message()
     {
-        return __('acl.api.validation_fields') . " {$this->entity}.";
+        return __('acl::api.validation_fields') . " {$this->entity}.";
     }
 }

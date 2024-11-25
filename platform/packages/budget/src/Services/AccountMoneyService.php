@@ -29,7 +29,7 @@ class AccountMoneyService
 
         return [
             'status'         => ResponseMessageEnum::CODE_OK,
-            'message'        => __('budget:api.success'),
+            'message'        => __('budget::api.success'),
             'account_monies' => $accountMonies
         ];
     }
@@ -69,7 +69,7 @@ class AccountMoneyService
 
         $accountMoney = AccountMoneyDTO::transform($accountMoney);
 
-        return $this->returnSuccess($accountMoney, __('budget:api.created'));
+        return $this->returnSuccess($accountMoney, __('budget::api.created'));
     }
 
     public function update(int $id, array $request = []): array
@@ -89,7 +89,7 @@ class AccountMoneyService
 
         $accountMoney = AccountMoneyDTO::transform($accountMoney);
 
-        return $this->returnSuccess($accountMoney, __('budget:api.updated'));
+        return $this->returnSuccess($accountMoney, __('budget::api.updated'));
     }
 
     public function destroy(int $id): array
@@ -102,7 +102,7 @@ class AccountMoneyService
 
         $accountMoney->delete();
 
-        return $this->returnSuccess($accountMoney, __('budget:api.deleted'));
+        return $this->returnSuccess($accountMoney, __('budget::api.deleted'));
     }
 
     private function buildQuery(array $filters = [], bool $isAdmin = false): Builder
@@ -134,7 +134,7 @@ class AccountMoneyService
     {
         return [
             'status'        => ResponseMessageEnum::CODE_NOT_FOUND,
-            'message'       => __('budget:api.not_found'),
+            'message'       => __('budget::api.not_found'),
             'account_money' => null
         ];
     }
@@ -143,7 +143,7 @@ class AccountMoneyService
     {
         return [
             'status'        => ResponseMessageEnum::CODE_OK,
-            'message'       => $message ?: __('budget:api.success'),
+            'message'       => $message ?: __('budget::api.success'),
             'account_money' => $accountMoney
         ];
     }

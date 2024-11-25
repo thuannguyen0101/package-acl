@@ -27,14 +27,14 @@ class AccountService
         if ($accounts->count() == 0) {
             return [
                 'status'   => ResponseMessageEnum::CODE_NO_CONTENT,
-                'message'  => __('acl:api.no_data'),
+                'message'  => __('acl::api.no_data'),
                 'accounts' => null
             ];
         }
 
         return [
             'status'   => ResponseMessageEnum::CODE_OK,
-            'message'  => __('acl:api.success'),
+            'message'  => __('acl::api.success'),
             'accounts' => $accounts
         ];
     }
@@ -91,7 +91,7 @@ class AccountService
 
         return [
             'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => __('acl:api.created'),
+            'message' => __('acl::api.created'),
             'account' => $account
         ];
     }
@@ -112,7 +112,7 @@ class AccountService
 
         return [
             'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => __('acl:api.updated'),
+            'message' => __('acl::api.updated'),
             'account' => $account
         ];
     }
@@ -131,7 +131,7 @@ class AccountService
 
         return [
             'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => __('acl:api.deleted'),
+            'message' => __('acl::api.deleted'),
         ];
     }
 

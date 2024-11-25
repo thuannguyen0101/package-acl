@@ -4,8 +4,6 @@ namespace Workable\Budget\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Workable\Budget\Enums\ResponseEnum;
-use Workable\Budget\Http\Requests\AccountMoneyListRequest;
-use Workable\Budget\Http\Requests\AccountMoneyRequest;
 use Workable\Budget\Http\Requests\ExpenseCategoryRequest;
 use Workable\Budget\Services\ExpenseCategoryService;
 use Workable\Support\Traits\ResponseHelperTrait;
@@ -20,11 +18,11 @@ class ExpenseCategoryController extends Controller
         ExpenseCategoryService $expenseCategoryService
     )
     {
-//        $this->middleware('acl_permission:index_account')->only('index');
-//        $this->middleware('acl_permission:create_account')->only('store');
-//        $this->middleware('acl_permission:view_account')->only('show');
-//        $this->middleware('acl_permission:edit_account')->only('update');
-//        $this->middleware('acl_permission:delete_account')->only('destroy');
+        $this->middleware('acl_permission:expense_category_list')->only('index');
+        $this->middleware('acl_permission:expense_category_create')->only('store');
+        $this->middleware('acl_permission:expense_category_update')->only('show');
+        $this->middleware('acl_permission:expense_category_show')->only('update');
+        $this->middleware('acl_permission:expense_category_delete')->only('destroy');
 
         $this->expenseCategoryService = $expenseCategoryService;
     }

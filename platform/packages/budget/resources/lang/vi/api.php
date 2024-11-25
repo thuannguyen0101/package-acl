@@ -16,7 +16,7 @@ return [
         'array'           => 'Trường :attribute phải là một mảng.'
     ],
 
-    'fields'                 => [
+    'fields'       => [
         'string'   => 'chuỗi',
         'email'    => 'email',
         'numeric'  => 'số',
@@ -36,15 +36,20 @@ return [
     ],
 
     // Thông báo thành công
-    'success'                => 'Thao tác thành công.',
-    'created'                => 'Tạo mới thành công.',
-    'updated'                => 'Cập nhật thành công.',
-    'deleted'                => 'Xóa thành công.',
+    'success'      => 'Thao tác thành công.',
+    'created'      => 'Tạo mới thành công.',
+    'updated'      => 'Cập nhật thành công.',
+    'deleted'      => 'Xóa thành công.',
 
     // Lỗi chung
-    'error'                  => 'Đã xảy ra lỗi, vui lòng thử lại sau.',
-    'not_found'              => 'Không tìm thấy tài nguyên yêu cầu.',
-    'unauthorized'           => 'Bạn không có quyền truy cập vào tài nguyên này. Vui lòng xác thực trước khi tiếp tục.',
-    'forbidden'              => 'Bạn không được phép thực hiện thao tác này.',
-    'server_error'           => 'Lỗi máy chủ, vui lòng thử lại sau.',
+    'error'        => 'Đã xảy ra lỗi, vui lòng thử lại sau.',
+    'not_found'    => 'Không tìm thấy tài nguyên yêu cầu.',
+    'unauthorized' => 'Bạn không có quyền truy cập vào tài nguyên này. Vui lòng xác thực trước khi tiếp tục.',
+    'forbidden'    => 'Bạn không được phép thực hiện thao tác này.',
+    'server_error' => 'Lỗi máy chủ, vui lòng thử lại sau.',
+
+    'not_data'     => [
+        'account_money'       => 'Không có khoản quỹ nào tồn tại.',
+        'expense_categories ' => 'Không có danh mục thu chi nào tồn tại.'
+    ]
 ];

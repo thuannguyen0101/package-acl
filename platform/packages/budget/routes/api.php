@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Workable\Budget\Http\Controllers\Api\AccountMoneyController;
+use Workable\Budget\Http\Controllers\Api\BudgetController;
 use Workable\Budget\Http\Controllers\Api\ExpenseCategoryController;
 
 Route::group([
@@ -22,5 +23,16 @@ Route::group([
         Route::get('/{id}', [ExpenseCategoryController::class, 'show'])->name('api.expense_category.show');
         Route::post('/{id}', [ExpenseCategoryController::class, 'update'])->name('api.expense_category.update');
         Route::delete('/{id}', [ExpenseCategoryController::class, 'destroy'])->name('api.expense_category.destroy');
+    });
+
+    Route::group([
+        'prefix'     => 'budgets',
+        'middleware' => 'budget_check'
+    ], function () {
+        Route::get('/', [BudgetController::class, 'index'])->name('api.budget.index');
+        Route::post('/', [BudgetController::class, 'store'])->name('api.budget.store');
+        Route::get('/{id}', [BudgetController::class, 'show'])->name('api.budget.show');
+        Route::post('/{id}', [BudgetController::class, 'update'])->name('api.budget.update');
+        Route::delete('/{id}', [BudgetController::class, 'destroy'])->name('api.budget.destroy');
     });
 });

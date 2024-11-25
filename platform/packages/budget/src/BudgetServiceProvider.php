@@ -9,6 +9,7 @@ namespace Workable\Budget;
 
 use Illuminate\Support\ServiceProvider;
 use Workable\Base\Traits\LoadAndPublishDataTrait;
+use Workable\Budget\Http\Middleware\BudgetMiddleware;
 
 class BudgetServiceProvider extends ServiceProvider
 {
@@ -25,5 +26,7 @@ class BudgetServiceProvider extends ServiceProvider
             ->loadMigrations()
             ->loadAndPublishTranslates()
             ->loadRoutes(['api']);
+
+        app('router')->aliasMiddleware('budget_check', BudgetMiddleware::class);
     }
 }

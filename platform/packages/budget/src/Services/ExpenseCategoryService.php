@@ -2,17 +2,13 @@
 
 namespace Workable\Budget\Services;
 
-
 use Illuminate\Database\Eloquent\Builder;
 use Workable\Budget\Enums\ExpenseCategoryEnum;
 use Workable\Budget\Enums\ResponseEnum;
-use Workable\Budget\Http\DTO\AccountMoneyDTO;
 use Workable\Budget\Http\DTO\ExpenseCategoryDTO;
-use Workable\Budget\Models\AccountMoney;
 use Workable\Budget\Models\ExpenseCategory;
 use Workable\Support\Traits\FilterBuilderTrait;
 use Workable\Support\Traits\ScopeRepositoryTrait;
-
 
 class ExpenseCategoryService
 {
@@ -21,6 +17,7 @@ class ExpenseCategoryService
     public function index(array $request = []): array
     {
         $filters = $this->getFilterRequest($request);
+
         $query   = $this->buildQuery($filters, is_admin($request));
 
         $isPaginate = $request['is_paginate'] ?? false;
@@ -34,7 +31,7 @@ class ExpenseCategoryService
 
         return [
             'status'             => ResponseEnum::CODE_OK,
-            'message'            => __('budget:api.success'),
+            'message'            => __('budget::api.success'),
             'expense_categories' => $expenseCategories
         ];
     }
@@ -76,7 +73,7 @@ class ExpenseCategoryService
 
         $expenseCategory = ExpenseCategoryDTO::transform($expenseCategory);
 
-        return $this->returnSuccess($expenseCategory, __('budget:api.created'));
+        return $this->returnSuccess($expenseCategory, __('budget::api.created'));
     }
 
     public function update(int $id, array $request = []): array
@@ -96,7 +93,7 @@ class ExpenseCategoryService
 
         $expenseCategory = ExpenseCategoryDTO::transform($expenseCategory);
 
-        return $this->returnSuccess($expenseCategory, __('budget:api.updated'));
+        return $this->returnSuccess($expenseCategory, __('budget::api.updated'));
     }
 
     public function destroy(int $id): array
@@ -109,7 +106,7 @@ class ExpenseCategoryService
 
         $expenseCategory->delete();
 
-        return $this->returnSuccess($expenseCategory, __('budget:api.deleted'));
+        return $this->returnSuccess($expenseCategory, __('budget::api.deleted'));
     }
 
     private function buildQuery(array $filters = [], bool $isAdmin = false): Builder
@@ -141,7 +138,7 @@ class ExpenseCategoryService
     {
         return [
             'status'        => ResponseEnum::CODE_NOT_FOUND,
-            'message'       => __('budget:api.not_found'),
+            'message'       => __('budget::api.not_found'),
             'expense_category' => null
         ];
     }
@@ -150,7 +147,7 @@ class ExpenseCategoryService
     {
         return [
             'status'        => ResponseEnum::CODE_OK,
-            'message'       => $message ?: __('budget:api.success'),
+            'message'       => $message ?: __('budget::api.success'),
             'expense_category' => $accountMoney
         ];
     }
