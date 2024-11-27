@@ -5,7 +5,7 @@ namespace Workable\Navigation\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Workable\Navigation\Enums\ResponseEnum;
 use Workable\Navigation\Http\Requests\CategoryMultiRequest;
-use Workable\Navigation\Services\navigationService;
+use Workable\Navigation\Services\NavigationService;
 use Workable\Support\Traits\ResponseHelperTrait;
 
 class NavigationController extends Controller

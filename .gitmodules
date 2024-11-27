@@ -2,6 +2,10 @@
 	path = platform/core
 	url = git@gitlab.com:workable_packages/platform.git
 
+[submodule "platform/packages/helpers"]
+	path = platform/packages/helpers
+	url = git@gitlab.com:123job_core/helpers.git
+
 [submodule "platform/packages/user-tenant"]
 	path = platform/packages/user-tenant
 	url = git@gitlab.com:vnpgroup.net/vnp_user_tenant.git

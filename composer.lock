@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0873ef4344a440de1c0ea234005c3716",
+    "content-hash": "578ed6a00218d3058a8049e9387ef6a7",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -910,63 +910,6 @@
                 }
             ],
             "time": "2020-12-29T14:50:06+00:00"
-        },
-        {
-            "name": "firebase/php-jwt",
-            "version": "v5.5.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "83b609028194aa042ea33b5af2d41a7427de80e6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/83b609028194aa042ea33b5af2d41a7427de80e6",
-                "reference": "83b609028194aa042ea33b5af2d41a7427de80e6",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": ">=4.8 <=9"
-            },
-            "suggest": {
-                "paragonie/sodium_compat": "Support EdDSA (Ed25519) signatures when libsodium is not present"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Firebase\\JWT\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Neuman Vong",
-                    "email": "neuman+pear@twilio.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Anant Narayanan",
-                    "email": "anant@php.net",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
-            "homepage": "https://github.com/firebase/php-jwt",
-            "keywords": [
-                "jwt",
-                "php"
-            ],
-            "support": {
-                "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v5.5.1"
-            },
-            "time": "2021-11-08T20:18:51+00:00"
         },
         {
             "name": "fruitcake/laravel-cors",
@@ -3679,6 +3622,86 @@
             "time": "2023-10-25T05:12:01+00:00"
         },
         {
+            "name": "stichoza/google-translate-php",
+            "version": "v4.1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Stichoza/google-translate-php.git",
+                "reference": "14f6a9c84cd860910706ee3a668fba8a0a1aac0f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Stichoza/google-translate-php/zipball/14f6a9c84cd860910706ee3a668fba8a0a1aac0f",
+                "reference": "14f6a9c84cd860910706ee3a668fba8a0a1aac0f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "~6.0|~7.0",
+                "php": "^7.1|^8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Stichoza\\GoogleTranslate\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Levan Velijanashvili",
+                    "email": "me@stichoza.com"
+                }
+            ],
+            "description": "Free Google Translate API PHP Package",
+            "homepage": "https://github.com/Stichoza/google-translate-php",
+            "keywords": [
+                "google",
+                "php",
+                "translate",
+                "translating",
+                "translator"
+            ],
+            "support": {
+                "issues": "https://github.com/Stichoza/google-translate-php/issues",
+                "source": "https://github.com/Stichoza/google-translate-php/tree/v4.1.7"
+            },
+            "funding": [
+                {
+                    "url": "https://btc.com/bc1qc25j4x7yahghm8nnn6lypnw59nptylsw32nkfl",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.paypal.me/stichoza",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://ko-fi.com/stichoza",
+                    "type": "ko_fi"
+                },
+                {
+                    "url": "https://liberapay.com/stichoza",
+                    "type": "liberapay"
+                },
+                {
+                    "url": "https://opencollective.com/stichoza",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/stichoza",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2022-11-25T11:17:52+00:00"
+        },
+        {
             "name": "swiftmailer/swiftmailer",
             "version": "v6.3.0",
             "source": {
@@ -6381,7 +6404,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/budget",
-                "reference": "62d8ce1e2eee06ce1e32be6aa7e25284d13401ce"
+                "reference": "6adfd4b899fbe14cd89068a086aa3eba2acadb13"
             },
             "require": {
                 "php": "^7.4"
@@ -6519,15 +6542,63 @@
             }
         },
         {
+            "name": "workable/translate",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./platform/packages/translate",
+                "reference": "65452099fdcdf9cab0b48642c0e59dc13193592c"
+            },
+            "require": {
+                "php": "^7.4",
+                "stichoza/google-translate-php": "^4.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\Translate\\TranslateServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\Translate\\": "src"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php artisan package:discover --ansi"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "thuannn",
+                    "email": "thuannguyen0101.work@gmail.com"
+                }
+            ],
+            "description": "A Laravel package for managing translate",
+            "keywords": [
+                "laravel",
+                "translate"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "workable/user-tenant",
             "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/user-tenant",
-                "reference": "327937c65b076f2e26f231e9852330b9eaf0475b"
+                "reference": "a653ba15ac5dacad22a4873132790745b2727818"
             },
             "require": {
-                "firebase/php-jwt": "^5.0",
                 "php": "^7.4",
                 "tymon/jwt-auth": "^1.0"
             },
@@ -6541,8 +6612,8 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Workable\\UserTenant\\": "src",
-                    "Workable\\UserTenant\\Tests\\": "tests"
+                    "Workable\\UserTenant\\": "src/",
+                    "Workable\\UserTenant\\Tests\\": "tests/"
                 }
             },
             "scripts": {
@@ -8877,6 +8948,7 @@
         "workable/budget": 20,
         "workable/navigation": 20,
         "workable/platform": 20,
+        "workable/translate": 20,
         "workable/user-tenant": 20
     },
     "prefer-stable": true,

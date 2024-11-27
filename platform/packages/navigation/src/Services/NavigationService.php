@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Workable\Navigation\Enums\CategoryMultiEnum;
 use Workable\Navigation\Enums\ResponseEnum;
 use Workable\Navigation\Http\DTO\NavigationDTO;
-use Workable\Navigation\Models\CategoryMulti;
 use Workable\Navigation\Models\Navigation;
 use Workable\Support\Traits\FilterBuilderTrait;
 use Workable\Support\Traits\ScopeRepositoryTrait;
@@ -28,6 +27,7 @@ class NavigationService
         }
 
         $navigations = NavigationDTO::transform($navigations, $filters);
+        dd($navigations);
 
         return [
             'status'      => ResponseEnum::CODE_OK,
@@ -40,15 +40,15 @@ class NavigationService
     {
         $filters = $this->getFilterRequest($request);
 
-        $categoryMulti = $this->buildQuery($filters)->find($id);
+        $navigation = $this->buildQuery($filters)->find($id);
 
-        if (!$categoryMulti) {
+        if (!$navigation) {
             return $this->returnNotFound();
         }
 
-        $categoryMulti = NavigationDTO::transform($categoryMulti, $filters);
+        $navigation = NavigationDTO::transform($navigation, $filters);
 
-        return $this->returnSuccess($categoryMulti);
+        return $this->returnSuccess($navigation);
     }
 
     public function store(array $request = []): array
@@ -69,48 +69,48 @@ class NavigationService
             'meta'       => json_encode($request['meta'] ?? []),
         ];
 
-        $categoryMulti = CategoryMulti::query()->create($data);
+        $navigation = Navigation::query()->create($data);
 
-        $categoryMulti = NavigationDTO::transform($categoryMulti);
+        $navigation = NavigationDTO::transform($navigation);
 
 
-        return $this->returnSuccess($categoryMulti, __('category_multi::api.created'));
+        return $this->returnSuccess($navigation, __('category_multi::api.created'));
     }
 
     public function update(int $id, array $request = []): array
     {
-        $categoryMulti = CategoryMulti::query()->find($id);
+        $navigation = Navigation::query()->find($id);
 
-        if (!$categoryMulti) {
+        if (!$navigation) {
             return $this->returnNotFound();
         }
 
         $request['meta'] = json_encode($request['meta'] ?? []);
 
-        $categoryMulti->fill($request);
+        $navigation->fill($request);
 
-        if ($categoryMulti->isDirty()) {
-            $categoryMulti->updated_by = get_user_id();
-            $categoryMulti->updated_at = now();
-            $categoryMulti->update();
+        if ($navigation->isDirty()) {
+            $navigation->updated_by = get_user_id();
+            $navigation->updated_at = now();
+            $navigation->update();
         }
 
-        $categoryMulti = NavigationDTO::transform($categoryMulti);
+        $navigation = NavigationDTO::transform($navigation);
 
-        return $this->returnSuccess($categoryMulti, __('category_multi::api.updated'));
+        return $this->returnSuccess($navigation, __('category_multi::api.updated'));
     }
 
     public function destroy(int $id): array
     {
-        $categoryMulti = Navigation::query()->find($id);
+        $navigation = Navigation::query()->find($id);
 
-        if (!$categoryMulti) {
+        if (!$navigation) {
             return $this->returnNotFound();
         }
 
-        $categoryMulti->delete();
+        $navigation->delete();
 
-        return $this->returnSuccess($categoryMulti, __('category_multi::api.deleted'));
+        return $this->returnSuccess($navigation, __('category_multi::api.deleted'));
     }
 
     private function buildQuery(array $filters = []): Builder
@@ -137,12 +137,12 @@ class NavigationService
         ];
     }
 
-    private function returnSuccess($categoryMulti, string $message = ''): array
+    private function returnSuccess($navigation, string $message = ''): array
     {
         return [
             'status'         => ResponseEnum::CODE_OK,
             'message'        => $message ?: __('category_multi::api.success'),
-            'category_multi' => $categoryMulti
+            'category_multi' => $navigation
         ];
     }
 }

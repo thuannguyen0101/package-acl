@@ -28,7 +28,6 @@ class AccountMoneyListRequest extends formRequest
      */
     public function rules(Request $request)
     {
-
         $validFields = [
             'with'      =>
                 ['tenant', 'createdBy', 'updatedBy'],
@@ -37,7 +36,6 @@ class AccountMoneyListRequest extends formRequest
             'tenant'    =>
                 ['name', 'email', 'phone', 'status', 'address', 'full_name', 'description', 'business_phone', 'meta_attribute', 'gender', 'birthday', 'size'],
         ];
-
 
         return [
             'with'                  => ['nullable', new ValidFields('with', $validFields['with'])],

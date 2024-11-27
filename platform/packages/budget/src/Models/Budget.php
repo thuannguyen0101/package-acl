@@ -54,5 +54,4 @@ class Budget extends Model
     {
         return $this->belongsTo(AccountMoney::class, 'account_money_id', 'id');
     }
-
 }

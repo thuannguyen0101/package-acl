@@ -1,12 +1,12 @@
 <?php
 
-namespace Workable\Budget\Database\Seeders;
+namespace Workable\Translate\Database\Seeders;
 
 use Workable\ACL\Database\Seeders\PermsTableSeeder;
 
 class PermsSeeder extends PermsTableSeeder
 {
-    protected $path_config = 'budget/src/Database/budget_permission.php';
+    protected $path_config = 'budget/src/Database/Seeders/Data/budget_permission.php';
 
     /**
      * Run the database seeds.
