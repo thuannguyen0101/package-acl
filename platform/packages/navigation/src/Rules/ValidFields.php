@@ -1,6 +1,6 @@
 <?php
 
-namespace Workable\Budget\Rules;
+namespace Workable\Navigation\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
@@ -25,7 +25,7 @@ class ValidFields implements Rule
     public function passes($attribute, $value)
     {
         $cleaned_text = str_replace(' ', '', $value);
-        $fields = array_filter(explode(",", $cleaned_text));
+        $fields       = array_filter(explode(",", ($value)));
 
         foreach ($fields as $field) {
             if (!in_array($field, $this->validFields)) {

@@ -1,9 +1,9 @@
 {
-    "name": "workable/budget",
-    "description": "A Laravel package for managing budget",
+    "name": "workable/navigation",
+    "description": "A Laravel package for managing navigation",
     "keywords": [
         "laravel",
-        "budget"
+        "navigation"
     ],
     "type": "library",
     "license": "MIT",
@@ -18,13 +18,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Workable\\Budget\\": "src"
+            "Workable\\Navigation\\": "src"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-               "Workable\\Budget\\BudgetServiceProvider"
+               "Workable\\Navigation\\NavigationServiceProvider"
             ]
         }
     },

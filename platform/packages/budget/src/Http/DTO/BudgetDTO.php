@@ -33,6 +33,7 @@ class BudgetDTO extends BaseDTO implements DtoInterface
             'meta_file'           => json_decode(($item->meta_file ?? null), true),
             'meta_content'        => json_decode(($item->meta_content ?? null), true),
             'created_at'          => AccountMoneyEnum::convertDate($item->created_at),
+            'updated_at'          => AccountMoneyEnum::convertDate($item->updated_at),
         ];
 
         return self::addDataWith($item, $data, $relations);

@@ -23,6 +23,7 @@ class AccountMoneyTest extends BaseAuthTest
             'description',
             'created_at',
         ];
+
         $this->accountMoney = AccountMoney::create([
             'tenant_id'      => get_tenant_id(),
             'name'           => 'Test Account Money 02',
@@ -46,6 +47,7 @@ class AccountMoneyTest extends BaseAuthTest
                 ]
             ]);
     }
+
 
     public function test_show()
     {

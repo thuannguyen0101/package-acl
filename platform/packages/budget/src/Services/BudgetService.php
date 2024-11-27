@@ -90,6 +90,7 @@ class BudgetService
 
         if ($budget->isDirty()) {
             $budget->updated_by = get_user_id();
+            $budget->updated_at = now();
             $budget->update();
         }
 

@@ -5,12 +5,13 @@ namespace Workable\Budget\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Workable\UserTenant\Models\Tenant;
 use Workable\UserTenant\Models\User;
 
 class ExpenseCategory extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'expense_categories';
 

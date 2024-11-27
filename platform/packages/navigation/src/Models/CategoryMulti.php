@@ -1,34 +1,36 @@
 <?php
 
-namespace Workable\Budget\Models;
+namespace Workable\Navigation\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Workable\UserTenant\Models\Tenant;
 use Workable\UserTenant\Models\User;
 
-class AccountMoney extends Model
+class CategoryMulti extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
-    protected $table = 'account_monies';
+    protected $table = 'category_multi';
 
     protected $fillable = [
-        'tenant_id',
-        'area_id',
-        'area_source_id',
         'name',
-        'description',
+        'root_id',
+        'parent_id',
+        'url',
+        'type',
+        'icon',
+        'view_data',
+        'label',
+        'layout',
+        'sort',
+        'is_auth',
+        'status',
+        'meta',
         'created_by',
-        'updated_by',
+        'updated_by'
     ];
-
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenant::class, 'tenant_id', 'id');
-    }
 
     public function createdBy(): BelongsTo
     {

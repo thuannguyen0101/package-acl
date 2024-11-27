@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "727d808fb66c205d3895d3bcdfc8840a",
+    "content-hash": "0873ef4344a440de1c0ea234005c3716",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6381,11 +6381,10 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/budget",
-                "reference": "9aef5415063ae4a1015def40c5e491925e1af589"
+                "reference": "62d8ce1e2eee06ce1e32be6aa7e25284d13401ce"
             },
             "require": {
-                "php": "^7.4",
-                "spatie/laravel-permission": "^5.5"
+                "php": "^7.4"
             },
             "type": "library",
             "extra": {
@@ -6414,10 +6413,58 @@
                     "email": "thuannguyen0101.work@gmail.com"
                 }
             ],
-            "description": "A Laravel package for managing budgets",
+            "description": "A Laravel package for managing budget",
             "keywords": [
-                "budgets",
+                "budget",
                 "laravel"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "workable/navigation",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./platform/packages/navigation",
+                "reference": "0c34a4564a6d307fe303d3e87033f962499fe327"
+            },
+            "require": {
+                "php": "^7.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\Navigation\\NavigationServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\Navigation\\": "src"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php artisan package:discover --ansi"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "thuannn",
+                    "email": "thuannguyen0101.work@gmail.com"
+                }
+            ],
+            "description": "A Laravel package for managing navigation",
+            "keywords": [
+                "laravel",
+                "navigation"
             ],
             "transport-options": {
                 "symlink": true,
@@ -8828,6 +8875,7 @@
         "workable/acl": 20,
         "workable/bank": 20,
         "workable/budget": 20,
+        "workable/navigation": 20,
         "workable/platform": 20,
         "workable/user-tenant": 20
     },

@@ -1,16 +1,25 @@
-# Gói ACL cho Laravel
+# Budget Package for Laravel
 
-Gói **ACL** cung cấp giải pháp quản lý phân quyền (roles & permissions) dựa trên `spatie/laravel-permission` trong
-Laravel. Đây là hướng dẫn cài đặt, cấu hình và sử dụng.
+Gói **Budget** cung cấp các tính năng quản lý ngân sách và chi tiêu trong hệ thống, tích hợp với gói **ACL** để phân
+quyền và gói **User Tenant** để quản lý dữ liệu theo `tenant_id`.
+
+## Yêu cầu hệ thống
+
+- PHP >= 7.4
+- Laravel >= 7.x
+- Phụ thuộc:
+    - ACL: Quản lý quyền và vai trò.
+    - User Tenant: Quản lý tenant và người dùng.
 
 ## Tính năng
 
-- Middleware kiểm tra quyền: `acl_permission`
-- Quản lý vai trò (role) và quyền (permission):
-    - Gán quyền cho vai trò
-    - Gán vai trò cho người dùng
-    - Kiểm tra quyền trong các action
-- Seeder mở rộng để tạo quyền tùy chỉnh.
+- **Account Money**: Quản lý tài khoản tiền.
+- **Budget**: Quản lý ngân sách và các khoản chi tiêu.
+- **Expense Category**: Quản lý danh mục chi tiêu.
+- **Phân quyền**:
+    - Sử dụng gói **ACL** để phân quyền truy cập và quản lý ngân sách.
+- **Tenant**:
+    - Tích hợp với gói **User Tenant** để quản lý dữ liệu theo `tenant_id` và `user_id`.
 
 ## Cài đặt
 
@@ -19,84 +28,79 @@ Laravel. Đây là hướng dẫn cài đặt, cấu hình và sử dụng.
 Sử dụng Composer để cài đặt:
 
 ```bash
-  composer require workable/user-tenant
+  composer require workable/budget
+```
+
+### 2. Cài đặt các gói phụ thuộc
+
+Gói Budget yêu cầu hai gói phụ thuộc:
+
+- ACL:
+
+```bash
   composer require workable/acl
 ```
 
-### 2. Chạy Migration
+- User Tenant:
+
+```bash
+  composer require workable/user-tenant
+```
+
+### 3. Chạy Migration
 
 ```bash
   php artisan migrate
 ```
 
-### 3. Seed dữ liệu quyền cơ bản
+### 4. Seeder dữ liệu permission.
 
 ```bash
-  php artisan db:seed --class="Workable\ACL\Database\Seeders\PermsTableSeeder"
+   php artisan db:seed --class=Workable\\Budget\\Database\\Seeders\\PermsSeeder
 ```
 
-## Hướng dẫn sử dụng
+## Hướng Dẫn Sử Dụng
 
-### 1. Middleware kiểm tra quyền
+Gói Budget cung cấp các API để quản lý tài chính, bao gồm quản lý Account Money, Expense Category, và Budget. Dưới đây
+là hướng dẫn chi tiết về cách sử dụng.
 
-Để kiểm tra quyền trên các route hoặc controller, sử dụng middleware acl_permission.
+### 1. Middleware `budget_check`
 
-- Ví dụ:
+Middleware này kiểm tra xem tenant hiện tại đã có đầy đủ dữ liệu cần thiết để tạo Budget hay chưa:
 
-```php
-$this->middleware('acl_permission:permission_list')->only('index');
-```
+- Account Money phải tồn tại (với `tenant_id` của người đăng nhập).
+- Expense Category phải tồn tại (với `tenant_id` của người đăng nhập).
 
-### 2. Quản lý vai trò và quyền
+Nếu thiếu một trong hai, API sẽ trả về lỗi 403 với thông báo tương ứng.
 
-- Gán quyền cho vai trò:
-    - Sử dụng route api.role.store để tạo vai trò mới và gán quyền.
-    - Sử dụng route api.role.update để cập nhật vai trò mới và gán quyền.
+### 3. API Endpoint
 
-- Gán vai trò cho người dùng:
-    - Sử dụng route api.role.assign-model với danh sách role_ids và model_id của người dùng.
+#### 3.1. Account Money
 
-### 3. Mở rộng quyền bằng Seeder
+Quản lý khoản quỹ
 
-Bạn có thể mở rộng Seeder PermsTableSeeder để thêm quyền tùy chỉnh. Ví dụ:
+- GET /account-moneys: Danh sách tài khoản tài chính.
+- POST /account-moneys: Tạo tài khoản tài chính.
+- GET /account-moneys/{id}: Lấy thông tin tài khoản tài chính.
+- POST /account-moneys/{id}: Cập nhật tài khoản tài chính.
+- DELETE /account-moneys/{id}: Xóa tài khoản tài chính.
 
-- Tạo file chứa quyền
+#### 3.2. Expense Category
 
-```php 
-//path 'xxx/src/Database/Seeders/Data/custom_perms.php'    
-<?php
-return [
-    'permissions' => [
-        'permission_list'
-    ],
+Quản lý danh mục chi tiêu.
 
-    'roles' => [
-        'role_list',
-        'role_create',
-        'role_update',
-        'role_show',
-        'role_delete',
-        'role_assign_model',
-    ]
-];
- 
-```
+- GET /expense_categories: Danh sách danh mục chi tiêu.
+- POST /expense_categories: Tạo danh mục chi tiêu.
+- GET /expense_categories/{id}: Lấy thông tin danh mục chi tiêu.
+- POST /expense_categories/{id}: Cập nhật danh mục chi tiêu.
+- DELETE /expense_categories/{id}: Xóa danh mục chi tiêu.
 
-- Tạo file seeder
+#### 3.3. Budget
 
-```php
+Quản lý thu chi hàng ngày (Budget). Yêu cầu middleware budget_check.
 
-use Workable\ACL\Database\Seeders\PermsTableSeeder;
-
-class CustomPermsTableSeeder extends PermsTableSeeder
-{
-    protected $path_config = 'xxx/src/Database/Seeders/Data/custom_perms.php';
-    
-    public function run()
-    {
-        parent::run(); // Seed các quyền cơ bản
-    }
-}
-
-```
-
+* GET /budgets: Danh sách ngân sách.
+* POST /budgets: Tạo ngân sách.
+* GET /budgets/{id}: Lấy thông tin ngân sách.
+* POST /budgets/{id}: Cập nhật ngân sách.
+* DELETE /budgets/{id}: Xóa ngân sách.

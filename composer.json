@@ -15,6 +15,7 @@
         "workable/acl": "dev-main",
         "workable/bank": "dev-main",
         "workable/budget": "dev-main",
+        "workable/navigation": "dev-main",
         "workable/platform": "dev-master",
         "workable/user-tenant": "dev-main"
     },
@@ -34,7 +35,7 @@
             "Workable\\Bank\\": "platform/packages/bank/src/",
             "Workable\\Budget\\": "platform/packages/budget/src/",
             "Workable\\UserTenant\\": "platform/packages/user-tenant/src/",
-            "Workable\\UserTenant\\Tests\\": "platform/packages/user-tenant/tests/"
+            "Workable\\Navigation\\": "platform/packages/navigation/src/"
         },
         "files": [
             "platform/packages/user-tenant/helpers/function.php"

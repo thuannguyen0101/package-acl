@@ -139,7 +139,7 @@ class AccountMoneyService
         ];
     }
 
-    private function returnSuccess($accountMoney, string $message = '', array $filters = []): array
+    private function returnSuccess($accountMoney, string $message = ''): array
     {
         return [
             'status'        => ResponseMessageEnum::CODE_OK,

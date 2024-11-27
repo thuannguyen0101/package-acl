@@ -13,3 +13,7 @@
 [submodule "platform/packages/bank"]
 	path = platform/packages/bank
 	url = git@gitlab.com:vnpgroup.net/bank.git
+
+[submodule "platform/packages/budget"]
+	path = platform/packages/budget
+	url = git@gitlab.com:vnpgroup.net/budget.git

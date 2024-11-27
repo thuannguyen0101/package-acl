@@ -18,7 +18,7 @@ class ExpenseCategoryService
     {
         $filters = $this->getFilterRequest($request);
 
-        $query   = $this->buildQuery($filters, is_admin($request));
+        $query = $this->buildQuery($filters, is_admin($request));
 
         $isPaginate = $request['is_paginate'] ?? false;
         if ($isPaginate) {
@@ -137,17 +137,17 @@ class ExpenseCategoryService
     private function returnNotFound(): array
     {
         return [
-            'status'        => ResponseEnum::CODE_NOT_FOUND,
-            'message'       => __('budget::api.not_found'),
+            'status'           => ResponseEnum::CODE_NOT_FOUND,
+            'message'          => __('budget::api.not_found'),
             'expense_category' => null
         ];
     }
 
-    private function returnSuccess($accountMoney, string $message = '', array $filters = []): array
+    private function returnSuccess($accountMoney, string $message = ''): array
     {
         return [
-            'status'        => ResponseEnum::CODE_OK,
-            'message'       => $message ?: __('budget::api.success'),
+            'status'           => ResponseEnum::CODE_OK,
+            'message'          => $message ?: __('budget::api.success'),
             'expense_category' => $accountMoney
         ];
     }

@@ -1,28 +1,33 @@
 <?php
 
-namespace Workable\Budget\Models;
+namespace Workable\Navigation\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Workable\UserTenant\Models\Tenant;
 use Workable\UserTenant\Models\User;
 
-class AccountMoney extends Model
+class Navigation extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
-    protected $table = 'account_monies';
+    protected $table = 'navigations';
 
     protected $fillable = [
-        'tenant_id',
-        'area_id',
-        'area_source_id',
         'name',
-        'description',
-        'created_by',
-        'updated_by',
+        'root_id',
+        'parent_id',
+        'url',
+        'type',
+        'icon',
+        'view_data',
+        'label',
+        'layout',
+        'sort',
+        'is_auth',
+        'status',
+        'meta'
     ];
 
     public function tenant(): BelongsTo
