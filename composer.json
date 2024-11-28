@@ -17,7 +17,7 @@
         "workable/budget": "dev-main",
         "workable/navigation": "dev-main",
         "workable/platform": "dev-master",
-        "workable/translate": "dev-main",
+        "workable/translate": "*",
         "workable/user-tenant": "dev-main"
     },
     "require-dev": {

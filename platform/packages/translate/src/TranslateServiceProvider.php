@@ -7,8 +7,6 @@
 
 namespace Workable\Translate;
 
-
-
 use Illuminate\Support\ServiceProvider;
 use Workable\Base\Supports\Helper;
 use Workable\Base\Traits\LoadAndPublishDataTrait;
@@ -35,11 +33,9 @@ class TranslateServiceProvider extends ServiceProvider
         $this->setBasePath(base_path('platform/packages' . DIRECTORY_SEPARATOR))
             ->setNamespace('translate')
             ->loadAndPublishConfigurations([
-                'languages'
+                'languages', 'alert', 'permissions', 'private'
             ])
-            ->loadAndPublishViews()
-            ->loadMigrations()
-            ->loadRoutes(['api']);
+            ->loadMigrations();
 
         Helper::autoload(base_path('platform/packages/translate/helpers'));
     }
