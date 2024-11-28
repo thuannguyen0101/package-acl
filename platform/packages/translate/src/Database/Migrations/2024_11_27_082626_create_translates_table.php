@@ -15,12 +15,10 @@ class CreateTranslatesTable extends Migration
     {
         Schema::create('translates', function (Blueprint $table) {
             $table->id();
-            $table->string('language_code');
-            $table->string('key');
+            $table->string('key_language');
             $table->string('translation');
             $table->timestamps();
-
-            $table->unique(['key', 'language_code']);
+            $table->unique(['key_language']);
         });
     }
 

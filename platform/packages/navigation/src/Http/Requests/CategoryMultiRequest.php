@@ -32,8 +32,8 @@ class CategoryMultiRequest extends formRequest
         if ($request->isMethod(RequestAlias::METHOD_POST)) {
             return [
                 'name'      => ['required', 'string', 'max:191'],
-                'root_id'   => ['integer'],
-                'parent_id' => ['integer'],
+                'root_id'   => ['nullable', 'integer', 'exists:category_multi,id'],
+                'parent_id' => ['nullable', 'exists:category_multi,id'],
                 'url'       => ['required', 'string'],
                 'type'      => ['nullable', 'string', 'max:50'],
                 'icon'      => ['nullable', 'string', 'max:50'],
@@ -46,16 +46,22 @@ class CategoryMultiRequest extends formRequest
                 'meta'      => ['nullable', 'array'],
             ];
         }
+
         $validFields = [
             'with'      =>
-                ['tenant', 'createdBy', 'updatedBy', 'expenseCategory', 'accountMoney'],
+                ['createdBy', 'updatedBy', 'parent', 'root'],
             'createdBy' =>
                 ['name', 'tenant_id', 'password', 'email', 'phone', 'status', 'address', 'sex', 'date_of_birthday', 'avatar'],
+            'parent'    =>
+                ['name', 'root_id', 'parent_id', 'url', 'type', 'icon', 'view_data', 'label', 'layout', 'sort', 'is_auth', 'status', 'meta', 'created_by', 'updated_by'],
         ];
 
         return [
             'with'                  => ['nullable', new ValidFields('with', $validFields['with'])],
             'with_fields.createdBy' => ['nullable', new ValidFields('createdBy', $validFields['createdBy'])],
+            'with_fields.updatedBy' => ['nullable', new ValidFields('updatedBy', $validFields['createdBy'])],
+            'with_fields.parent'    => ['nullable', new ValidFields('parent', $validFields['parent'])],
+            'with_fields.root'      => ['nullable', new ValidFields('root', $validFields['parent'])],
         ];
     }
 }

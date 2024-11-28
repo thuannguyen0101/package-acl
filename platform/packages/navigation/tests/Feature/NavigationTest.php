@@ -14,8 +14,6 @@ class NavigationTest extends BaseAuthTest
 
         $this->data = [
             'name'      => 'Nav Left',
-            'root_id'   => 0,
-            'parent_id' => 0,
             'url'       => 'api/v1/nav-left',
             'type'      => 'frontend',
             'icon'      => null,
@@ -114,5 +112,95 @@ class NavigationTest extends BaseAuthTest
                     "navigation" => $this->formatData
                 ]
             ]);
+    }
+    public function test_list()
+    {
+        $response = $this->json("GET", route('api.navigation.index'), [
+            'with' => 'createdBy '
+        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    "navigations" => [
+                        '*' => $this->formatData
+                    ]
+                ]
+            ]);
+    }
+
+    public function test_validate()
+    {
+        $this->testValidate(route('api.navigation.store'));
+    }
+
+    protected function testValidate($route)
+    {
+        $testCases = [
+            [
+                'data'           => [],
+                'expectedErrors' =>
+                    [
+                        'name',
+                        'url',
+                    ]
+            ],
+            [
+                'data'           => ['name' => 'Test Navigation'],
+                'expectedErrors' =>
+                    [
+                        'url',
+                    ]
+            ],
+
+            [
+                'data'           => ['url' => 'api/v1/nav-right'],
+                'expectedErrors' =>
+                    [
+                        'name',
+                    ]
+            ],
+            [
+                'data'           => [
+                    'name'      => 1,
+                    'root_id'   => 'a',
+                    'parent_id' => 'a',
+                    'url'       => 1,
+                    'type'      => 1,
+                    'icon'      => 1,
+                    'view_data' => 1,
+                    'label'     => 'a',
+                    'layout'    => 'a',
+                    'sort'      => 'a',
+                    'is_auth'   => 'a',
+                    'status'    => 'a',
+                    'meta'      => 'a',
+                ],
+                'expectedErrors' =>
+                    [
+                        'name',
+                        'root_id',
+                        'parent_id',
+                        'url',
+                        'type',
+                        'icon',
+                        'view_data',
+                        'label',
+                        'layout',
+                        'sort',
+                        'is_auth',
+                        'status',
+                        'meta',
+                    ]
+            ],
+        ];
+
+        foreach ($testCases as $testCase) {
+            $response = $this->json("POST", $route, $testCase['data']);
+
+            $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'data' => $testCase['expectedErrors']
+                ]);
+        }
     }
 }

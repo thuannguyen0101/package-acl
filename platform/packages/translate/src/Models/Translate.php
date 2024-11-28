@@ -11,8 +11,7 @@ class Translate extends Model
 
     protected $table = 'translates';
     protected $fillable = [
-        'language_code',
-        'key',
+        'key_language',
         'translation',
     ];
 }

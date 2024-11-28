@@ -12,29 +12,6 @@ class CategoryMultiTest extends BaseAuthTest
 
         $this->login();
 
-        $this->data = [
-            'name'       => 'Sản phẩm',
-            'root_id'    => 1,
-            'parent_id'  => 1,
-            'url'        => 'api/v1/products',
-            'type'       => 'default',
-            'icon'       => null,
-            'view_data'  => null,
-            'label'      => 1,
-            'layout'     => 1,
-            'sort'       => 1,
-            'is_auth'    => 1,
-            'status'     => CategoryMultiEnum::STATUS_INACTIVE,
-            'meta'       => [
-                'charset'  => 'test category products',
-                'content'  => 'test category products',
-                'title'    => 'test category products',
-                'viewport' => 'test category products',
-            ],
-            'created_by' => $this->user->id,
-            'updated_by' => $this->user->id
-        ];
-
         $this->item = CategoryMulti::create([
             'name'       => 'Laptop',
             'root_id'    => 0,
@@ -57,6 +34,27 @@ class CategoryMultiTest extends BaseAuthTest
             'created_by' => $this->user->id,
             'updated_by' => $this->user->id
         ]);
+
+        $this->data = [
+            'name'       => 'Sản phẩm',
+            'url'        => 'api/v1/products',
+            'type'       => 'default',
+            'icon'       => null,
+            'view_data'  => null,
+            'label'      => 1,
+            'layout'     => 1,
+            'sort'       => 1,
+            'is_auth'    => 1,
+            'status'     => CategoryMultiEnum::STATUS_INACTIVE,
+            'meta'       => [
+                'charset'  => 'test category products',
+                'content'  => 'test category products',
+                'title'    => 'test category products',
+                'viewport' => 'test category products',
+            ],
+            'created_by' => $this->user->id,
+            'updated_by' => $this->user->id
+        ];
 
         $this->formatData = [
             'name',

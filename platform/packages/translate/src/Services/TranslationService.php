@@ -19,12 +19,7 @@ class TranslationService
     protected function loadTranslations()
     {
         $this->translations = DB::table('translates')
-            ->get()
-            ->groupBy('language_code')
-            ->map(function ($group) {
-                return $group->pluck('translation', 'key')->toArray();
-            })
-            ->toArray();
+            ->pluck('translation', 'key_language')->toArray();
     }
 
     /**
@@ -37,7 +32,7 @@ class TranslationService
     public function get(string $key, ?string $language = null): ?string
     {
         $language = $language ?? app()->getLocale();
-        return $this->translations[$language][$key] ?? null;
+        return $this->translations[$key . '_' . $language] ?? $key;
     }
 
     /**

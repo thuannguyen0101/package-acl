@@ -30,18 +30,13 @@ class Navigation extends Model
         'meta'
     ];
 
-    public function tenant(): BelongsTo
+    public function parent(): BelongsTo
     {
-        return $this->belongsTo(Tenant::class, 'tenant_id', 'id');
+        return $this->belongsTo(Navigation::class, 'parent_id');
     }
 
-    public function createdBy(): BelongsTo
+    public function root(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by', 'id');
-    }
-
-    public function updatedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'updated_by', 'id');
+        return $this->belongsTo(Navigation::class, 'root_id');
     }
 }

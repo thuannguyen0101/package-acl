@@ -27,7 +27,6 @@ class NavigationService
         }
 
         $navigations = NavigationDTO::transform($navigations, $filters);
-        dd($navigations);
 
         return [
             'status'      => ResponseEnum::CODE_OK,
@@ -54,19 +53,19 @@ class NavigationService
     public function store(array $request = []): array
     {
         $data = [
-            'name'       => $request['name'],
-            'root_id'    => $request['parent_id'] ?? 0,
-            'parent_id'  => $request['parent_id'] ?? 0,
-            'url'        => $request['url'],
-            'type'       => $request['type'] ?? null,
-            'icon'       => $request['icon'] ?? null,
-            'view_data'  => $request['view_data'] ?? null,
-            'label'      => $request['label'] ?? 0,
-            'layout'     => $request['layout'] ?? 0,
-            'sort'       => $request['sort'] ?? 0,
-            'is_auth'    => $request['is_auth'] ?? 0,
-            'status'     => $request['status'] ?? CategoryMultiEnum::STATUS_ACTIVE,
-            'meta'       => json_encode($request['meta'] ?? []),
+            'name'      => $request['name'],
+            'root_id'   => $request['parent_id'] ?? 0,
+            'parent_id' => $request['parent_id'] ?? 0,
+            'url'       => $request['url'],
+            'type'      => $request['type'] ?? null,
+            'icon'      => $request['icon'] ?? null,
+            'view_data' => $request['view_data'] ?? null,
+            'label'     => $request['label'] ?? 0,
+            'layout'    => $request['layout'] ?? 0,
+            'sort'      => $request['sort'] ?? 0,
+            'is_auth'   => $request['is_auth'] ?? 0,
+            'status'    => $request['status'] ?? CategoryMultiEnum::STATUS_ACTIVE,
+            'meta'      => json_encode($request['meta'] ?? []),
         ];
 
         $navigation = Navigation::query()->create($data);
@@ -131,18 +130,18 @@ class NavigationService
     private function returnNotFound(): array
     {
         return [
-            'status'         => ResponseEnum::CODE_NOT_FOUND,
-            'message'        => __('category_multi::api.not_found'),
-            'category_multi' => null
+            'status'     => ResponseEnum::CODE_NOT_FOUND,
+            'message'    => __('category_multi::api.not_found'),
+            'navigation' => null
         ];
     }
 
     private function returnSuccess($navigation, string $message = ''): array
     {
         return [
-            'status'         => ResponseEnum::CODE_OK,
-            'message'        => $message ?: __('category_multi::api.success'),
-            'category_multi' => $navigation
+            'status'     => ResponseEnum::CODE_OK,
+            'message'    => $message ?: __('category_multi::api.success'),
+            'navigation' => $navigation
         ];
     }
 }

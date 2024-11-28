@@ -126,12 +126,16 @@ class TranslateLanguageCommand extends Command
      */
     private function saveTranslationsToDatabase(array $messages, string $languageCode, bool $useUpdateOrInsert): bool
     {
+        foreach ($messages as $key => $value) {
+            unset($messages[$key]);
+            $messages[$key . "_" . $languageCode] = $value;
+        }
+
         if ($useUpdateOrInsert) {
             foreach ($messages as $key => $translation) {
                 DB::table('translates')->updateOrInsert(
                     [
-                        'key'           => $key,
-                        'language_code' => $languageCode,
+                        'key_language' => $key
                     ],
                     [
                         'translation' => $translation,
@@ -143,10 +147,8 @@ class TranslateLanguageCommand extends Command
         } else {
             $dataInsert = [];
             $languages  = Translate::query()
-                ->select(['key'])
-                ->whereIn('key', array_keys($messages))
-                ->where('language_code', $languageCode)
-                ->pluck('key')->toArray();
+                ->whereIn('key_language', array_keys($messages))
+                ->pluck('key_language')->toArray();
 
             foreach ($messages as $key => $translation) {
                 if (in_array($key, $languages)) {
@@ -154,11 +156,10 @@ class TranslateLanguageCommand extends Command
                     return false;
                 }
                 $dataInsert[] = [
-                    'key'           => $key,
-                    'language_code' => $languageCode,
-                    'translation'   => $translation,
-                    'created_at'    => now(),
-                    'updated_at'    => now(),
+                    'key_language' => $key,
+                    'translation'  => $translation,
+                    'created_at'   => now(),
+                    'updated_at'   => now(),
                 ];
             }
 

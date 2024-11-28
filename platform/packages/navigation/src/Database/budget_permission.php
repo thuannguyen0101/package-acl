@@ -15,12 +15,4 @@ return [
         'budget_show',
         'budget_delete',
     ],
-
-    'expense_categories' => [
-        'expense_category_list',
-        'expense_category_create',
-        'expense_category_update',
-        'expense_category_show',
-        'expense_category_delete',
-    ],
 ];
