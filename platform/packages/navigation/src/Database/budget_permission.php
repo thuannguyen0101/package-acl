@@ -1,18 +1,18 @@
 <?php
 return [
-    'account_money' => [
-        'account_money_list',
-        'account_money_create',
-        'account_money_update',
-        'account_money_show',
-        'account_money_delete',
-    ],
-
-    'budgets' => [
-        'budget_list',
-        'budget_create',
-        'budget_update',
-        'budget_show',
-        'budget_delete',
-    ],
+//    'category_multi' => [
+//        'category_multi_list',
+//        'category_multi_create',
+//        'category_multi_update',
+//        'category_multi_show',
+//        'category_multi_delete',
+//    ],
+//
+//    'navigations' => [
+//        'navigation_list',
+//        'navigation_create',
+//        'navigation_update',
+//        'navigation_show',
+//        'navigation_delete',
+//    ],
 ];

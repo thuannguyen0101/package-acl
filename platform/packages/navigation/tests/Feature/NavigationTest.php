@@ -32,19 +32,19 @@ class NavigationTest extends BaseAuthTest
         ];
 
         $this->item = Navigation::create([
-            'name'       => 'Nav Right',
-            'root_id'    => 0,
-            'parent_id'  => 0,
-            'url'        => 'api/v1/nav-right',
-            'type'       => 'backend',
-            'icon'       => null,
-            'view_data'  => null,
-            'label'      => 1,
-            'layout'     => 1,
-            'sort'       => 1,
-            'is_auth'    => 1,
-            'status'     => CategoryMultiEnum::STATUS_ACTIVE,
-            'meta'       => json_encode([
+            'name'      => 'Nav Right',
+            'root_id'   => 0,
+            'parent_id' => 0,
+            'url'       => 'api/v1/nav-right',
+            'type'      => 'backend',
+            'icon'      => null,
+            'view_data' => null,
+            'label'     => 1,
+            'layout'    => 1,
+            'sort'      => 1,
+            'is_auth'   => 1,
+            'status'    => CategoryMultiEnum::STATUS_ACTIVE,
+            'meta'      => json_encode([
                 'charset'  => 'test Navigation Right',
                 'content'  => 'test Navigation Right',
                 'title'    => 'test Navigation Right',
@@ -113,11 +113,11 @@ class NavigationTest extends BaseAuthTest
                 ]
             ]);
     }
+
     public function test_list()
     {
-        $response = $this->json("GET", route('api.navigation.index'), [
-            'with' => 'createdBy '
-        ]);
+        $response = $this->json("GET", route('api.navigation.index'));
+
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
@@ -131,6 +131,14 @@ class NavigationTest extends BaseAuthTest
     public function test_validate()
     {
         $this->testValidate(route('api.navigation.store'));
+    }
+
+    public function test_false_login()
+    {
+        $response = $this->withHeader('Authorization', 'Bearer ' . null)
+            ->json("GET", route('api.navigation.index'));
+
+        $response->assertStatus(401);
     }
 
     protected function testValidate($route)
@@ -203,4 +211,5 @@ class NavigationTest extends BaseAuthTest
                 ]);
         }
     }
+
 }

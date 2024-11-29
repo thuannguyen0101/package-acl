@@ -16,12 +16,6 @@ class NavigationController extends Controller
 
     public function __construct(NavigationService $navigationService)
     {
-//        $this->middleware('acl_permission:navigation_list')->only('index');
-//        $this->middleware('acl_permission:navigation_create')->only('store');
-//        $this->middleware('acl_permission:navigation_update')->only('show');
-//        $this->middleware('acl_permission:navigation_show')->only('update');
-//        $this->middleware('acl_permission:navigation_delete')->only('destroy');
-
         $this->navigationService = $navigationService;
     }
 

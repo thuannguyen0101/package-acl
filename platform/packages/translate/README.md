@@ -13,14 +13,14 @@ Translate Package
 ```bash
   # 1. install
   composer require workable/translate
+  
   # 2. run migrate
   php artisan migrate
-  3
 ```
 
 ## Cách sử dụng
 
-Cú pháp lệnh:
+### 1. Lệnh Artisan: language:translate
 
 ```bash
   php artisan language:translate {--path=} {--languages=} {--update}
@@ -61,5 +61,11 @@ Các giá trị mặc định được lấy từ tệp cấu hình. Bạn có t
       ],
   ];
 ```
+### 2. Helpers
 
-#
+Hàm tiện ích __trans giúp truy cập bản dịch dễ dàng trong mã nguồn:
+
+```bash 
+  // Hiển thị bản dịch tiếng Pháp của khóa `welcome_message`.
+  echo __trans('welcome_message', 'fr'); 
+```

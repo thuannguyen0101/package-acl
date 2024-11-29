@@ -89,7 +89,6 @@ class NavigationService
         $navigation->fill($request);
 
         if ($navigation->isDirty()) {
-            $navigation->updated_by = get_user_id();
             $navigation->updated_at = now();
             $navigation->update();
         }

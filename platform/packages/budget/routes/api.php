@@ -7,7 +7,7 @@ use Workable\Budget\Http\Controllers\Api\ExpenseCategoryController;
 
 Route::group([
     'prefix'     => 'api/v1',
-    'middleware' => config('acl.auth.middleware'),
+    'middleware' => config('budget.auth.middleware'),
 ], function () {
     // feature
     Route::prefix('account-moneys')->group(function () {

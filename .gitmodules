@@ -21,3 +21,7 @@
 [submodule "platform/packages/budget"]
 	path = platform/packages/budget
 	url = git@gitlab.com:vnpgroup.net/budget.git
+
+[submodule "platform/packages/translate"]
+	path = platform/packages/translate
+	url = git@gitlab.com:vnpgroup.net/translate.git

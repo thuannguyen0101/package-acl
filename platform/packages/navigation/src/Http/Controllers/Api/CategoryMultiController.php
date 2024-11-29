@@ -16,12 +16,6 @@ class CategoryMultiController extends Controller
 
     public function __construct(CategoryMultiService $categoryMultiService)
     {
-        $this->middleware('acl_permission:category_multi_list')->only('index');
-        $this->middleware('acl_permission:category_multi_create')->only('store');
-        $this->middleware('acl_permission:category_multi_update')->only('show');
-        $this->middleware('acl_permission:category_multi_show')->only('update');
-        $this->middleware('acl_permission:category_multi_delete')->only('destroy');
-
         $this->categoryMultiService = $categoryMultiService;
     }
 

@@ -139,6 +139,13 @@ class CategoryMultiTest extends BaseAuthTest
         $this->testValidate(route('api.category_multi.store'));
     }
 
+    public function test_false_login()
+    {
+        $response = $this->withHeader('Authorization', 'Bearer ' . null)
+            ->json("GET", route('api.category_multi.index'));
+
+        $response->assertStatus(401);
+    }
     protected function testValidate($route)
     {
         $testCases = [
