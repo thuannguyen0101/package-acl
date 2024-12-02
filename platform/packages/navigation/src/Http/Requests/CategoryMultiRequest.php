@@ -5,12 +5,28 @@ namespace Workable\Navigation\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Request as RequestAlias;
+use Workable\Navigation\Models\CategoryMulti;
 use Workable\Support\Traits\ResponseHelperTrait;
+use Workable\UserTenant\Models\User;
 use Workable\UserTenant\Rules\ValidFields;
+use Workable\UserTenant\Traits\MessageValidateTrait;
 
 class CategoryMultiRequest extends formRequest
 {
-    use ResponseHelperTrait;
+    use ResponseHelperTrait, MessageValidateTrait;
+
+    protected $user;
+    protected $categoryMulti;
+
+    public function __construct(
+        User          $user,
+        CategoryMulti $categoryMulti
+    )
+    {
+        parent::__construct();
+        $this->user          = $user;
+        $this->categoryMulti = $categoryMulti;
+    }
 
     /**
      * Determine if the user is authorized to make this request.
@@ -30,6 +46,24 @@ class CategoryMultiRequest extends formRequest
     public function rules(Request $request)
     {
         if ($request->isMethod(RequestAlias::METHOD_POST)) {
+            dd( $this->getMessage(
+                [
+                    'name'      => ['required', 'string', 'max:191'],
+                    'root_id'   => ['nullable', 'integer', 'exists'],
+                    'parent_id' => ['nullable', 'exists'],
+                    'url'       => ['required', 'string'],
+                    'type'      => ['nullable', 'string', 'max:50'],
+                    'icon'      => ['nullable', 'string', 'max:50'],
+                    'view_data' => ['nullable', 'string'],
+                    'label'     => ['integer'],
+                    'layout'    => ['integer'],
+                    'sort'      => ['integer'],
+                    'is_auth'   => ['integer'],
+                    'status'    => ['integer'],
+                    'meta'      => ['nullable', 'array'],
+                ],
+                'navigation::api'
+            ));
             return [
                 'name'      => ['required', 'string', 'max:191'],
                 'root_id'   => ['nullable', 'integer', 'exists:category_multi,id'],
@@ -48,12 +82,9 @@ class CategoryMultiRequest extends formRequest
         }
 
         $validFields = [
-            'with'      =>
-                ['createdBy', 'updatedBy', 'parent', 'root'],
-            'createdBy' =>
-                ['name', 'tenant_id', 'password', 'email', 'phone', 'status', 'address', 'sex', 'date_of_birthday', 'avatar'],
-            'parent'    =>
-                ['name', 'root_id', 'parent_id', 'url', 'type', 'icon', 'view_data', 'label', 'layout', 'sort', 'is_auth', 'status', 'meta', 'created_by', 'updated_by'],
+            'with'      => ['createdBy', 'updatedBy', 'parent', 'root'],
+            'createdBy' => $this->user->getFillable(),
+            'parent'    => $this->categoryMulti->getFillable(),
         ];
 
         return [
@@ -63,5 +94,27 @@ class CategoryMultiRequest extends formRequest
             'with_fields.parent'    => ['nullable', new ValidFields('parent', $validFields['parent'])],
             'with_fields.root'      => ['nullable', new ValidFields('root', $validFields['parent'])],
         ];
+    }
+
+    public function messages(): array
+    {
+        return $this->getMessage(
+            [
+                'name'      => ['required', 'string', 'max:191'],
+                'root_id'   => ['nullable', 'integer', 'exists'],
+                'parent_id' => ['nullable', 'exists'],
+                'url'       => ['required', 'string'],
+                'type'      => ['nullable', 'string', 'max:50'],
+                'icon'      => ['nullable', 'string', 'max:50'],
+                'view_data' => ['nullable', 'string'],
+                'label'     => ['integer'],
+                'layout'    => ['integer'],
+                'sort'      => ['integer'],
+                'is_auth'   => ['integer'],
+                'status'    => ['integer'],
+                'meta'      => ['nullable', 'array'],
+            ],
+            'navigation::api'
+        );
     }
 }

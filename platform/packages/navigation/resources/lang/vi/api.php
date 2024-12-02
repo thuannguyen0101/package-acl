@@ -13,7 +13,8 @@ return [
         'numeric'         => 'Trường :attribute phải là số.',
         'confirmed'       => 'Trường xác nhận phải khớp với trường mật khẩu.',
         'alpha_num'       => 'Trường :attribute chỉ chấp nhận các ký tự chữ và số (không có ký tự đặc biệt).',
-        'array'           => 'Trường :attribute phải là một mảng.'
+        'array'           => 'Trường :attribute phải là một mảng.',
+        'integer'         => 'Trường :attribute phải là số.',
     ],
 
     'fields'       => [
@@ -22,17 +23,19 @@ return [
         'numeric'  => 'số',
         'checkbox' => 'một trong các lựa chọn đã đưa ra. ',
 
-        'name'      => 'tên của chủ sở hữu',
-        'username'  => 'tên đăng nhập của người dùng',
-        'avatar'    => 'dường dẫn hình ảnh',
-        'password'  => 'mật khẩu',
-        'phone'     => 'số điện thoại',
-        'status'    => 'trạng thái',
-        'filters'   => 'bộ lọc',
-        'filters.*' => 'giá trị bộ lọc',
-        'role_id'   => 'vai trò',
-        'model_id'  => 'người dùng',
-        'tenant_id' => 'chủ sở hữu'
+        'name'      => 'Tên',
+        'root_id'   => 'ID gốc',
+        'parent_id' => 'ID cha',
+        'url'       => 'URL',
+        'type'      => 'Loại',
+        'icon'      => 'Biểu tượng',
+        'view_data' => 'Dữ liệu hiển thị',
+        'label'     => 'Nhãn',
+        'layout'    => 'Bố cục',
+        'sort'      => 'Sắp xếp',
+        'is_auth'   => 'Xác thực',
+        'status'    => 'Trạng thái',
+        'meta'      => 'Meta',
     ],
 
     // Thông báo thành công
@@ -48,8 +51,6 @@ return [
     'forbidden'    => 'Bạn không được phép thực hiện thao tác này.',
     'server_error' => 'Lỗi máy chủ, vui lòng thử lại sau.',
 
-    'not_data'     => [
-        'account_money'       => 'Không có khoản quỹ nào tồn tại.',
-        'expense_categories ' => 'Không có danh mục thu chi nào tồn tại.'
-    ]
+    'no_data'        => 'Không có dữ liệu nào được tìm thấy.',
+    'data_not_owned' => 'Dữ liệu này không thuộc về bạn.',
 ];
