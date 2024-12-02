@@ -5,37 +5,35 @@ namespace Workable\Bank\Services;
 use Illuminate\Database\Eloquent\Builder;
 use Workable\ACL\Enums\ResponseMessageEnum;
 use Workable\Bank\Enums\AccountEnum;
+use Workable\Bank\Http\DTO\AccountDTO;
 use Workable\Bank\Models\Account;
 use Workable\Support\Traits\FilterBuilderTrait;
+use Workable\Support\Traits\ScopeRepositoryTrait;
 
 class AccountService
 {
-    use FilterBuilderTrait;
+    use FilterBuilderTrait, ScopeRepositoryTrait;
 
     public function indexAccount(array $searches = []): array
     {
         $filters = $this->getFilterRequest($searches);
 
-        $query = $this->buildQuery($filters);
-
-        if (!is_admin($searches)) {
-            $query->where('tenant_id', get_tenant_id());
-        }
+        $query = $this->buildQuery($filters, is_admin($searches));
 
         $accounts = $query->get();
 
         if ($accounts->count() == 0) {
             return [
                 'status'   => ResponseMessageEnum::CODE_NO_CONTENT,
-                'message'  => __('acl::api.no_data'),
+                'message'  => __('bank::api.no_data'),
                 'accounts' => null
             ];
         }
 
         return [
             'status'   => ResponseMessageEnum::CODE_OK,
-            'message'  => __('acl::api.success'),
-            'accounts' => $accounts
+            'message'  => __('bank::api.success'),
+            'accounts' => AccountDTO::transform($accounts, $filters)
         ];
     }
 
@@ -51,8 +49,8 @@ class AccountService
         if ($account) {
             return [
                 'status'  => ResponseMessageEnum::CODE_CONFLICT,
-                'message' => __('acl::api.conflict.account_exists'),
-                'account' => $account
+                'message' => __('bank::api.conflict.account_exists'),
+                'account' => AccountDTO::transform($account)
             ];
         }
 
@@ -68,39 +66,33 @@ class AccountService
             'updated_at'     => now()->format("Y-m-d H:i:s"),
         ]);
 
-        $account->user = $user;
-
         return [
             'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => __('acl::api.created'),
-            'account' => $account
+            'message' => __('bank::api.created'),
+            'account' => AccountDTO::transform($account)
         ];
     }
 
-    public function getAccount($id): array
+    public function getAccount(int $id, array $searches = []): array
     {
-        $account = Account::query()
-            ->where('tenant_id', get_tenant_id())
-            ->find($id);
+        $filters = $this->getFilterRequest($searches);
+        $query   = $this->buildQuery($filters, is_admin($searches));
+        $account = $query->find($id);
 
         if (!$account) {
             return $this->notFoundResponseDefault();
         }
 
-        $account->load('user');
-
         return [
             'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => __('acl::api.created'),
-            'account' => $account
+            'message' => __('bank::api.created'),
+            'account' => AccountDTO::transform($account)
         ];
     }
 
     public function updateAccount($id, array $data): array
     {
-        $account = Account::query()
-            ->where('tenant_id', get_tenant_id())
-            ->find($id);
+        $account = $this->findOne($id);
 
         if (!$account) {
             return $this->notFoundResponseDefault();
@@ -108,20 +100,16 @@ class AccountService
 
         $account->update($data);
 
-        $account->load('user');
-
         return [
             'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => __('acl::api.updated'),
-            'account' => $account
+            'message' => __('bank::api.updated'),
+            'account' => AccountDTO::transform($account)
         ];
     }
 
     public function destroyAccount($id): array
     {
-        $account = Account::query()
-            ->where('tenant_id', get_tenant_id())
-            ->find($id);
+        $account = $this->findOne($id);
 
         if (!$account) {
             return $this->notFoundResponseDefault();
@@ -131,7 +119,7 @@ class AccountService
 
         return [
             'status'  => ResponseMessageEnum::CODE_OK,
-            'message' => __('acl::api.deleted'),
+            'message' => __('bank::api.deleted'),
         ];
     }
 
@@ -139,27 +127,34 @@ class AccountService
     {
         return [
             'status'  => ResponseMessageEnum::CODE_NOT_FOUND,
-            'message' => __('acl::api.not_found'),
+            'message' => __('bank::api.not_found'),
             'account' => null
         ];
     }
 
-//    private function conflictResponseDefault(): array
-//    {
-//        return [
-//            'status'  => ResponseMessageEnum::CODE_CONFLICT,
-//            'message' => __('acl::api.account_not_owned'),
-//            'account' => null
-//        ];
-//    }
-
-    private function buildQuery(array $filters = []): Builder
+    private function buildQuery(array $filters = [], bool $isAdmin = false): Builder
     {
         $query = Account::query();
+
+        if (!$isAdmin) {
+            $query->where('tenant_id', get_tenant_id());
+        }
+
+        $this->scopeFilter($query, $filters['filters']);
+
+        $this->scopeSort($query, $filters['orders']);
+
         if (!empty($filters['with'])) {
             $query->with($filters['with']);
         }
         return $query;
+    }
+
+    public function findOne($id): ?Account
+    {
+        return Account::query()
+            ->where('tenant_id', get_tenant_id())
+            ->find($id);
     }
 
     private function createAccountNumber(): string

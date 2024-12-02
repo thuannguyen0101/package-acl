@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use Workable\Bank\Enums\ResponseEnum;
 use Workable\Bank\Http\Requests\AccountListRequest;
 use Workable\Bank\Http\Requests\AccountRequest;
-use Workable\Bank\Http\Resources\AccountCollection;
-use Workable\Bank\Http\Resources\AccountResource;
 use Workable\Bank\Services\AccountService;
 use Workable\Support\Traits\ResponseHelperTrait;
 
@@ -43,7 +41,7 @@ class AccountController extends Controller
             );
         }
 
-        return $this->respondSuccess($message, new AccountCollection($accounts));
+        return $this->respondSuccess($message, $accounts);
     }
 
     public function store(AccountRequest $request)
@@ -54,26 +52,18 @@ class AccountController extends Controller
             'account' => $account,
             ) = $this->accountService->createAccount($request->all());
 
-        if ($status != ResponseEnum::CODE_OK) {
-            return $this->respondError($message);
-        }
-
-        return $this->respondSuccess($message, new AccountResource($account));
+        return $this->respondBase($status, $message, $account);
     }
 
-    public function show($id)
+    public function show($id, AccountListRequest $request)
     {
         list(
             'status' => $status,
             'message' => $message,
             'account' => $account,
-            ) = $this->accountService->getAccount($id);
-
-        if ($status != ResponseEnum::CODE_OK) {
-            return $this->respondError($message);
-        }
-
-        return $this->respondSuccess($message, new AccountResource($account));
+            ) = $this->accountService->getAccount($id, $request->all());
+        
+        return $this->respondBase($status, $message, $account);
     }
 
     public function update(int $id, AccountRequest $request)
@@ -85,11 +75,7 @@ class AccountController extends Controller
             'account' => $account,
             ) = $this->accountService->updateAccount($id, $data);
 
-        if ($status != ResponseEnum::CODE_OK) {
-            return $this->respondError($message);
-        }
-
-        return $this->respondSuccess($message, new AccountResource($account));
+        return $this->respondBase($status, $message, $account);
     }
 
     public function destroy(int $id)
@@ -104,5 +90,14 @@ class AccountController extends Controller
         }
 
         return $this->respondSuccess($message);
+    }
+
+    private function respondBase(int $status, string $message, array $account)
+    {
+        if ($status != ResponseEnum::CODE_OK) {
+            return $this->respondError($message);
+        }
+
+        return $this->respondSuccess($message, $account);
     }
 }

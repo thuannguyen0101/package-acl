@@ -1,6 +1,5 @@
 <?php
 return [
-
     'field_validates' => [
         'required'        => 'Trường :attribute là bắt buộc.',
         'string'          => 'Trường :attribute phải là chuỗi ký tự.',

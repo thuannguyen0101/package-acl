@@ -6,10 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Workable\Bank\Enums\AccountEnum;
 use Workable\Support\Traits\ResponseHelperTrait;
+use Workable\UserTenant\Traits\MessageValidateTrait;
 
 class AccountRequest extends FormRequest
 {
-    use ResponseHelperTrait;
+    use ResponseHelperTrait, MessageValidateTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -37,18 +38,13 @@ class AccountRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
-            'account_type.required' => __('acl::api.required', ['attribute' => 'loại tài khoản']),
-            'account_type.numeric'  => __('acl::api.numeric', ['attribute' => 'loại tài khoản']),
-            'account_type.in'       => __('acl::api.in', ['attribute' => 'loại tài khoản']),
-
-            'bank_name.required' => __('acl::api.required', ['attribute' => 'tên ngân hàng']),
-            'bank_name.numeric'  => __('acl::api.numeric', ['attribute' => 'tên ngân hàng']),
-            'bank_name.in'       => __('acl::api.in', ['attribute' => 'tên ngân hàng']),
-
-            'branch_name.required' => __('acl::api.required', ['attribute' => 'tên chi nhánh']),
-            'branch_name.numeric'  => __('acl::api.numeric', ['attribute' => 'tên chi nhánh']),
-            'branch_name.in'       => __('acl::api.in', ['attribute' => 'tên chi nhánh']),
-        ];
+        return $this->getMessage(
+            [
+                'account_type' => ['required', 'numeric', 'in'],
+                'bank_name'    => ['required', 'numeric', 'in'],
+                'branch_name'  => ['required', 'numeric', 'in'],
+            ],
+            'bank::api'
+        );
     }
 }

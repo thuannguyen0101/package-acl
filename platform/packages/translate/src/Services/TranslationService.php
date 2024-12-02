@@ -3,10 +3,11 @@
 namespace Workable\Translate\Services;
 
 use Illuminate\Support\Facades\DB;
+use Workable\Translate\Models\Translate;
 
 class TranslationService
 {
-    protected $translations;
+    protected $translations = [];
 
     public function __construct()
     {
@@ -18,21 +19,23 @@ class TranslationService
      */
     protected function loadTranslations()
     {
-        $this->translations = DB::table('translates')
-            ->pluck('translation', 'key_language')->toArray();
+        $translation = 'translation_' . app()->getLocale();
+        if ((new Translate())->checkFieldable($translation)) {
+            $this->translations = DB::table('translates')
+                ->select('translation_' . app()->getLocale(), 'key')
+                ->pluck('translation_' . app()->getLocale(), 'key')->toArray();
+        }
     }
 
     /**
-     * Get a translation for the given key and language.
+     * Get a translation for the given key.
      *
      * @param string $key
-     * @param string|null $language
      * @return string|null
      */
-    public function get(string $key, ?string $language = null): ?string
+    public function get(string $key): ?string
     {
-        $language = $language ?? app()->getLocale();
-        return $this->translations[$key . '_' . $language] ?? $key;
+        return $this->translations[$key] ?? $key;
     }
 
     /**

@@ -29,21 +29,16 @@ class AccountListRequest extends FormRequest
     public function rules(Request $request)
     {
         $validFields = [
-            'user' => ['id', 'name', 'email'],
-            'with' => ['user']
+            'user'   => ['id', 'name', 'email'],
+            'tenant' => ['name', 'email', 'user_id', 'phone', 'status', 'address', 'full_name', 'description',
+                'business_phone', 'meta_attribute', 'website', 'gender', 'birthday', 'size', 'citizen_id', 'start_at', 'expiry_at'],
+            'with'   => ['user', 'tenant']
         ];
 
         return [
-            'with'        => ['nullable', new ValidFields('with', $validFields['with'])],
-            'fields.user' => ['nullable', new ValidFields('user', $validFields['user'])],
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'with.*'      => __('acl::api.validation_with'),
-            'fields.user' => __('acl::api.validation_fields'),
+            'with'          => ['nullable', new ValidFields('with', $validFields['with'])],
+            'fields.user'   => ['nullable', new ValidFields('user', $validFields['user'])],
+            'fields.tenant' => ['nullable', new ValidFields('tenant', $validFields['tenant'])],
         ];
     }
 }

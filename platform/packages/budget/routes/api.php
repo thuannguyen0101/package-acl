@@ -27,7 +27,6 @@ Route::group([
 
     Route::group([
         'prefix'     => 'budgets',
-        'middleware' => 'budget_check'
     ], function () {
         Route::get('/', [BudgetController::class, 'index'])->name('api.budget.index');
         Route::post('/', [BudgetController::class, 'store'])->name('api.budget.store');

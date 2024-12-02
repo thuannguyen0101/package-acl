@@ -18,7 +18,7 @@ class TranslateLanguageCommand extends Command
     protected $signature = 'language:translate
                             {--path= : Path to the source file (optional)}
                             {--languages= : Comma-separated list of target languages (optional)}
-                            {--update : Sử dụng updateOrInsert để cập nhật hoặc tạo mới}';
+                            {--update : Use updateOrInsert to update or create records}';
 
     /**
      * The console command description.
@@ -48,73 +48,68 @@ class TranslateLanguageCommand extends Command
 
         foreach ($sourceFile as $file) {
             if (!file_exists($file)) {
-                $this->error("Tệp nguồn không tồn tại: $file");
+                $this->error("Source file not found: $file");
                 return 1;
             }
         }
+
         $defaultLanguage = config('translate.languages.source_language');
         $translator      = new GoogleTranslate();
-
         $translator->setSource($defaultLanguage);
 
         foreach ($sourceFile as $file) {
-            $this->info("Đang xử lý tệp: $file");
+            $this->info("Processing file: $file");
 
             $messages = include $file;
 
             if (!is_array($messages)) {
-                $this->error("Tệp $file phải trả về một mảng.");
+                $this->error("File $file must return an array.");
                 return 1;
             }
+
             if (empty($messages)) {
                 continue;
             }
-            if ($this->saveTranslationsToDatabase($messages, $defaultLanguage, $useUpdateOrInsert)) {
-                $this->info("Ngôn ngữ $defaultLanguage đã được lưu vào cơ sở dữ liệu.");
+            $translatedMessages = $this->translateMessages($translator, $messages, $targetLanguages);
+
+            if ($this->saveTranslationsToDatabase($translatedMessages, $useUpdateOrInsert)) {
+                $this->info("Translations have been saved successfully.");
             } else {
-                $this->error("Tệp $file chứa key đã tồn tại.");
-            }
-
-            foreach ($targetLanguages as $language) {
-                $this->info("Đang dịch sang: $language");
-                $translatedMessages = $this->translateMessages($translator, $messages, $language);
-
-                if ($this->saveTranslationsToDatabase($translatedMessages, $language, $useUpdateOrInsert)) {
-                    $this->info("Dịch ngôn ngữ $language đã được lưu vào cơ sở dữ liệu.");
-                } else {
-                    $this->error("Tệp $file chứa key đã tồn tại.");
-                }
+                $this->error("An error occurred while saving translations.");
             }
         }
 
         $translationService->reload();
-        $this->info("Dịch thuật hoàn tất.");
+        $this->info("Translation process completed.");
 
         return 0;
     }
 
     /**
-     * Translate messages into target language.
+     * Translate messages into multiple target languages.
      *
      * @param GoogleTranslate $translator
      * @param array $messages
-     * @param string $targetLanguage
+     * @param array $targetLanguages
      * @return array
      */
-    private function translateMessages(GoogleTranslate $translator, array $messages, string $targetLanguage): array
+    private function translateMessages(GoogleTranslate $translator, array $messages, array $targetLanguages): array
     {
         $translatedMessages = [];
-        $translator->setTarget($targetLanguage);
-
+        $defaultLanguage    = config('translate.languages.source_language');
         foreach ($messages as $key => $message) {
-            try {
-                $translatedMessages[$key] = $translator->translate($message);
-            } catch (\Exception $e) {
-                $this->error("Lỗi khi dịch khóa '$key': " . $e->getMessage());
-                $translatedMessages[$key] = $message;
+            $translations["translation_" . $defaultLanguage] = $message;
+            foreach ($targetLanguages as $language) {
+                try {
+                    $translator->setTarget($language);
+                    $translations['translation_' . $language] = $translator->translate($message);
+                } catch (\Exception $e) {
+                    $this->error("Error translating key '$key' to language '$language': " . $e->getMessage());
+                    $translations[$language] = $message; // Fallback to original message
+                }
             }
+            $translatedMessages[$key] = $translations;
         }
-
         return $translatedMessages;
     }
 
@@ -122,49 +117,44 @@ class TranslateLanguageCommand extends Command
      * Save translated messages to the database.
      *
      * @param array $messages
-     * @param string $languageCode
+     * @param bool $useUpdateOrInsert
+     * @return bool
      */
-    private function saveTranslationsToDatabase(array $messages, string $languageCode, bool $useUpdateOrInsert): bool
+    private function saveTranslationsToDatabase(array $messages, bool $useUpdateOrInsert): bool
     {
-        foreach ($messages as $key => $value) {
-            unset($messages[$key]);
-            $messages[$key . "_" . $languageCode] = $value;
+        if (!$useUpdateOrInsert) {
+            $listKey      = array_keys($messages);
+            $listKeyExist = Translate::query()->select('key')->whereIn('key', $listKey)->pluck('key')->toArray();
+            $commonItems  = array_intersect($listKey, $listKeyExist);
+
+            if (count($commonItems)) {
+                $this->error("Keys: " . implode(', ', $commonItems) . " already exists and was not overwritten.");
+                return false;
+            }
         }
 
-        if ($useUpdateOrInsert) {
-            foreach ($messages as $key => $translation) {
+        $itemsInsert = [];
+
+        foreach ($messages as $key => $translations) {
+            $data = array_merge([
+                'key'        => $key,
+                'updated_at' => now(),
+            ], $translations);
+            if ($useUpdateOrInsert) {
                 DB::table('translates')->updateOrInsert(
-                    [
-                        'key_language' => $key
-                    ],
-                    [
-                        'translation' => $translation,
-                        'created_at'  => now(),
-                        'updated_at'  => now(),
-                    ]
+                    ['key' => $key],
+                    array_merge($data, ['created_at' => now()])
                 );
+            } else {
+                $data['created_at'] = now();
+                $itemsInsert[]      = $data;
             }
-        } else {
-            $dataInsert = [];
-            $languages  = Translate::query()
-                ->whereIn('key_language', array_keys($messages))
-                ->pluck('key_language')->toArray();
-
-            foreach ($messages as $key => $translation) {
-                if (in_array($key, $languages)) {
-                    $this->error("key:$key lang:$languageCode đã tồn tại và không được ghi đè.");
-                    return false;
-                }
-                $dataInsert[] = [
-                    'key_language' => $key,
-                    'translation'  => $translation,
-                    'created_at'   => now(),
-                    'updated_at'   => now(),
-                ];
-            }
-
-            Translate::query()->insert($dataInsert);
         }
+
+        if (!$useUpdateOrInsert) {
+            DB::table('translates')->insert($itemsInsert);
+        }
+
         return true;
     }
 }

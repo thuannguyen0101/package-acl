@@ -66,6 +66,6 @@ Các giá trị mặc định được lấy từ tệp cấu hình. Bạn có t
 Hàm tiện ích __trans giúp truy cập bản dịch dễ dàng trong mã nguồn:
 
 ```bash 
-  // Hiển thị bản dịch tiếng Pháp của khóa `welcome_message`.
-  echo __trans('welcome_message', 'fr'); 
+  // Hiển thị bản dịch của từ khóa `welcome_message`.
+  echo __trans('welcome_message'); 
 ```

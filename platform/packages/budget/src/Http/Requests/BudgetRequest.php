@@ -39,10 +39,11 @@ class BudgetRequest extends formRequest
                     ->where('tenant_id', get_tenant_id())],
                 'account_money_id'    => ['required', 'numeric', Rule::exists('account_monies', 'id')
                     ->where('tenant_id', get_tenant_id())],
-//            'meta_file'           => ['nullable', 'string', 'max:255'],
                 'meta_content'        => ['nullable', 'array'],
+//                'meta_file' => ['nullable', 'string', 'max:255'],
             ];
         }
+
         $validFields = [
             'with'            =>
                 ['tenant', 'createdBy', 'updatedBy', 'expenseCategory', 'accountMoney'],
@@ -64,5 +65,20 @@ class BudgetRequest extends formRequest
             'with_fields.expenseCategory' => ['nullable', new ValidFields('expenseCategory', $validFields['expenseCategory'])],
             'with_fields.accountMoney'    => ['nullable', new ValidFields('accountMoney', $validFields['accountMoney'])],
         ];
+    }
+
+    public function messages(): array
+    {
+        return $this->getMessage(
+            [
+                'name.budget'         => ['required', 'string', 'max:255'],
+                'description.budget'  => ['nullable', 'string', 'max:255'],
+                'money'               => ['required', 'numeric',],
+                'expense_category_id' => ['required',],
+                'account_money_id'    => ['string'],
+                'meta_content'        => ['string'],
+            ],
+            'budget::api'
+        );
     }
 }

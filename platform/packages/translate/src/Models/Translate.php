@@ -11,7 +11,15 @@ class Translate extends Model
 
     protected $table = 'translates';
     protected $fillable = [
-        'key_language',
-        'translation',
+        'key',
+        'translation_en',
+        'translation_pt',
+        'translation_it',
+        'translation_es',
     ];
+
+    public function checkFieldable($name): bool
+    {
+       return in_array($name, $this->getFillable());
+    }
 }

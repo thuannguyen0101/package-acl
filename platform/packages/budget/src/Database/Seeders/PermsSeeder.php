@@ -6,8 +6,6 @@ use Workable\ACL\Database\Seeders\PermsTableSeeder;
 
 class PermsSeeder extends PermsTableSeeder
 {
-    protected $path_config = 'budget/src/Database/budget_permission.php';
-
     /**
      * Run the database seeds.
      *
@@ -15,6 +13,7 @@ class PermsSeeder extends PermsTableSeeder
      */
     public function run()
     {
+        $this->path_config = __DIR__ . '/../budget_permission.php';
         parent::run();
     }
     //  php artisan db:seed --class=Workable\\Budget\\Database\\Seeders\\PermsSeeder

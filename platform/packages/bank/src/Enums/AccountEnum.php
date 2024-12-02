@@ -48,38 +48,4 @@ class AccountEnum
         self::STATUS_INACTIVE => 'Không hoạt động',
         self::STATUS_CLOSED   => 'Đã đóng',
     ];
-
-    public static function dataTransform($item)
-    {
-
-        $user = [
-            'id'    => $item->user->id ?? null,
-            'name'  => $item->user->name ?? null,
-            'email' => $item->user->email ?? null,
-        ];
-
-        $data = [
-            'id'             => $item->id,
-            'user_id'        => $item->user_id,
-            'tenant_id'      => $item->tenant_id,
-            'account_number' => $item->account_number,
-            'balance'        => $item->balance,
-            'account_type'   => self::TYPE_TEXT[$item->account_type],
-            'bank_name'      => self::BANK_NAME_TEXT[$item->bank_name],
-            'branch_name'    => self::BRANCH_NAME_TEXT[$item->branch_name],
-            'status'         => self::STATUS_TEXT[$item->status],
-            'user'           => $user
-        ];
-
-        if (!empty($relations['withs'])) {
-            foreach ($relations['withs'] as $relation) {
-                $data[$relation] = null;
-                if (isset($item->$relation)) {
-                    $data[$relation] = $item->$relation->makeHidden(['pivot', 'created_at', 'updated_at', 'password', 'remember_token']);
-                }
-            }
-        }
-
-        return $data;
-    }
 }

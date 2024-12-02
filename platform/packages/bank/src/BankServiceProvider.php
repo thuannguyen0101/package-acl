@@ -14,6 +14,7 @@ class BankServiceProvider extends ServiceProvider
         $this
             ->setBasePath(base_path('./platform/packages' . DIRECTORY_SEPARATOR))
             ->setNamespace('bank')
+            ->loadAndPublishTranslates()
             ->loadMigrations()
             ->loadRoutes(['api']);
     }
