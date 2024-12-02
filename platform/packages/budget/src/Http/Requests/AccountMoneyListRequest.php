@@ -5,11 +5,26 @@ namespace Workable\Budget\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Workable\Support\Traits\ResponseHelperTrait;
+use Workable\UserTenant\Models\Tenant;
+use Workable\UserTenant\Models\User;
 use Workable\UserTenant\Rules\ValidFields;
 
 class AccountMoneyListRequest extends formRequest
 {
     use ResponseHelperTrait;
+
+    protected $tenant;
+    protected $user;
+
+    public function __construct(
+        Tenant $tenant,
+        User   $user
+    )
+    {
+        parent::__construct();
+        $this->tenant = $tenant;
+        $this->user   = $user;
+    }
 
     /**
      * Determine if the user is authorized to make this request.
@@ -29,12 +44,9 @@ class AccountMoneyListRequest extends formRequest
     public function rules(Request $request)
     {
         $validFields = [
-            'with'      =>
-                ['tenant', 'createdBy', 'updatedBy'],
-            'createdBy' =>
-                ['name', 'tenant_id', 'password', 'email', 'phone', 'status', 'address', 'sex', 'date_of_birthday', 'avatar'],
-            'tenant'    =>
-                ['name', 'email', 'phone', 'status', 'address', 'full_name', 'description', 'business_phone', 'meta_attribute', 'gender', 'birthday', 'size'],
+            'with'      => ['tenant', 'createdBy', 'updatedBy'],
+            'createdBy' => $this->user->getFillable(),
+            'tenant'    => $this->tenant->getFillable(),
         ];
 
         return [

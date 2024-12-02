@@ -12,8 +12,8 @@ class AccountMoneyTest extends BaseAuthTest
         $this->login();
 
         $this->data = [
-//            'name'        => 'Test Account Money',
-//            'description' => 'Test Account Money description',
+            'name'        => 'Test Account Money',
+            'description' => 'Test Account Money description',
         ];
 
         $this->formatData   = [
@@ -40,7 +40,6 @@ class AccountMoneyTest extends BaseAuthTest
     public function test_create()
     {
         $response = $this->postJson(route('api.account_money.index'), $this->data);
-        dd($response->json());
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
