@@ -32,7 +32,6 @@ class CategoryMulti extends Model
         'updated_by'
     ];
 
-
     public function parent(): BelongsTo
     {
         return $this->belongsTo(CategoryMulti::class, 'parent_id');

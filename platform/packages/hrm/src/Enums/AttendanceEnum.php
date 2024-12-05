@@ -35,6 +35,15 @@ class AttendanceEnum
         self::HALF_DAY     => 'Half working day',
     ];
 
+    const FIELD_CONVERT = [
+        'late'              => 'convertMinute',
+        'early'             => 'convertMinute',
+        'work'              => 'getWork',
+        'work_shift'        => 'getShiftWork',
+        'attendance_status' => 'getStatus',
+        'created_at'        => 'convertDate',
+        'updated_at'        => 'convertDate',
+    ];
 
     public static function getStatuses(int $status, int $oldStatus = null): int
     {
@@ -89,4 +98,17 @@ class AttendanceEnum
         return $data;
     }
 
+    public static function getAttribute(string $key, $value)
+    {
+        $fields = self::FIELD_CONVERT;
+
+        if (array_key_exists($key, $fields)) {
+            $method = $fields[$key];
+            if (method_exists(self::class, $method)) {
+                return self::$method($value);
+            }
+        }
+
+        return $value;
+    }
 }

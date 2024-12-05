@@ -10,10 +10,16 @@ Route::group([
 //     feature
     Route::prefix('attendances')->group(function () {
         Route::get('/', [AttendanceController::class, 'index'])->name('api.attendances.index');
+        Route::get('/user', [AttendanceController::class, 'getUserAttendanceByMonth'])->name('api.attendances.user');
+        Route::get('/manager', [AttendanceController::class, 'getUsersAttendanceByMonth'])->name('api.attendances.manager');
+        Route::get('/{id}', [AttendanceController::class, 'show'])->name('api.attendances.show');
+
         Route::post('/', [AttendanceController::class, 'store'])->name('api.attendances.store');
         Route::post('/attendance', [AttendanceController::class, 'markAttendance'])->name('api.attendances.mark_attendance');
-        Route::get('/{id}', [AttendanceController::class, 'show'])->name('api.attendances.show');
         Route::post('/{id}', [AttendanceController::class, 'update'])->name('api.attendances.update');
+
+        Route::get('/export/template', [AttendanceController::class, 'exportTemplate'])->name('api.attendances.export.template');
+        Route::post('/import', [AttendanceController::class, 'import'])->name('api.attendances.import');
 
         Route::delete('/{id}', [AttendanceController::class, 'destroy'])->name('api.attendances.destroy');
     });

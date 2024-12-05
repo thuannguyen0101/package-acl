@@ -53,13 +53,15 @@ class AttendanceTest extends BaseAuthTest
             'note'              => null,
             'overtime'          => null,
         ];
+
+        $this->artisan('db:seed', ['--class' => 'Workable\\HRM\\Database\\Seeders\\AttendanceSeeder']);
     }
 
     public function test_attendance()
     {
         $this->postAttendance(Carbon::parse('08:00:00')->format('Y-m-d H:i:s'));
         $response = $this->postAttendance(Carbon::parse('12:00:00')->format('Y-m-d H:i:s'));
-        dd($response);
+
         $response
             ->assertStatus(200)
             ->assertJsonFragment([
@@ -96,13 +98,12 @@ class AttendanceTest extends BaseAuthTest
 
     public function test_update_attendance()
     {
-        $response         = $this->json("POST", route('api.attendances.store'), $this->data);
-        $id               = $response->json('data.attendance.id');
+        $response = $this->json("POST", route('api.attendances.store'), $this->data);
+        $id       = $response->json('data.attendance.id');
 
         $this->data['check_in'] = Carbon::parse('2024:12:03 08:00:00')->format('H:i:s');
 
-        $response         = $this->json("POST", route('api.attendances.update', $id), $this->data);
-        dd($response);
+        $response = $this->json("POST", route('api.attendances.update', $id), $this->data);
 
         $response->assertStatus(200);
     }
@@ -118,10 +119,53 @@ class AttendanceTest extends BaseAuthTest
         $response->assertStatus(200);
     }
 
+    public function test_delete_attendance()
+    {
+        $response = $this->json("POST", route('api.attendances.store'), $this->data);
+        $id       = $response->json('data.attendance.id');
+        $response = $this->json("DELETE", route('api.attendances.destroy', $id));
+
+        $response->assertStatus(200);
+    }
+
+    public function test_show_attendance_by_month()
+    {
+        $response = $this->json("GET", route('api.attendances.user'), [
+            'start_date' => Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d'),
+            'end_date'   => Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d'),
+            'type'       => 'month',
+        ]);
+
+        $response->assertStatus(200);
+    }
+
+    public function test_show_attendance_by_user()
+    {
+        $response = $this->json("GET", route('api.attendances.manager'), [
+            'start_date' => Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d'),
+            'end_date'   => Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d'),
+            'type'       => 'user',
+            'fields'     => ['id', 'work']
+        ]);
+
+        $response->assertStatus(200);
+    }
+
     private function postAttendance($timestamp): TestResponse
     {
         return $this->json("POST", route('api.attendances.mark_attendance'), [
             'timestamp' => $timestamp,
         ]);
+    }
+
+    public function test_export_attendance_template()
+    {
+        $response = $this->json("GET",route('api.attendances.export.template'));
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $contentDisposition = $response->headers->get('Content-Disposition');
+
+        // Kiểm tra xem phần tên file có đúng không (bỏ dấu ngoặc kép nếu có)
+        $this->assertStringContainsString('attachment; filename=attendance_template.xlsx', $contentDisposition);
     }
 }

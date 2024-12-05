@@ -3,7 +3,10 @@
 namespace Workable\HRM\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Workable\HRM\Enums\ResponseEnum;
+use Workable\HRM\Exports\AttendanceTemplateExport;
 use Workable\HRM\Http\Requests\AttendanceCreateRequest;
 use Workable\HRM\Http\Requests\AttendanceRequest;
 use Workable\HRM\Services\AttendanceService;
@@ -28,13 +31,17 @@ class AttendanceController extends Controller
 
     public function index(AttendanceRequest $request)
     {
-        list(
-            'status' => $status,
-            'message' => $message,
-            'account_monies' => $account_monies,
-            ) = $this->attendanceService->index($request->all());
-
-        return $this->respondSuccess($message, $account_monies);
+//        list(
+//            'status' => $status,
+//            'message' => $message,
+//            'attendance' => $attendance,
+//            ) = $this->attendanceService->index($request->all());
+//
+//        if ($status != ResponseEnum::CODE_OK) {
+//            return $this->respondError($message);
+//        }
+//
+//        return $this->respondSuccess($message, $attendance);
     }
 
     public function markAttendance(AttendanceRequest $request)
@@ -110,5 +117,41 @@ class AttendanceController extends Controller
         }
 
         return $this->respondSuccess($message);
+    }
+
+    public function getUserAttendanceByMonth(AttendanceRequest $request)
+    {
+        list(
+            'status' => $status,
+            'message' => $message,
+            'attendance' => $attendance,
+            ) = $this->attendanceService->getUserAttendanceByMonth($request->all());
+
+        if ($status != ResponseEnum::CODE_OK) {
+            return $this->respondError($message);
+        }
+
+        return $this->respondSuccess($message, $attendance);
+    }
+
+    public function getUsersAttendanceByMonth(AttendanceRequest $request)
+    {
+        list(
+            'status' => $status,
+            'message' => $message,
+            'attendances' => $attendances,
+            ) = $this->attendanceService->getUsersAttendanceByMonth($request->all());
+
+        if ($status != ResponseEnum::CODE_OK) {
+            return $this->respondError($message);
+        }
+
+        return $this->respondSuccess($message, $attendances);
+    }
+
+    public function exportTemplate()
+    {
+        $fileName = 'attendance_template.xlsx';
+        return Excel::download(new AttendanceTemplateExport, $fileName);
     }
 }

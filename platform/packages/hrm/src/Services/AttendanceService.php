@@ -47,7 +47,7 @@ class AttendanceService
         }
 
         $attendance = AttendanceDTO::transform($attendance, $filters);
-        dd($attendance);
+
         return $this->returnSuccess($attendance);
     }
 
@@ -108,7 +108,72 @@ class AttendanceService
         ];
     }
 
-    private function setupData($user, array $request, array $configTime): array
+    public function destroy(int $id): array
+    {
+        $attendance = $this->findOne($id);
+        if (!$attendance) {
+            $this->returnNotFound();
+        }
+
+        $attendance->delete();
+
+        return [
+            'status'     => ResponseEnum::CODE_OK,
+            'message'    => "",
+            'attendance' => $attendance
+        ];
+    }
+
+    public function getUserAttendanceByMonth(array $request = []): array
+    {
+        $filters = $this->setupFilterDefaults($request);
+
+        $filters['filter_base'][] = [
+            'user_id',
+            '=',
+            get_user_id()
+        ];
+        $query                    = $this->buildQuery($filters, is_admin($request));
+        $attendances              = $query->get();
+
+        $attendances = AttendanceDTO::transform($attendances, $filters);
+
+        return $this->returnSuccess($attendances, "");
+    }
+
+    public function getUsersAttendanceByMonth($request): array
+    {
+        $filters = $this->setupFilterDefaults($request);
+
+        $query       = $this->buildQuery($filters, is_admin($request));
+        $attendances = $query->get();
+        $attendances = AttendanceDTO::transform($attendances, $filters);
+
+        return [
+            'status'      => ResponseEnum::CODE_OK,
+            'message'     => "",
+            'attendances' => $attendances
+        ];
+    }
+
+    private function setupFilterDefaults(array $request = []): array
+    {
+        $filters = $this->getFilterRequest($request);
+
+        $filters['others']['start_date'] = array_key_exists('start_date', $filters['others'])
+            ? $filters['others']['start_date'] : Carbon::now()->startOfMonth()->format('Y-m-d');
+        $filters['others']['end_date']   = array_key_exists('end_date', $filters['others'])
+            ? $filters['others']['end_date'] : Carbon::now()->endOfMonth()->format('Y-m-d');
+
+        $filters['filter_base'] = array_merge($filters['filter_base'], [
+            ['date', '>=', $filters['others']['start_date']],
+            ['date', '<=', $filters['others']['end_date']],
+        ]);
+
+        return $filters;
+    }
+
+    public function setupData($user, array $request, array $configTime): array
     {
         $breakStartTime = $configTime['break_start_time'];
         $breakEndTime   = $configTime['break_end_time'];
@@ -257,7 +322,7 @@ class AttendanceService
             $query->where('tenant_id', get_tenant_id());
         }
 
-        $this->scopeFilter($query, $filters['filters']);
+        $this->scopeFilter($query, $filters['filter_base']);
 
         $this->scopeSort($query, $filters['orders']);
 
