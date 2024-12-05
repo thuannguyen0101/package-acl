@@ -15,6 +15,7 @@
         "workable/acl": "dev-main",
         "workable/bank": "dev-main",
         "workable/budget": "dev-main",
+        "workable/hrm": "dev-main",
         "workable/navigation": "dev-main",
         "workable/platform": "dev-master",
         "workable/translate": "*",
@@ -36,7 +37,8 @@
             "Workable\\Bank\\": "platform/packages/bank/src/",
             "Workable\\Budget\\": "platform/packages/budget/src/",
             "Workable\\UserTenant\\": "platform/packages/user-tenant/src/",
-            "Workable\\Navigation\\": "platform/packages/navigation/src/"
+            "Workable\\Navigation\\": "platform/packages/navigation/src/",
+            "Workable\\HRM\\": "platform/packages/navigation/src/"
         },
         "classmap": [
             "platform/packages/helpers/classes"

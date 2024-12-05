@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "02fff7569df1e4154168b715d55dacc4",
+    "content-hash": "5c747f4eecfd8c7d9fd5b270da8f2e51",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6356,7 +6356,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/bank",
-                "reference": "90365e129f407927831614081794249b29a1cd6d"
+                "reference": "ab939188e45eb38cfcc0e3cfa405d1a46f3a8e6e"
             },
             "require": {
                 "php": "^7.4"
@@ -6404,7 +6404,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/budget",
-                "reference": "6adfd4b899fbe14cd89068a086aa3eba2acadb13"
+                "reference": "c7ebcf2e48bb1e420a218aa7e85cf091b8e9e0cc"
             },
             "require": {
                 "php": "^7.4"
@@ -6440,6 +6440,54 @@
             "keywords": [
                 "budget",
                 "laravel"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "workable/hrm",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./platform/packages/hrm",
+                "reference": "20b0c007ee1429959780fdee0f097c92c5c292bd"
+            },
+            "require": {
+                "php": "^7.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\HRM\\HRMServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\HRM\\": "src"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php artisan package:discover --ansi"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "thuannn",
+                    "email": "thuannguyen0101.work@gmail.com"
+                }
+            ],
+            "description": "A Laravel package for managing navigation",
+            "keywords": [
+                "laravel",
+                "navigation"
             ],
             "transport-options": {
                 "symlink": true,
@@ -6547,7 +6595,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/translate",
-                "reference": "65452099fdcdf9cab0b48642c0e59dc13193592c"
+                "reference": "785fa20acc938ad2f2d12d699bf163bd30a3614b"
             },
             "require": {
                 "php": "^7.4",
@@ -8946,6 +8994,7 @@
         "workable/acl": 20,
         "workable/bank": 20,
         "workable/budget": 20,
+        "workable/hrm": 20,
         "workable/navigation": 20,
         "workable/platform": 20,
         "workable/user-tenant": 20
