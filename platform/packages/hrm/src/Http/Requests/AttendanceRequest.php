@@ -47,14 +47,13 @@ class AttendanceRequest extends FormRequest
     public function rules(Request $request)
     {
         if ($request->isMethod(RequestAlias::METHOD_POST)) {
-
             return [
                 'timestamp' => 'nullable|date_format:Y-m-d H:i:s',
             ];
         }
 
         $validFields = [
-            'with'   => ['tenant', 'user'],
+            'with'   => ['tenant', 'user', 'approvedBy'],
             'user'   => $this->user->getFillable(),
             'tenant' => $this->tenant->getFillable(),
         ];
@@ -63,6 +62,7 @@ class AttendanceRequest extends FormRequest
             'with'               => ['nullable', new ValidFields('with', $validFields['with'])],
             'with_fields.user'   => ['nullable', new ValidFields('user', $validFields['user'])],
             'with_fields.tenant' => ['nullable', new ValidFields('tenant', $validFields['tenant'])],
+            'with_fields.approvedBy' => ['nullable', new ValidFields('approvedBy', $validFields['user'])],
         ];
     }
 

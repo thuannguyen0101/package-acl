@@ -25,3 +25,11 @@
 [submodule "platform/packages/translate"]
 	path = platform/packages/translate
 	url = git@gitlab.com:vnpgroup.net/translate.git
+
+[submodule "platform/packages/service-price"]
+	path = platform/packages/service-price
+	url = git@gitlab.com:vnpgroup.net/service-price.git
+
+[submodule "platform/packages/incident"]
+	path = platform/packages/incident
+	url = git@gitlab.com:vnpgroup.net/incident.git

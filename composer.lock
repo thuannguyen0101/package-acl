@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5c747f4eecfd8c7d9fd5b270da8f2e51",
+    "content-hash": "8ad33a965528181682dd35d713190e8a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -7072,6 +7072,54 @@
             }
         },
         {
+            "name": "workable/incident",
+            "version": "dev-sondev",
+            "dist": {
+                "type": "path",
+                "url": "./platform/packages/incident",
+                "reference": "a0b357c38bfe51b7a654e0bd5283c9fbf67012e0"
+            },
+            "require": {
+                "php": "^7.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\Incident\\IncidentServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\Incident\\": "src"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php artisan package:discover --ansi"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "sonnguyen",
+                    "email": "sonnguyensinger@gmail.com"
+                }
+            ],
+            "description": "A Laravel package",
+            "keywords": [
+                "incident",
+                "laravel"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "workable/navigation",
             "version": "dev-main",
             "dist": {
@@ -7160,6 +7208,54 @@
             "keywords": [
                 "Workable",
                 "Workable platform"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "workable/service-price",
+            "version": "dev-sondev",
+            "dist": {
+                "type": "path",
+                "url": "./platform/packages/service-price",
+                "reference": "ab61be125d6c5abd37873a08437e93f0ada64027"
+            },
+            "require": {
+                "php": "^7.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\ServicePrice\\ServicePriceServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\ServicePrice\\": "src"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php artisan package:discover --ansi"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "sonnguyen",
+                    "email": "sonnguyensinger@gmail.com"
+                }
+            ],
+            "description": "A Laravel package",
+            "keywords": [
+                "laravel",
+                "service-price"
             ],
             "transport-options": {
                 "symlink": true,
@@ -9572,6 +9668,7 @@
         "workable/bank": 20,
         "workable/budget": 20,
         "workable/hrm": 20,
+        "workable/incident": 20,
         "workable/navigation": 20,
         "workable/platform": 20,
         "workable/user-tenant": 20

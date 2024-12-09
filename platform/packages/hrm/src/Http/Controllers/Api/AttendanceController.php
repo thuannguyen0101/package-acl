@@ -3,12 +3,13 @@
 namespace Workable\HRM\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Workable\HRM\Enums\ResponseEnum;
 use Workable\HRM\Exports\AttendanceTemplateExport;
 use Workable\HRM\Http\Requests\AttendanceCreateRequest;
 use Workable\HRM\Http\Requests\AttendanceRequest;
+use Workable\HRM\Imports\AttendancesImport;
 use Workable\HRM\Services\AttendanceService;
 use Workable\Support\Traits\ResponseHelperTrait;
 
@@ -153,5 +154,21 @@ class AttendanceController extends Controller
     {
         $fileName = 'attendance_template.xlsx';
         return Excel::download(new AttendanceTemplateExport, $fileName);
+    }
+
+    public function importTemplate(Request $request)
+    {
+        $import = new AttendancesImport();
+        Excel::import($import, $request->file('file'));
+        list(
+            'status' => $status,
+            'message' => $message,
+            'data' => $data,
+            ) = $import->getResult();
+        if ($status != ResponseEnum::CODE_OK) {
+            return $this->respondError($message, $data);
+        }
+
+        return $this->respondSuccess($message, $data);
     }
 }

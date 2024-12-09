@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Testing\TestResponse;
 use Tests\BaseAuthTest;
 use Workable\HRM\Enums\AttendanceEnum;
@@ -40,7 +41,8 @@ class AttendanceTest extends BaseAuthTest
             "id"    => AttendanceEnum::LATE,
             "value" => AttendanceEnum::STATUS_TEXT[AttendanceEnum::LATE],
         ];
-        $this->data                     = [
+
+        $this->data = [
             'user_id'           => $this->member->id,
             'date'              => Carbon::parse('2024:12:03 00:00:00')->format('Y-m-d'),
             'check_in'          => Carbon::parse('2024:12:03 08:10:00')->format('H:i:s'),
@@ -113,7 +115,7 @@ class AttendanceTest extends BaseAuthTest
         $response = $this->json("POST", route('api.attendances.store'), $this->data);
         $id       = $response->json('data.attendance.id');
         $response = $this->json("GET", route('api.attendances.show', $id), [
-            'with' => 'user,tenant'
+            'with' => 'user,tenant, approvedBy'
         ]);
 
         $response->assertStatus(200);
@@ -148,6 +150,7 @@ class AttendanceTest extends BaseAuthTest
             'fields'     => ['id', 'work']
         ]);
 
+
         $response->assertStatus(200);
     }
 
@@ -160,12 +163,31 @@ class AttendanceTest extends BaseAuthTest
 
     public function test_export_attendance_template()
     {
-        $response = $this->json("GET",route('api.attendances.export.template'));
+        $response = $this->json("GET", route('api.attendances.export.template'));
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         $contentDisposition = $response->headers->get('Content-Disposition');
 
         // Kiểm tra xem phần tên file có đúng không (bỏ dấu ngoặc kép nếu có)
         $this->assertStringContainsString('attachment; filename=attendance_template.xlsx', $contentDisposition);
+    }
+
+    public function test_upload_attendance_template()
+    {
+        $filePath = base_path('platform/packages/hrm/files/test.xlsx');
+
+        $file = new UploadedFile(
+            $filePath,
+            'test.xlsx', // Tên file
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // MIME type
+            null, // Kích thước (Laravel tự tính)
+            true  // Đánh dấu file hợp lệ
+        );
+
+        $response = $this->json('POST', route('api.attendances.import'), [
+            'file' => $file,
+        ]);
+
+        $response->assertStatus(200);
     }
 }

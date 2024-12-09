@@ -13,6 +13,13 @@ class AttendanceDTO extends BaseDTO implements DtoInterface
 {
     protected static $dataKey = 'attendance';
 
+    protected static function getAdditionalRelations(): array
+    {
+        return [
+            'approvedBy' => UserDTO::class,
+        ];
+    }
+
     public static function processMultiple($items, array $relations = []): array
     {
         if (empty($items)) {
