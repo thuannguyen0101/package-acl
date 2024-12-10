@@ -16,7 +16,6 @@
         "workable/bank": "dev-main",
         "workable/budget": "dev-main",
         "workable/hrm": "dev-main",
-        "workable/incident": "dev-sondev",
         "workable/navigation": "dev-main",
         "workable/platform": "dev-master",
         "workable/service-price": "*",

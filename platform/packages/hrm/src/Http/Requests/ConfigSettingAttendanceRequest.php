@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use Workable\Support\Traits\ResponseHelperTrait;
 use Workable\UserTenant\Models\Tenant;
 use Workable\UserTenant\Models\User;
-use Symfony\Component\HttpFoundation\Request as RequestAlias;
 use Workable\UserTenant\Rules\ValidFields;
 use Workable\UserTenant\Traits\MessageValidateTrait;
+use Symfony\Component\HttpFoundation\Request as RequestAlias;
 
-class AttendanceRequest extends FormRequest
+class ConfigSettingAttendanceRequest extends FormRequest
 {
     use ResponseHelperTrait, MessageValidateTrait;
 
@@ -44,24 +44,30 @@ class AttendanceRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(Request $request): array
+    public function rules(Request $request)
     {
         if ($request->isMethod(RequestAlias::METHOD_POST)) {
             return [
-                'timestamp' => 'nullable|date_format:Y-m-d H:i:s',
+                'shift_start_time'        => ['required', 'date_format:H:i'],
+                'break_start_time'        => ['required', 'date_format:H:i'],
+                'break_end_time'          => ['required', 'date_format:H:i'],
+                'shift_end_time'          => ['required', 'date_format:H:i'],
+                'full_time_minimum_hours' => ['nullable', 'integer', 'min:1'],
+                'exclude_weekends'        => ['nullable', 'array'],
+                'half_day_weekends'       => ['nullable', 'array'],
             ];
         }
 
         $validFields = [
-            'with'   => ['tenant', 'user', 'approvedBy'],
+            'with'   => ['tenant', '',],
             'user'   => $this->user->getFillable(),
             'tenant' => $this->tenant->getFillable(),
         ];
 
         return [
-            'with'               => ['nullable', new ValidFields('with', $validFields['with'])],
-            'with_fields.user'   => ['nullable', new ValidFields('user', $validFields['user'])],
-            'with_fields.tenant' => ['nullable', new ValidFields('tenant', $validFields['tenant'])],
+            'with'                   => ['nullable', new ValidFields('with', $validFields['with'])],
+            'with_fields.user'       => ['nullable', new ValidFields('user', $validFields['user'])],
+            'with_fields.tenant'     => ['nullable', new ValidFields('tenant', $validFields['tenant'])],
             'with_fields.approvedBy' => ['nullable', new ValidFields('approvedBy', $validFields['user'])],
         ];
     }

@@ -4,14 +4,15 @@ namespace Workable\HRM\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Workable\HRM\Enums\PenaltyRuleEnum;
 use Workable\Support\Traits\ResponseHelperTrait;
 use Workable\UserTenant\Models\Tenant;
 use Workable\UserTenant\Models\User;
-use Symfony\Component\HttpFoundation\Request as RequestAlias;
 use Workable\UserTenant\Rules\ValidFields;
 use Workable\UserTenant\Traits\MessageValidateTrait;
+use Symfony\Component\HttpFoundation\Request as RequestAlias;
 
-class AttendanceRequest extends FormRequest
+class PenaltyRuleRequest extends FormRequest
 {
     use ResponseHelperTrait, MessageValidateTrait;
 
@@ -48,7 +49,14 @@ class AttendanceRequest extends FormRequest
     {
         if ($request->isMethod(RequestAlias::METHOD_POST)) {
             return [
-                'timestamp' => 'nullable|date_format:Y-m-d H:i:s',
+                'rule_name'        => ['required', 'string'],
+                'rule_description' => ['nullable', 'string'],
+                'config'           => ['required', 'array'],
+                'config.name'      => ['required', 'string'],
+                'config.value'     => ['required', 'integer'],
+                'config.price'     => ['required', 'integer'],
+                'type'             => ['nullable', 'integer', 'in:' . implode(',', array_keys(PenaltyRuleEnum::TYPE))],
+                'status'           => ['nullable', 'integer', 'in:' . implode(',', array_keys(PenaltyRuleEnum::STATUS))],
             ];
         }
 
@@ -59,9 +67,9 @@ class AttendanceRequest extends FormRequest
         ];
 
         return [
-            'with'               => ['nullable', new ValidFields('with', $validFields['with'])],
-            'with_fields.user'   => ['nullable', new ValidFields('user', $validFields['user'])],
-            'with_fields.tenant' => ['nullable', new ValidFields('tenant', $validFields['tenant'])],
+            'with'                   => ['nullable', new ValidFields('with', $validFields['with'])],
+            'with_fields.user'       => ['nullable', new ValidFields('user', $validFields['user'])],
+            'with_fields.tenant'     => ['nullable', new ValidFields('tenant', $validFields['tenant'])],
             'with_fields.approvedBy' => ['nullable', new ValidFields('approvedBy', $validFields['user'])],
         ];
     }
@@ -71,3 +79,4 @@ class AttendanceRequest extends FormRequest
         return [];
     }
 }
+
