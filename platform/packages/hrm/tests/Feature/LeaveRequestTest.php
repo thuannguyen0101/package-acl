@@ -24,7 +24,7 @@ class LeaveRequestTest extends BaseAuthTest
         );
 
         $this->item = LeaveRequest::query()->create(array(
-            'user_id'     => $this->user->id,
+            'user_id'     => $this->member->id,
             'tenant_id'   => $this->user->tenant_id,
             'leave_type'  => LeaveRequestEnum::LEAVE_APPLICATION,
             'start_date'  => Carbon::parse('08:00')->format('Y-m-d H:i:s'),
@@ -38,7 +38,7 @@ class LeaveRequestTest extends BaseAuthTest
     public function test_create()
     {
         $response = $this->json('POST', route('api.leave-request.store'), $this->data);
-        dd($response->json());
+
         $response
             ->assertStatus(200)
             ->assertJsonFragment([
@@ -86,7 +86,19 @@ class LeaveRequestTest extends BaseAuthTest
         $response = $this->json('GET', route('api.leave-request.index'), [
             'with' => 'user,approvedBy,tenant',
         ]);
-        dd($response);
+
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'code' => 1
+            ]);
+    }
+
+    public function test_index_user()
+    {
+        $response = $this->json('GET', route('api.leave-request.get_user'), [
+            'with' => 'user,approvedBy,tenant',
+        ]);
 
         $response
             ->assertStatus(200)

@@ -23,6 +23,7 @@ class BaseAuthTest extends TestCase
         $this->artisan('db:seed', ['--class' => 'Workable\\UserTenant\\Database\\Seeders\\UserSeeder']);
 
         $this->user = User::query()->where('email', 'thuannn@gmail.com')->first();
+        $this->member = User::query()->where('email', 'user_has_role_full_permission@gmail.com')->first();
 
         $this->failPermission = false;
     }

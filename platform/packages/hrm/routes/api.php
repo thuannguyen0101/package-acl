@@ -53,6 +53,7 @@ Route::group([
     });
 
     Route::prefix('leave-request')->group(function () {
+        Route::get('/user', [LeaveRequestController::class, 'getUser'])->name('api.leave-request.get_user');
         Route::get('/', [LeaveRequestController::class, 'index'])->name('api.leave-request.index');
         Route::get('/{id}', [LeaveRequestController::class, 'show'])->name('api.leave-request.show');
         Route::post('', [LeaveRequestController::class, 'store'])->name('api.leave-request.store');

@@ -36,7 +36,7 @@ class LeaveRequestService
         }
 
         $items = LeaveRequestDTO::transform($items, $filters);
-
+        dd($items);
         return [
             'status'  => ResponseEnum::CODE_OK,
             'message' => "",
@@ -62,7 +62,7 @@ class LeaveRequestService
     public function store(array $request = []): array
     {
         $request['status'] = $request['status'] ?? LeaveRequestEnum::PENDING;
-        $this->setLeaveRequestData($request);
+
         $item = LeaveRequest::query()->create($request);
         $item = LeaveRequestDTO::transform($item);
 
@@ -108,7 +108,7 @@ class LeaveRequestService
             $query->where('tenant_id', get_tenant_id());
         }
 
-        $this->scopeFilter($query, $filters['filters']);
+        $this->scopeFilter($query, $filters['filter_base']);
 
         $this->scopeSort($query, $filters['orders']);
 
@@ -146,12 +146,13 @@ class LeaveRequestService
     {
         $shift_start_time = $this->settings['shift_start_time'];
         $break_end_time   = $this->settings['break_end_time'];
-        $start = $request['start_date'];
-        $end = $request['start_date'];
-
+        $start            = $request['start_date'];
+        $end              = $request['end_date'];
         if (array_key_exists($request['leave_type'], LeaveRequestEnum::LEAVE_TYPE_SUB)) {
-            if ()
             $hours = Carbon::parse($request['start_date'])->diffInHours(Carbon::parse($request['end_date']));
+            if ($start == $end) {
+            }
         }
+        return [];
     }
 }

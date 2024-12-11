@@ -94,4 +94,26 @@ class LeaveRequestController extends Controller
 
         return $this->respondSuccess($message, $item);
     }
+
+    public function getUser(LeaveRequestRequest $request)
+    {
+        $request = $request->all();
+
+        $request['filter_base'] = [
+            ['user_id', '=', get_user_id()]
+        ];
+
+        list(
+            'status' => $status,
+            'message' => $message,
+            'item' => $item,
+
+            ) = $this->service->index($request);
+
+        if ($status != ResponseEnum::CODE_OK) {
+            return $this->respondError($message);
+        }
+
+        return $this->respondSuccess($message, $item);
+    }
 }
