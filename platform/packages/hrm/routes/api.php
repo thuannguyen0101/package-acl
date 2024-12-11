@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Workable\HRM\Http\Controllers\Api\AttendanceController;
-use Workable\HRM\Http\Controllers\Api\ConfigSettingAttendanceController;
-use Workable\HRM\Http\Controllers\Api\FineController;
+use Workable\HRM\Http\Controllers\Api\TenantSettingAttendanceController;
+use Workable\HRM\Http\Controllers\Api\PenaltyController;
 use Workable\HRM\Http\Controllers\Api\PenaltyRuleController;
 
 Route::group([
@@ -28,10 +28,10 @@ Route::group([
 
     Route::prefix('config')->group(function () {
         Route::prefix('attendance')->group(function () {
-            Route::get('/{id}', [ConfigSettingAttendanceController::class, 'show'])->name('api.config.attendance.show');
-            Route::post('', [ConfigSettingAttendanceController::class, 'store'])->name('api.config.attendance.store');
-            Route::post('/{id}', [ConfigSettingAttendanceController::class, 'update'])->name('api.config.attendance.update');
-            Route::delete('/{id}', [ConfigSettingAttendanceController::class, 'destroy'])->name('api.config.attendance.destroy');
+            Route::get('/{id}', [TenantSettingAttendanceController::class, 'show'])->name('api.config.attendance.show');
+            Route::post('', [TenantSettingAttendanceController::class, 'store'])->name('api.config.attendance.store');
+            Route::post('/{id}', [TenantSettingAttendanceController::class, 'update'])->name('api.config.attendance.update');
+            Route::delete('/{id}', [TenantSettingAttendanceController::class, 'destroy'])->name('api.config.attendance.destroy');
         });
     });
 
@@ -44,10 +44,10 @@ Route::group([
     });
 
     Route::prefix('fines')->group(function () {
-        Route::get('/', [FineController::class, 'index'])->name('api.fines.index');
-        Route::get('/{id}', [FineController::class, 'show'])->name('api.fines.show');
-        Route::post('', [FineController::class, 'store'])->name('api.fines.store');
-        Route::post('/{id}', [FineController::class, 'update'])->name('api.fines.update');
-        Route::delete('/{id}', [FineController::class, 'destroy'])->name('api.fines.destroy');
+        Route::get('/', [PenaltyController::class, 'index'])->name('api.fines.index');
+        Route::get('/{id}', [PenaltyController::class, 'show'])->name('api.fines.show');
+        Route::post('', [PenaltyController::class, 'store'])->name('api.fines.store');
+        Route::post('/{id}', [PenaltyController::class, 'update'])->name('api.fines.update');
+        Route::delete('/{id}', [PenaltyController::class, 'destroy'])->name('api.fines.destroy');
     });
 });

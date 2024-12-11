@@ -5,16 +5,16 @@ namespace Workable\HRM\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Workable\HRM\Enums\ResponseEnum;
 use Workable\HRM\Http\Requests\FineRequest;
-use Workable\HRM\Services\FineService;
+use Workable\HRM\Services\PenaltyService;
 use Workable\Support\Traits\ResponseHelperTrait;
 
-class FineController extends Controller
+class PenaltyController extends Controller
 {
     use ResponseHelperTrait;
 
     protected $service;
 
-    public function __construct(FineService $service)
+    public function __construct(PenaltyService $service)
     {
         $this->service = $service;
     }
@@ -36,7 +36,6 @@ class FineController extends Controller
 
     public function store(FineRequest $request)
     {
-        dd($request->all());
         list(
             'status' => $status,
             'message' => $message,

@@ -5,15 +5,26 @@ namespace Workable\HRM\Services;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Workable\HRM\Enums\AttendanceEnum;
+use Workable\HRM\Enums\PenaltyRuleEnum;
 use Workable\HRM\Enums\ResponseEnum;
 use Workable\HRM\Http\DTO\AttendanceDTO;
 use Workable\HRM\Models\Attendance;
+use Workable\HRM\Models\Penalty;
+use Workable\HRM\Models\PenaltyRule;
 use Workable\Support\Traits\FilterBuilderTrait;
 use Workable\Support\Traits\ScopeRepositoryTrait;
 
 class AttendanceService
 {
     use FilterBuilderTrait, ScopeRepositoryTrait;
+
+    protected $settings = [];
+
+    public function __construct()
+    {
+        $settingsService = SettingLoaderService::getInstance(get_tenant_id());
+        $this->settings  = $settingsService->get();
+    }
 
     public function index(array $request = []): array
     {
@@ -53,13 +64,21 @@ class AttendanceService
 
     public function markAttendance(array $request = []): array
     {
-        $user             = get_user();
-        $recordAttendance = $this->getRecordAttendanceNow($user);
+        $user       = get_user();
+        $attendance = $this->getRecordAttendanceNow($user);
 
-        if ($recordAttendance) {
-            $attendance = $this->punchOut($recordAttendance, $request);
-        } else {
+        if ($attendance && !isset($attendance->check_out)) {
+            $attendance = $this->punchOut($attendance, $request);
+        } elseif ($attendance == null) {
+
             $attendance = $this->punchIn($user, $request);
+            if (!$attendance) {
+                return [
+                    'status'     => ResponseEnum::CODE_CONFLICT,
+                    'message'    => "Không phải ngày chấm công.",
+                    'attendance' => $attendance
+                ];
+            }
         }
 
         return [
@@ -72,7 +91,7 @@ class AttendanceService
     public function store(array $request = []): array
     {
         $user       = get_user();
-        $configTime = config('hrm.attendance_time');
+        $configTime = $this->settings;
         $data       = $this->setupData($user, $request, $configTime);
         $attendance = Attendance::query()->create($data);
 
@@ -86,10 +105,10 @@ class AttendanceService
     public function update(int $id, array $request = []): array
     {
         $attendance = $this->findOne($id);
-        $configTime = config('hrm.attendance_time');
+        $configTime = $this->settings;
 
         if (!$attendance) {
-            $this->returnNotFound();
+            return $this->returnNotFound();
         }
 
         $user = $attendance->user;
@@ -108,11 +127,43 @@ class AttendanceService
         ];
     }
 
+    public function createPenalty(int $time, $attendance, int $type = AttendanceEnum::LATE)
+    {
+        $rule    = $this->getRules($type);
+        $configs = json_decode($rule['config'], true);
+
+        $level = [];
+        if (!empty($configs) && $time) {
+            foreach ($configs as $config) {
+                if ($time >= $config['value']) {
+                    $level = $config;
+                }
+            }
+        }
+        if (!empty($level)) {
+            $data = [
+                'tenant_id'     => $attendance->tenant_id,
+                'attendance_id' => $attendance->id,
+                'rule_id'       => $rule['id'],
+                'user_id'       => $attendance->user_id,
+                'fine_type'     => $type,
+                'amount'        => $level['price'],
+                'status'        => PenaltyRuleEnum::LATE,
+                'note'          => $level['name'],
+                'created_by'    => $attendance->user_id,
+                'updated_by'    => $attendance->user_id,
+            ];
+
+            Penalty::query()->create($data);
+        }
+    }
+
     public function destroy(int $id): array
     {
         $attendance = $this->findOne($id);
+
         if (!$attendance) {
-            $this->returnNotFound();
+            return $this->returnNotFound();
         }
 
         $attendance->delete();
@@ -215,7 +266,12 @@ class AttendanceService
     private function punchIn($user, array $request = [])
     {
         $day        = isset($request['timestamp']) ? Carbon::parse($request['timestamp']) : Carbon::now();
-        $configTime = config('hrm.attendance_time');
+        $daysOfWeek = strtolower($day->copy()->format('l'));
+        $configTime = $this->settings;
+
+        if (array_key_exists($daysOfWeek, $configTime['exclude_weekends'])) {
+            return false;
+        }
 
         $breakStartTime = $configTime['break_start_time'];
         $startTime      = $configTime['shift_start_time'];
@@ -239,18 +295,27 @@ class AttendanceService
             'attendance_status' => $late ? AttendanceEnum::LATE : AttendanceEnum::ON_TIME,
         ];
 
-        return Attendance::query()->create($data);
+        $attendance = Attendance::query()->create($data);
+        if ($late) {
+            $this->createPenalty($late, $attendance);
+        }
+
+        return $attendance;
     }
+
 
     private function punchOut(Attendance $record, array $request = []): Attendance
     {
-        $day            = isset($request['timestamp']) ? Carbon::parse($request['timestamp']) : Carbon::now();
-        $configTime     = config('hrm.attendance_time');
+        $day        = isset($request['timestamp']) ? Carbon::parse($request['timestamp']) : Carbon::now();
+        $daysOfWeek = strtolower($day->copy()->format('l'));
+
+        $configTime = $this->settings;
+
         $breakStartTime = $configTime['break_start_time'];
         $breakEndTime   = $configTime['break_end_time'];
         $endTime        = $configTime['shift_end_time'];
 
-        if ($this->getTimeCompare($breakEndTime, $day, true)) {
+        if ($this->getTimeCompare($breakEndTime, $day, true) || array_key_exists($daysOfWeek, $configTime['half_day_weekends'])) {
             $endTime = $breakStartTime;
         }
 
@@ -268,6 +333,9 @@ class AttendanceService
             'attendance_status' => $status,
         ]);
 
+        if ($early) {
+            $this->createPenalty($early, $record, AttendanceEnum::EARLY);
+        }
         return $record->refresh();
     }
 
@@ -342,7 +410,7 @@ class AttendanceService
     {
         return [
             'status'  => ResponseEnum::CODE_NOT_FOUND,
-            'message' => __('budget::api.not_found'),
+            'message' => "",
             'budget'  => null
         ];
     }
@@ -351,8 +419,19 @@ class AttendanceService
     {
         return [
             'status'     => ResponseEnum::CODE_OK,
-            'message'    => $message ?: __('budget::api.success'),
+            'message'    => $message ?: "",
             'attendance' => $attendance
         ];
+    }
+
+    private function getRules(int $type): array
+    {
+        $rule = PenaltyRule::query()->where([
+            'tenant_id' => get_tenant_id()
+        ])
+            ->where('type', $type)
+            ->first();
+
+        return $rule ? $rule->toArray() : [];
     }
 }

@@ -11,7 +11,7 @@ use Workable\UserTenant\Rules\ValidFields;
 use Workable\UserTenant\Traits\MessageValidateTrait;
 use Symfony\Component\HttpFoundation\Request as RequestAlias;
 
-class ConfigSettingAttendanceRequest extends FormRequest
+class TenantSettingAttendanceRequest extends FormRequest
 {
     use ResponseHelperTrait, MessageValidateTrait;
 
@@ -44,7 +44,7 @@ class ConfigSettingAttendanceRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(Request $request)
+    public function rules(Request $request): array
     {
         if ($request->isMethod(RequestAlias::METHOD_POST)) {
             return [
@@ -52,9 +52,9 @@ class ConfigSettingAttendanceRequest extends FormRequest
                 'break_start_time'        => ['required', 'date_format:H:i'],
                 'break_end_time'          => ['required', 'date_format:H:i'],
                 'shift_end_time'          => ['required', 'date_format:H:i'],
-                'full_time_minimum_hours' => ['nullable', 'integer', 'min:1'],
-                'exclude_weekends'        => ['nullable', 'array'],
-                'half_day_weekends'       => ['nullable', 'array'],
+                'full_time_minimum_hours' => ['required', 'integer', 'min:1'],
+                'exclude_weekends'        => ['required', 'array'],
+                'half_day_weekends'       => ['required', 'array'],
             ];
         }
 

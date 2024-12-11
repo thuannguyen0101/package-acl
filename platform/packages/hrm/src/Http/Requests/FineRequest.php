@@ -4,6 +4,7 @@ namespace Workable\HRM\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Workable\Support\Traits\ResponseHelperTrait;
 use Workable\UserTenant\Models\Tenant;
 use Workable\UserTenant\Models\User;
@@ -47,15 +48,17 @@ class FineRequest extends FormRequest
     public function rules(Request $request)
     {
         if ($request->isMethod(RequestAlias::METHOD_POST)) {
+            $userRule = Rule::exists('users', 'id')
+                ->where('tenant_id', get_tenant_id());
+
             return [
-                'tenant_id',
-                'attendance_id' => ['required'],
+                'attendance_id' => ['nullable', 'integer', 'exists:attendances,id'],
                 'rule_id'       => ['required', 'integer'],
-                'user_id'       => ['required'],
+                'user_id'       => ['required', $userRule],
                 'fine_type'     => ['required'],
                 'amount'        => ['required'],
                 'status'        => ['required', 'integer', 'in:0,1'],
-                'note'          => ['required'],
+                'note'          => ['nullable', 'string'],
             ];
         }
 

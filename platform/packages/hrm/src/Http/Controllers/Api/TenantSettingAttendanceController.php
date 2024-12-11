@@ -4,22 +4,22 @@ namespace Workable\HRM\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Workable\HRM\Enums\ResponseEnum;
-use Workable\HRM\Http\Requests\ConfigSettingAttendanceRequest;
-use Workable\HRM\Services\ConfigSettingAttendanceService;
+use Workable\HRM\Http\Requests\TenantSettingAttendanceRequest;
+use Workable\HRM\Services\TenantSettingAttendanceService;
 use Workable\Support\Traits\ResponseHelperTrait;
 
-class ConfigSettingAttendanceController extends Controller
+class TenantSettingAttendanceController extends Controller
 {
     use ResponseHelperTrait;
 
     protected $service;
 
-    public function __construct(ConfigSettingAttendanceService $service)
+    public function __construct(TenantSettingAttendanceService $service)
     {
         $this->service = $service;
     }
 
-    public function store(ConfigSettingAttendanceRequest $request)
+    public function store(TenantSettingAttendanceRequest $request)
     {
         list(
             'status' => $status,
@@ -34,7 +34,7 @@ class ConfigSettingAttendanceController extends Controller
         return $this->respondSuccess($message, $config_attendance);
     }
 
-    public function show(int $id, ConfigSettingAttendanceRequest $request)
+    public function show(int $id, TenantSettingAttendanceRequest $request)
     {
         list(
             'status' => $status,
@@ -49,7 +49,7 @@ class ConfigSettingAttendanceController extends Controller
         return $this->respondSuccess($message, $config_attendance);
     }
 
-    public function update(int $id, ConfigSettingAttendanceRequest $request)
+    public function update(int $id, TenantSettingAttendanceRequest $request)
     {
         list(
             'status' => $status,

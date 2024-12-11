@@ -2,33 +2,16 @@
 
 namespace Workable\HRM\Services;
 
+use Illuminate\Database\Eloquent\Builder;
+use Workable\HRM\Enums\ResponseEnum;
+use Workable\HRM\Http\DTO\TenantSettingAttendanceDTO;
+use Workable\HRM\Models\TenantSetting;
 use Workable\Support\Traits\FilterBuilderTrait;
 use Workable\Support\Traits\ScopeRepositoryTrait;
 
-class FineService
+class TenantSettingAttendanceService
 {
     use FilterBuilderTrait, ScopeRepositoryTrait;
-
-    public function index(array $request = []): array
-    {
-        $filters    = $this->getFilterRequest($request);
-        $isPaginate = $request['is_paginate'] ?? false;
-        $query      = $this->buildQuery($filters, is_admin($request));
-
-        if ($isPaginate) {
-            $items = $query->paginate(($request['per_page'] ?? 15));
-        } else {
-            $items = $query->get();
-        }
-
-        $items = PenaltyRuleDTO::transform($items, $filters);
-
-        return [
-            'status'  => ResponseEnum::CODE_OK,
-            'message' => "",
-            'items'   => $items
-        ];
-    }
 
     public function show(int $id, array $request = []): array
     {
@@ -39,46 +22,50 @@ class FineService
             return $this->returnNotFound();
         }
 
-        $item = PenaltyRuleDTO::transform($item, $filters);
+        $item = TenantSettingAttendanceDTO::transform($item, $filters);
 
         return $this->returnSuccess($item);
     }
 
     public function store(array $request = []): array
     {
-        $user                  = get_user();
-        $request['user_id']    = $user->id;
-        $request['tenant_id']  = $user->tenant_id;
-        $request['created_by'] = $user->id;
-        $request['updated_by'] = $user->id;
-        $request['config']     = json_encode($request['config'] ?? []);
+        $user = get_user();
+        $data = [
+            'user_id'            => $user->id,
+            'tenant_id'          => $user->tenant_id,
+            'created_by'         => $user->id,
+            'updated_by'         => $user->id,
+            'setting_attendance' => json_encode($request),
+        ];
 
-        $item = PenaltyRule::query()->create($request);
-        $item = PenaltyRuleDTO::transform($item);
+        $item = TenantSetting::query()->create($data);
+
+        $item = TenantSettingAttendanceDTO::transform($item);
 
         return $this->returnSuccess($item);
     }
 
     public function update(int $id, array $request = []): array
     {
-        $item = $this->findOne($id);
+        $config = $this->findOne($id);
 
-        if (!$item) {
+        if (!$config) {
             return $this->returnNotFound();
         }
 
-        $request['config'] = json_encode($request['config'] ?? []);
+        $request['exclude_weekends']  = json_encode($request['exclude_weekends'] ?? []);
+        $request['half_day_weekends'] = json_encode($request['half_day_weekends'] ?? []);
 
-        $item->fill($request);
+        $config->fill($request);
 
-        if ($item->isDirty()) {
-            $item->updated_by = get_user_id();
-            $item->update();
+        if ($config->isDirty()) {
+            $config->updated_by = get_user_id();
+            $config->update();
         }
 
-        $item = PenaltyRuleDTO::transform($item);
+        $config = TenantSettingAttendanceDTO::transform($config);
 
-        return $this->returnSuccess($item, "");
+        return $this->returnSuccess($config, "");
     }
 
     public function destroy(int $id): array
@@ -96,7 +83,7 @@ class FineService
 
     private function buildQuery(array $filters = [], bool $isAdmin = false): Builder
     {
-        $query = PenaltyRule::query();
+        $query = TenantSetting::query();
 
         if (!$isAdmin) {
             $query->where('tenant_id', get_tenant_id());
@@ -115,7 +102,7 @@ class FineService
 
     private function findOne(int $id)
     {
-        return PenaltyRule::query()->where('tenant_id', get_tenant_id())->find($id);
+        return TenantSetting::query()->where('tenant_id', get_tenant_id())->find($id);
     }
 
     private function returnNotFound(): array
@@ -130,9 +117,9 @@ class FineService
     private function returnSuccess($item, string $message = ''): array
     {
         return [
-            'status'  => ResponseEnum::CODE_OK,
-            'message' => $message ?: "",
-            'item'    => $item
+            'status'            => ResponseEnum::CODE_OK,
+            'message'           => $message ?: "",
+            'config_attendance' => $item
         ];
     }
 }
