@@ -5,31 +5,25 @@ namespace Workable\HRM\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Workable\UserTenant\Models\Tenant;
 use Workable\UserTenant\Models\User;
 
-class Attendance extends Model
+class LeaveRequest extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'attendances';
+    protected $table = 'leave_requests';
 
     protected $fillable = [
-        'id',
         'user_id',
         'tenant_id',
-        'date',
-        'check_in',
-        'check_out',
-        'work',
-        'late',
-        'early',
-        'work_shift',
-        'note',
-        'overtime',
-        'attendance_status',
+        'leave_type',
+        'start_date',
+        'end_date',
+        'days',
+        'reason',
+        'status',
         'approved_by',
     ];
 
@@ -46,10 +40,5 @@ class Attendance extends Model
     public function approvedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by', 'id');
-    }
-
-    public function penalties(): HasMany
-    {
-        return $this->hasMany(Penalty::class, 'attendance_id', 'id');
     }
 }

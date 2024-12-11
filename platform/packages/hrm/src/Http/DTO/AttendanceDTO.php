@@ -17,6 +17,7 @@ class AttendanceDTO extends BaseDTO implements DtoInterface
     {
         return [
             'approvedBy' => UserDTO::class,
+            'penalties'  => PenaltyDTO::class,
         ];
     }
 

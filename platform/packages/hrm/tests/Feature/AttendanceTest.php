@@ -7,7 +7,7 @@ use Tests\BaseAuthTest;
 use Workable\HRM\Enums\AttendanceEnum;
 use Workable\UserTenant\Models\User;
 
-class AttendanceTest extends \Workable\UserTenant\Tests\AuthTestCase
+class AttendanceTest extends BaseAuthTest
 {
     public function setUp(): void
     {
@@ -55,33 +55,27 @@ class AttendanceTest extends \Workable\UserTenant\Tests\AuthTestCase
             'note'              => null,
             'overtime'          => null,
         ];
-
-//        $this->artisan('db:seed', ['--class' => 'Workable\\HRM\\Database\\Seeders\\AttendanceSeeder']);
     }
 
     public function test_attendance()
     {
-        $response = $this->postAttendance(Carbon::parse('08:11:00')->format('Y-m-d H:i:s'));
-        $response = $this->postAttendance(Carbon::parse('11:42:00')->format('Y-m-d H:i:s'));
-        \Workable\HRM\Models\Attendance::truncate();
+        $this->postAttendance(Carbon::parse('08:00:00')->format('Y-m-d H:i:s'));
+        $response = $this->postAttendance(Carbon::parse('12:00:00')->format('Y-m-d H:i:s'));
 
-//        $response = $this->postAttendance(Carbon::parse('11:42:00')->format('Y-m-d H:i:s'));
-//        dd($response->json());
-//        $response;
-//            ->assertStatus(200)
-//            ->assertJsonFragment([
-//                'check_in'          => Carbon::parse('08:00:00')->format('H:i:s.0'),
-//                'check_out'         => Carbon::parse('12:00:00')->format('H:i:s.0'),
-//                "work"              => $this->halfDay,
-//                "work_shift"        => $this->workShiftMoning,
-//                "attendance_status" => $this->attendanceStatusOnTime,
-//            ]);
-        \Workable\HRM\Models\Attendance::truncate();
+        $response
+            ->assertStatus(200)
+            ->assertJsonFragment([
+                'check_in'          => Carbon::parse('08:00:00')->format('H:i:s.0'),
+                'check_out'         => Carbon::parse('12:00:00')->format('H:i:s.0'),
+                "work"              => $this->halfDay,
+                "work_shift"        => $this->workShiftMoning,
+                "attendance_status" => $this->attendanceStatusOnTime,
+            ]);
     }
 
     public function test_attendance_morning_late()
     {
-        $this->postAttendance(Carbon::parse('08:00:00')->format('Y-m-d H:i:s'));
+        $this->postAttendance(Carbon::parse('08:10:00')->format('Y-m-d H:i:s'));
         $response = $this->postAttendance(Carbon::parse('12:00:00')->format('Y-m-d H:i:s'));
 
         $response
@@ -190,6 +184,19 @@ class AttendanceTest extends \Workable\UserTenant\Tests\AuthTestCase
 
         $response = $this->json('POST', route('api.attendances.import'), [
             'file' => $file,
+        ]);
+
+        $response->assertStatus(200);
+    }
+
+    public function test_attendance_and_penalty()
+    {
+        $this->postAttendance(Carbon::parse('08:11:00')->format('Y-m-d H:i:s'));
+        $response = $this->postAttendance(Carbon::parse('11:42:00')->format('Y-m-d H:i:s'));
+
+        $id       = $response->json('data.attendance.id');
+        $response = $this->json("GET", route('api.attendances.show', $id), [
+            'with' => 'user,tenant, approvedBy, penalties'
         ]);
 
         $response->assertStatus(200);

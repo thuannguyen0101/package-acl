@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Workable\HRM\Http\Controllers\Api\AttendanceController;
+use Workable\HRM\Http\Controllers\Api\LeaveRequestController;
 use Workable\HRM\Http\Controllers\Api\TenantSettingAttendanceController;
 use Workable\HRM\Http\Controllers\Api\PenaltyController;
 use Workable\HRM\Http\Controllers\Api\PenaltyRuleController;
@@ -49,5 +50,13 @@ Route::group([
         Route::post('', [PenaltyController::class, 'store'])->name('api.fines.store');
         Route::post('/{id}', [PenaltyController::class, 'update'])->name('api.fines.update');
         Route::delete('/{id}', [PenaltyController::class, 'destroy'])->name('api.fines.destroy');
+    });
+
+    Route::prefix('leave-request')->group(function () {
+        Route::get('/', [LeaveRequestController::class, 'index'])->name('api.leave-request.index');
+        Route::get('/{id}', [LeaveRequestController::class, 'show'])->name('api.leave-request.show');
+        Route::post('', [LeaveRequestController::class, 'store'])->name('api.leave-request.store');
+        Route::post('/{id}', [LeaveRequestController::class, 'update'])->name('api.leave-request.update');
+        Route::delete('/{id}', [LeaveRequestController::class, 'destroy'])->name('api.leave-request.destroy');
     });
 });
