@@ -33,3 +33,7 @@
 [submodule "platform/packages/incident"]
 	path = platform/packages/incident
 	url = git@gitlab.com:vnpgroup.net/incident.git
+
+[submodule "platform/packages/hrm"]
+	path = platform/packages/hrm
+	url = git@gitlab.com:vnpgroup.net/hrm.git
