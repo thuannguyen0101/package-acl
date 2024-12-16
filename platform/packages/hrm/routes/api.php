@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Workable\HRM\Http\Controllers\Api\AttendanceController;
+use Workable\HRM\Http\Controllers\Api\InsuranceController;
 use Workable\HRM\Http\Controllers\Api\LeaveRequestController;
 use Workable\HRM\Http\Controllers\Api\TenantSettingAttendanceController;
 use Workable\HRM\Http\Controllers\Api\PenaltyController;
@@ -59,5 +60,13 @@ Route::group([
         Route::post('', [LeaveRequestController::class, 'store'])->name('api.leave-request.store');
         Route::post('/{id}', [LeaveRequestController::class, 'update'])->name('api.leave-request.update');
         Route::delete('/{id}', [LeaveRequestController::class, 'destroy'])->name('api.leave-request.destroy');
+    });
+
+    Route::prefix('insurances')->group(function () {
+        Route::get('/', [InsuranceController::class, 'index'])->name('api.insurances.index');
+        Route::get('/{id}', [InsuranceController::class, 'show'])->name('api.insurances.show');
+        Route::post('', [InsuranceController::class, 'store'])->name('api.insurances.store');
+        Route::post('/{id}', [InsuranceController::class, 'update'])->name('api.insurances.update');
+        Route::delete('/{id}', [InsuranceController::class, 'destroy'])->name('api.insurances.destroy');
     });
 });
