@@ -15,10 +15,10 @@ class CreatePenaltiesTable extends Migration
     {
         Schema::create('penalties', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id');
-            $table->unsignedBigInteger('attendance_id')->nullable();
-            $table->unsignedBigInteger('rule_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->unsignedBigInteger('attendance_id')->nullable()->index();
+            $table->unsignedBigInteger('rule_id')->index();
+            $table->unsignedBigInteger('user_id')->index();
             $table->tinyInteger('fine_type');
             $table->integer('amount');
             $table->integer('status');

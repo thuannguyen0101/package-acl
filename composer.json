@@ -15,6 +15,8 @@
         "workable/acl": "dev-main",
         "workable/bank": "dev-main",
         "workable/budget": "dev-main",
+        "workable/contract": "dev-main",
+        "workable/customers": "dev-main",
         "workable/hrm": "dev-main",
         "workable/navigation": "dev-main",
         "workable/platform": "dev-master",

@@ -16,9 +16,9 @@ class LeaveRequestEnum
         self::RESIGNATION       => 'Thôi việc',
     ];
 
-    const PENDING  = 1;
-    const APPROVED = 2;
-    const REJECTED = 3;
+    const PENDING  = 1; // 'Đang chờ duyệt'
+    const APPROVED = 2; // 'Đã phê duyệt'
+    const REJECTED = 3; // 'Đã từ chối'
 
     const LEAVE_STATUS = [
         self::PENDING  => 'Đang chờ duyệt',

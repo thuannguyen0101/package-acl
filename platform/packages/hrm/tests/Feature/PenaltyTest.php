@@ -57,7 +57,7 @@ class PenaltyTest extends BaseAuthTest
 
     public function test_create()
     {
-        $response = $this->json("POST", route('api.fines.store'), $this->data);
+        $response = $this->json("POST", route('api.penalties.store'), $this->data);
 
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -68,7 +68,7 @@ class PenaltyTest extends BaseAuthTest
     public function test_update()
     {
         $this->data['note'] = "FPT Aptech là một trong những trung tâm đào tạo x2";
-        $response           = $this->json("POST", route('api.fines.update', $this->item->id), $this->data);
+        $response           = $this->json("POST", route('api.penalties.update', $this->item->id), $this->data);
 
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -78,7 +78,7 @@ class PenaltyTest extends BaseAuthTest
 
     public function test_destroy()
     {
-        $response = $this->json("DELETE", route('api.fines.destroy', $this->item->id));
+        $response = $this->json("DELETE", route('api.penalties.destroy', $this->item->id));
 
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -88,7 +88,7 @@ class PenaltyTest extends BaseAuthTest
 
     public function test_show()
     {
-        $response = $this->json("GET", route('api.fines.show', $this->item->id));
+        $response = $this->json("GET", route('api.penalties.show', $this->item->id));
 
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -98,7 +98,7 @@ class PenaltyTest extends BaseAuthTest
 
     public function test_list()
     {
-        $response = $this->json("GET", route('api.fines.index'));
+        $response = $this->json("GET", route('api.penaltiesindex'));
 
         $response->assertStatus(200)
             ->assertJsonFragment([

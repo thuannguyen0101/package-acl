@@ -15,7 +15,7 @@ class CreatePenaltyRulesTable extends Migration
     {
         Schema::create('penalty_rules', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id');
+            $table->unsignedBigInteger('tenant_id')->index();
 
             $table->string('rule_name');
             $table->string('rule_description')->nullable();

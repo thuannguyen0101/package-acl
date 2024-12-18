@@ -25,6 +25,7 @@ class CreateLeaveRequestsTable extends Migration
             $table->text('reason');
             $table->smallInteger('status');
             $table->unsignedInteger('approved_by')->nullable();
+
             $table->softDeletes();
             $table->timestamps();
         });

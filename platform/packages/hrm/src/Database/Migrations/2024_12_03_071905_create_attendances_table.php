@@ -15,9 +15,9 @@ class CreateAttendancesTable extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('tenant_id');
-            $table->date('date')->comment("ngày làm việc");
+            $table->unsignedBigInteger('user_id')->index();
+            $table->unsignedBigInteger('tenant_id')->index();
+            $table->date('date')->comment("ngày làm việc")->index();
             $table->time('check_in', $precision = 1)->nullable()->comment("thời gian vào");
             $table->time('check_out', $precision = 1)->nullable()->comment("thời gian ra");
             $table->double('work', 8, 2)->default(0)->nullable()->comment("tính công 1, 1/2");
@@ -29,7 +29,6 @@ class CreateAttendancesTable extends Migration
             $table->unsignedBigInteger('approved_by')->nullable();
             $table->text('note')->nullable();
             $table->softDeletes();
-
             $table->timestamps();
         });
     }

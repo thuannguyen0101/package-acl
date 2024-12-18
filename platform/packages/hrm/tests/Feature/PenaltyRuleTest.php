@@ -42,7 +42,7 @@ class PenaltyRuleTest extends BaseAuthTest
 
     public function test_list()
     {
-        $response = $this->json("GET", route('api.rules.index'), $this->data);
+        $response = $this->json("GET", route('api.penalty_rules.index'), $this->data);
 
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -52,7 +52,7 @@ class PenaltyRuleTest extends BaseAuthTest
 
     public function test_create()
     {
-        $response = $this->json("POST", route('api.rules.store'), $this->data);
+        $response = $this->json("POST", route('api.penalty_rules.store'), $this->data);
 
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -63,7 +63,7 @@ class PenaltyRuleTest extends BaseAuthTest
     public function test_update()
     {
         $this->data['rule_name'] = "Tiền phạt đi muộn x2.";
-        $response                = $this->json("POST", route('api.rules.update', $this->item->id), $this->data);
+        $response                = $this->json("POST", route('api.penalty_rules.update', $this->item->id), $this->data);
 
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -73,7 +73,7 @@ class PenaltyRuleTest extends BaseAuthTest
 
     public function test_delete()
     {
-        $response = $this->json("DELETE", route('api.rules.destroy', $this->item->id));
+        $response = $this->json("DELETE", route('api.penalty_rules.destroy', $this->item->id));
 
         $response->assertStatus(200)
             ->assertJsonFragment([
@@ -83,7 +83,7 @@ class PenaltyRuleTest extends BaseAuthTest
 
     public function test_show()
     {
-        $response = $this->json("GET", route('api.rules.show', $this->item->id));
+        $response = $this->json("GET", route('api.penalty_rules.show', $this->item->id));
 
         $response->assertStatus(200)
             ->assertJsonFragment([

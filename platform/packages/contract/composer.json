@@ -1,0 +1,39 @@
+{
+    "name": "workable/contract",
+    "description": "A Laravel package for managing contract",
+    "keywords": [
+        "laravel",
+        "contract"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "thuannn",
+            "email": "thuannguyen0101.work@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "maatwebsite/excel": "^3.1.61"
+    },
+    "autoload": {
+        "psr-4": {
+            "Workable\\Contract\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Workable\\Contract\\ContractServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php artisan package:discover --ansi"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

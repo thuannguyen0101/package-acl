@@ -37,20 +37,20 @@ Route::group([
         });
     });
 
-    Route::prefix('rules')->group(function () {
-        Route::get('/', [PenaltyRuleController::class, 'index'])->name('api.rules.index');
-        Route::get('/{id}', [PenaltyRuleController::class, 'show'])->name('api.rules.show');
-        Route::post('', [PenaltyRuleController::class, 'store'])->name('api.rules.store');
-        Route::post('/{id}', [PenaltyRuleController::class, 'update'])->name('api.rules.update');
-        Route::delete('/{id}', [PenaltyRuleController::class, 'destroy'])->name('api.rules.destroy');
+    Route::prefix('penalty-rules')->group(function () {
+        Route::get('/', [PenaltyRuleController::class, 'index'])->name('api.penalty_rules.index');
+        Route::get('/{id}', [PenaltyRuleController::class, 'show'])->name('api.penalty_rules.show');
+        Route::post('', [PenaltyRuleController::class, 'store'])->name('api.penalty_rules.store');
+        Route::post('/{id}', [PenaltyRuleController::class, 'update'])->name('api.penalty_rules.update');
+        Route::delete('/{id}', [PenaltyRuleController::class, 'destroy'])->name('api.penalty_rules.destroy');
     });
 
-    Route::prefix('fines')->group(function () {
-        Route::get('/', [PenaltyController::class, 'index'])->name('api.fines.index');
-        Route::get('/{id}', [PenaltyController::class, 'show'])->name('api.fines.show');
-        Route::post('', [PenaltyController::class, 'store'])->name('api.fines.store');
-        Route::post('/{id}', [PenaltyController::class, 'update'])->name('api.fines.update');
-        Route::delete('/{id}', [PenaltyController::class, 'destroy'])->name('api.fines.destroy');
+    Route::prefix('penalties')->group(function () {
+        Route::get('/', [PenaltyController::class, 'index'])->name('api.penalties.index');
+        Route::get('/{id}', [PenaltyController::class, 'show'])->name('api.penalties.show');
+        Route::post('', [PenaltyController::class, 'store'])->name('api.penalties.store');
+        Route::post('/{id}', [PenaltyController::class, 'update'])->name('api.penalties.update');
+        Route::delete('/{id}', [PenaltyController::class, 'destroy'])->name('api.penalties.destroy');
     });
 
     Route::prefix('leave-request')->group(function () {

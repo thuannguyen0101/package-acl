@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f01dc7e7547a51ad5e2519e6764f5676",
+    "content-hash": "b441a6d941c010868d860adfe4b5efca",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -7022,12 +7022,94 @@
             }
         },
         {
+            "name": "workable/contract",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./platform/packages/contract",
+                "reference": "9c9fc5c1d1c969c1a331397dfdf3d1d9e59c1e8f"
+            },
+            "require": {
+                "maatwebsite/excel": "^3.1.61",
+                "php": "^7.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\Contract\\ContractServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\Contract\\": "src"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php artisan package:discover --ansi"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "thuannn",
+                    "email": "thuannguyen0101.work@gmail.com"
+                }
+            ],
+            "description": "A Laravel package for managing contract",
+            "keywords": [
+                "contract",
+                "laravel"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "workable/customers",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./platform/packages/customers",
+                "reference": "319f5ec60def1ebf67c6d2ff59e1156f5f849f0b"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\Customers\\CustomerServiceProvider"
+                    ],
+                    "aliases": []
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\Customers\\": "src/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "dinhthangpham",
+                    "email": "dinhthang.phamm@gmail.com"
+                }
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "workable/hrm",
             "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/hrm",
-                "reference": "769a3c6ecdf98b0912e3d576cef91f7d5479f406"
+                "reference": "600b6be1a6938d76f309289dfffe2f03e09ae448"
             },
             "require": {
                 "maatwebsite/excel": "^3.1.61",
@@ -9618,6 +9700,8 @@
         "workable/acl": 20,
         "workable/bank": 20,
         "workable/budget": 20,
+        "workable/contract": 20,
+        "workable/customers": 20,
         "workable/hrm": 20,
         "workable/navigation": 20,
         "workable/platform": 20,

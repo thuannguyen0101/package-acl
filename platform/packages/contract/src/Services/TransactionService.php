@@ -1,25 +1,27 @@
 <?php
 
-namespace Workable\HRM\Services;
-
+namespace Workable\Contract\Services;
 
 use Illuminate\Database\Eloquent\Builder;
-use Workable\HRM\Enums\InsuranceEnum;
-use Workable\HRM\Enums\ResponseEnum;
-use Workable\HRM\Http\DTO\InsuranceDTO;
-use Workable\HRM\Models\Insurance;
+use Workable\Contract\Enums\ResponseEnum;
+use Workable\Contract\Enums\TransactionEnum;
+use Workable\Contract\Http\DTO\TransactionDTO;
+use Workable\Contract\Models\Transaction;
 use Workable\Support\Traits\FilterBuilderTrait;
 use Workable\Support\Traits\ScopeRepositoryTrait;
 
-class InsuranceService
+class TransactionService
 {
     use FilterBuilderTrait, ScopeRepositoryTrait;
+
+    protected $settings = [];
 
     public function index(array $request = []): array
     {
         $filters    = $this->getFilterRequest($request);
         $isPaginate = $request['is_paginate'] ?? false;
-        $query      = $this->buildQuery($filters, is_admin($request));
+
+        $query = $this->buildQuery($filters, is_admin($request));
 
         if ($isPaginate) {
             $items = $query->paginate(($request['per_page'] ?? 15));
@@ -27,11 +29,11 @@ class InsuranceService
             $items = $query->get();
         }
 
-        $items = InsuranceDTO::transform($items, $filters);
+        $items = TransactionDTO::transform($items, $filters);
 
         return [
             'status'  => ResponseEnum::CODE_OK,
-            'message' => "",
+            'message' => __('budget::api.success'),
             'items'   => $items
         ];
     }
@@ -46,25 +48,33 @@ class InsuranceService
             return $this->returnNotFound();
         }
 
-        $item = InsuranceDTO::transform($item, $filters);
+        $item = TransactionDTO::transform($item, $filters);
 
         return $this->returnSuccess($item);
     }
 
     public function store(array $request = []): array
     {
-        $request['status']    = $request['status'] ?? InsuranceEnum::STATUS_ACTIVE;
-        $request['tenant_id'] = get_tenant_id();
+        $user              = get_user();
+        $request['status'] = $user['status'] ?? TransactionEnum::STATUS_PENDING;
 
-        $item = Insurance::query()->create($request);
-        $item = InsuranceDTO::transform($item);
+        $request['tenant_id']  = $user->tenant_id;
+        $request['created_by'] = $user->id;
+        $request['updated_by'] = $user->id;
 
-        return $this->returnSuccess($item);
+        $item = Transaction::query()->create($request);
+
+        return [
+            'status'  => ResponseEnum::CODE_OK,
+            'message' => "",
+            'item'    => TransactionDTO::transform($item)
+        ];
     }
 
     public function update(int $id, array $request = []): array
     {
         $item = $this->findOne($id);
+
         if (!$item) {
             return $this->returnNotFound();
         }
@@ -75,9 +85,11 @@ class InsuranceService
             $item->update();
         }
 
-        $item = InsuranceDTO::transform($item);
-
-        return $this->returnSuccess($item, "");
+        return [
+            'status'  => ResponseEnum::CODE_OK,
+            'message' => "",
+            'item'    => TransactionDTO::transform($item)
+        ];
     }
 
     public function destroy(int $id): array
@@ -95,13 +107,13 @@ class InsuranceService
 
     private function buildQuery(array $filters = [], bool $isAdmin = false): Builder
     {
-        $query = Insurance::query();
+        $query = Transaction::query();
 
         if (!$isAdmin) {
             $query->where('tenant_id', get_tenant_id());
         }
 
-        $this->scopeFilter($query, $filters['filters']);
+        $this->scopeFilter($query, $filters['filter_base']);
 
         $this->scopeSort($query, $filters['orders']);
 
@@ -114,15 +126,15 @@ class InsuranceService
 
     private function findOne(int $id)
     {
-        return Insurance::query()->where('tenant_id', get_tenant_id())->find($id);
+        return Transaction::query()->where('tenant_id', get_tenant_id())->find($id);
     }
 
     private function returnNotFound(): array
     {
         return [
-            'status'        => ResponseEnum::CODE_NOT_FOUND,
-            'message'       => __('budget::api.not_found'),
-            'account_money' => null
+            'status'  => ResponseEnum::CODE_NOT_FOUND,
+            'message' => "",
+            'budget'  => null
         ];
     }
 
@@ -135,4 +147,3 @@ class InsuranceService
         ];
     }
 }
-

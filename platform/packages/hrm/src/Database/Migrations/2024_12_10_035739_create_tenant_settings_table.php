@@ -15,7 +15,7 @@ class CreateTenantSettingsTable extends Migration
     {
         Schema::create('tenant_settings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id');
+            $table->unsignedBigInteger('tenant_id')->index();
             $table->text('setting_attendance')->nullable()->comment('setting attendance');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
