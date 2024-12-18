@@ -29,7 +29,7 @@ class CRMContractTest extends BaseAuthTest
             'tenant_id'      => $this->user->tenant_id,
             'customer_id'    => $this->customer->id,
             'contract_name'  => "Hợp đồng mua bán nhà.",
-            'status'         => CRMContractEnum::PENDING_APPROVAL,
+            'status'         => CRMContractEnum::ACTIVE,
             'start_date'     => Carbon::now()->format('Y-m-d'),
             'end_date'       => Carbon::now()->addDay()->format('Y-m-d'),
             'payment'        => 1000000,
@@ -60,7 +60,7 @@ class CRMContractTest extends BaseAuthTest
 
     public function test_update()
     {
-        $this->data['status'] = CRMContractEnum::ACTIVE;
+        $this->data['status'] = CRMContractEnum::TERMINATED;
         $response             = $this->json("POST", route('api.contracts.update', $this->item->id), $this->data);
 
         $this->data['status']         = CRMContractEnum::getStatus($this->data['status']);
@@ -118,6 +118,7 @@ class CRMContractTest extends BaseAuthTest
             'with'        => 'tenant, customer,  createdBy, updatedBy',
             'is_paginate' => true,
         ]);
+        dd($response->json('data'));
 
         $response
             ->assertStatus(200)

@@ -15,9 +15,9 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('tenant_id'); // ID của tenant
-            $table->unsignedInteger('contract_id'); // ID hợp đồng
-            $table->unsignedInteger('customer_id'); // ID khách hàng
+            $table->unsignedInteger('tenant_id')->index(); // ID của tenant
+            $table->unsignedInteger('contract_id')->index(); // ID hợp đồng
+            $table->unsignedInteger('customer_id')->index(); // ID khách hàng
             $table->integer('amount'); // Số tiền thanh toán chưa khấu trừ
             $table->text('deductions')->nullable(); // Các khoản khấu trừ
             $table->integer('total_amount'); // Số tiền cần thanh toán

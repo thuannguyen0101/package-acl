@@ -3,6 +3,7 @@
 namespace Workable\Contract\Services;
 
 use Illuminate\Database\Eloquent\Builder;
+use Workable\Contract\Enums\CRMContractHistoryEnum;
 use Workable\Contract\Enums\ResponseEnum;
 use Workable\Contract\Http\DTO\CRMContractDTO;
 use Workable\Contract\Models\CRMContract;
@@ -14,7 +15,12 @@ class CRMContractService
 {
     use FilterBuilderTrait, ScopeRepositoryTrait;
 
-    protected $settings = [];
+    protected $contractHistoryService;
+
+    public function __construct(CRMContractHistoryService $contractHistoryService)
+    {
+        $this->contractHistoryService = $contractHistoryService;
+    }
 
     public function index(array $request = []): array
     {
@@ -83,7 +89,9 @@ class CRMContractService
         $item->fill($request);
 
         if ($item->isDirty()) {
+            $item->updated_by = get_user_id();
             $item->update();
+            $this->contractHistoryService->store($item);
         }
 
         return [
@@ -102,6 +110,7 @@ class CRMContractService
         }
 
         $item->delete();
+        $this->contractHistoryService->store($item, CRMContractHistoryEnum::DELETE);
 
         return $this->returnSuccess(null, "");
     }
@@ -146,5 +155,10 @@ class CRMContractService
             'message' => $message ?: "",
             'item'    => $item
         ];
+    }
+
+    public function get()
+    {
+
     }
 }

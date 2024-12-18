@@ -23,6 +23,11 @@ class CRMContractEnum
         self::CANCELLED        => 'Cancelled',
     ];
 
+    const PAYMENT_UNCREDIT_STATUS = [
+        self::PENDING_APPROVAL => 'Pending Approval',
+        self::CANCELLED        => 'Cancelled',
+    ];
+
     public static function getStatus($status = null): array
     {
         return self::getDataEnum($status, self::STATUS_TEXT);

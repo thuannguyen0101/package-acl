@@ -14,7 +14,10 @@ class TransactionService
 {
     use FilterBuilderTrait, ScopeRepositoryTrait;
 
-    protected $settings = [];
+    public function __construct()
+    {
+
+    }
 
     public function index(array $request = []): array
     {

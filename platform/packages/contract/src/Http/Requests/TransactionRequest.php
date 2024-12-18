@@ -5,6 +5,7 @@ namespace Workable\Contract\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpFoundation\Request as RequestAlias;
 use Workable\Contract\Enums\TransactionEnum;
 use Workable\Contract\Models\CRMContract;
 use Workable\Customers\Models\Customer;
@@ -13,7 +14,6 @@ use Workable\UserTenant\Models\Tenant;
 use Workable\UserTenant\Models\User;
 use Workable\UserTenant\Rules\ValidFields;
 use Workable\UserTenant\Traits\MessageValidateTrait;
-use Symfony\Component\HttpFoundation\Request as RequestAlias;
 
 class TransactionRequest extends FormRequest
 {
@@ -65,11 +65,8 @@ class TransactionRequest extends FormRequest
             $customersRule = Rule::exists('customers', 'id')
                 ->where('tenant_id', get_tenant_id());
 
-            $contractRule = Rule::exists('crm_contracts', 'id')
-                ->where('tenant_id', get_tenant_id());
-
             return [
-                'contract_id'  => ['required', 'integer', $contractRule],
+                'contract_id'  => ['required', 'integer'],
                 'customer_id'  => ['required', 'integer', $customersRule],
                 'amount'       => ['required', 'integer'],
                 'deductions'   => ['required', 'string'],
