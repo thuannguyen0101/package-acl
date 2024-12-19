@@ -14,9 +14,6 @@ class TransactionEnum
         self::STATUS_CANCELED => 'Canceled',
     ];
 
-    const AMOUNT_NOT_ADDED = false;
-    const AMOUNT_ADDED = true;
-
     public static function getStatus($status = null): array
     {
         return self::getDataEnum($status, self::STATUS_TEXT);

@@ -3,25 +3,16 @@
 namespace Workable\Contract\Services;
 
 use Illuminate\Database\Eloquent\Builder;
-use Workable\Contract\Enums\CRMContractHistoryEnum;
 use Workable\Contract\Enums\ResponseEnum;
-use Workable\Contract\Enums\TransactionEnum;
-use Workable\Contract\Http\DTO\CRMContractDTO;
-use Workable\Contract\Models\CRMContract;
-use Workable\Contract\Enums\CRMContractEnum;
+
+use Workable\Contract\Http\DTO\ActivityDTO;
+use Workable\Contract\Models\Activity;
 use Workable\Support\Traits\FilterBuilderTrait;
 use Workable\Support\Traits\ScopeRepositoryTrait;
 
-class CRMContractService
+class ActivityService
 {
     use FilterBuilderTrait, ScopeRepositoryTrait;
-
-    protected $contractHistoryService;
-
-    public function __construct(CRMContractHistoryService $contractHistoryService)
-    {
-        $this->contractHistoryService = $contractHistoryService;
-    }
 
     public function index(array $request = []): array
     {
@@ -36,7 +27,7 @@ class CRMContractService
             $items = $query->get();
         }
 
-        $items = CRMContractDTO::transform($items, $filters);
+        $items = ActivityDTO::transform($items, $filters);
 
         return [
             'status'  => ResponseEnum::CODE_OK,
@@ -55,27 +46,24 @@ class CRMContractService
             return $this->returnNotFound();
         }
 
-        $item = CRMContractDTO::transform($item, $filters);
+        $item = ActivityDTO::transform($item, $filters);
 
         return $this->returnSuccess($item);
     }
 
     public function store(array $request = []): array
     {
-        $user              = get_user();
-        $request['status'] = $request['status'] ?? CRMContractEnum::PENDING_APPROVAL;
-
+        $user                  = get_user();
         $request['tenant_id']  = $user->tenant_id;
-        $request['created_by'] = $request['created_by'] ?? $user->id;
-        $request['updated_by'] = $user->id;
+        $request['created_by'] = $user->id;
+        $request['meta']       = json_encode($request['meta']);
 
-        $item = CRMContract::query()->create($request);
-        $this->contractHistoryService->store($item, CRMContractHistoryEnum::CREATED);
+        $item = Activity::query()->create($request);
 
         return [
             'status'  => ResponseEnum::CODE_OK,
             'message' => "",
-            'item'    => CRMContractDTO::transform($item)
+            'item'    => ActivityDTO::transform($item)
         ];
     }
 
@@ -87,18 +75,18 @@ class CRMContractService
             return $this->returnNotFound();
         }
 
+        $request['meta'] = json_encode($request['meta']);
+
         $item->fill($request);
 
         if ($item->isDirty()) {
-            $item->updated_by = get_user_id();
             $item->update();
-            $this->contractHistoryService->store($item);
         }
 
         return [
             'status'  => ResponseEnum::CODE_OK,
             'message' => "",
-            'item'    => CRMContractDTO::transform($item)
+            'item'    => ActivityDTO::transform($item)
         ];
     }
 
@@ -111,14 +99,13 @@ class CRMContractService
         }
 
         $item->delete();
-        $this->contractHistoryService->store($item, CRMContractHistoryEnum::DELETE);
 
         return $this->returnSuccess(null, "");
     }
 
     private function buildQuery(array $filters = [], bool $isAdmin = false): Builder
     {
-        $query = CRMContract::query();
+        $query = Activity::query();
 
         if (!$isAdmin) {
             $query->where('tenant_id', get_tenant_id());
@@ -128,12 +115,6 @@ class CRMContractService
 
         $this->scopeSort($query, $filters['orders']);
 
-        if ($filters['others']['is_paid'] ?? false) {
-            $query->withSum(['transactions' => function ($query) {
-                $query->where('status', TransactionEnum::STATUS_APPROVED)
-                    ->where('deleted_at', null);
-            }], 'total_amount');
-        }
 
         if (!empty($filters['with'])) {
             $query->with($filters['with']);
@@ -144,7 +125,7 @@ class CRMContractService
 
     private function findOne(int $id)
     {
-        return CRMContract::query()->where('tenant_id', get_tenant_id())->find($id);
+        return Activity::query()->where('tenant_id', get_tenant_id())->find($id);
     }
 
     private function returnNotFound(): array

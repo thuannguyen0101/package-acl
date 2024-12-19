@@ -20,7 +20,7 @@ class CreateActivitiesTable extends Migration
             $table->integer('type');
             $table->text('meta')->nullable();
             $table->unsignedBigInteger('created_by');
-            $table->timestamps(); // Thời gian tạo và cập nhật bản ghi (created_at, updated_at)
+            $table->timestamps();
             $table->softDeletes();
         });
     }

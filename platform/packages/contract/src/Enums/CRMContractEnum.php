@@ -13,6 +13,7 @@ class CRMContractEnum
     const TERMINATED       = 5;     // Chấm dứt
     const COMPLETED        = 6;     // Hoàn thành
     const CANCELLED        = 7;     // Hủy bỏ
+
     const STATUS_TEXT      = [
         self::PENDING_APPROVAL => 'Pending Approval',
         self::ACTIVE           => 'Active',

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Workable\Contract\Http\Controllers\Api\ActivityController;
 use Workable\Contract\Http\Controllers\Api\CRMContractController;
 use Workable\Contract\Http\Controllers\Api\TransactionController;
 
@@ -24,5 +25,13 @@ Route::group([
         Route::get('/{id}', [TransactionController::class, 'show'])->name('api.transactions.show');
         Route::post('/{id}', [TransactionController::class, 'update'])->name('api.transactions.update');
         Route::delete('/{id}', [TransactionController::class, 'destroy'])->name('api.transactions.destroy');
+    });
+
+    Route::prefix('activities')->group(function () {
+        Route::get('/', [ActivityController::class, 'index'])->name('api.activities.index');
+        Route::post('/', [ActivityController::class, 'store'])->name('api.activities.store');
+        Route::get('/{id}', [ActivityController::class, 'show'])->name('api.activities.show');
+        Route::post('/{id}', [ActivityController::class, 'update'])->name('api.activities.update');
+        Route::delete('/{id}', [ActivityController::class, 'destroy'])->name('api.activities.destroy');
     });
 });
