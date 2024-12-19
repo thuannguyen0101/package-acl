@@ -5,6 +5,7 @@ namespace Workable\Contract\Services;
 use Illuminate\Database\Eloquent\Builder;
 use Workable\Contract\Enums\CRMContractHistoryEnum;
 use Workable\Contract\Enums\ResponseEnum;
+use Workable\Contract\Enums\TransactionEnum;
 use Workable\Contract\Http\DTO\CRMContractDTO;
 use Workable\Contract\Models\CRMContract;
 use Workable\Contract\Enums\CRMContractEnum;
@@ -61,15 +62,15 @@ class CRMContractService
 
     public function store(array $request = []): array
     {
-        $user               = get_user();
-        $request['status']  = $user['status'] ?? CRMContractEnum::PENDING_APPROVAL;
-        $request['user_id'] = $user['status'] ?? CRMContractEnum::PENDING_APPROVAL;
+        $user              = get_user();
+        $request['status'] = $request['status'] ?? CRMContractEnum::PENDING_APPROVAL;
 
         $request['tenant_id']  = $user->tenant_id;
         $request['created_by'] = $request['created_by'] ?? $user->id;
         $request['updated_by'] = $user->id;
 
         $item = CRMContract::query()->create($request);
+        $this->contractHistoryService->store($item, CRMContractHistoryEnum::CREATED);
 
         return [
             'status'  => ResponseEnum::CODE_OK,
@@ -126,6 +127,13 @@ class CRMContractService
         $this->scopeFilter($query, $filters['filter_base']);
 
         $this->scopeSort($query, $filters['orders']);
+
+        if ($filters['others']['is_paid'] ?? false) {
+            $query->withSum(['transactions' => function ($query) {
+                $query->where('status', TransactionEnum::STATUS_APPROVED)
+                    ->where('deleted_at', null);
+            }], 'total_amount');
+        }
 
         if (!empty($filters['with'])) {
             $query->with($filters['with']);

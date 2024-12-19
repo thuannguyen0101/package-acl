@@ -15,10 +15,11 @@ class CreateCRMContractHistoriesTable extends Migration
     {
         Schema::create('crm_contract_histories', function (Blueprint $table) {
             $table->id();
+            $table->unsignedInteger('tenant_id')->index(); // ID của tenant
             $table->unsignedInteger('contract_id')->index();
-            $table->unsignedInteger('transaction_id')->nullable()->index();
             $table->unsignedInteger('action');
-            $table->text('data');
+            $table->text('meta_data');
+            $table->text('created_by');
             $table->timestamps();
         });
     }

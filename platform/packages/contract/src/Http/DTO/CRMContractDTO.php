@@ -14,7 +14,9 @@ class CRMContractDTO extends BaseDTO implements DtoInterface
     protected static function getAdditionalRelations(): array
     {
         return [
-            'customer' => CustomerDTO::class,
+            'customer'     => CustomerDTO::class,
+            'histories'    => CRMContractHistoryDTO::class,
+            'transactions' => TransactionDTO::class,
         ];
     }
 
@@ -36,6 +38,7 @@ class CRMContractDTO extends BaseDTO implements DtoInterface
             'created_at'     => CRMContractEnum::formatDate($item->created_at),
             'updated_at'     => CRMContractEnum::formatDate($item->updated_at),
             'deleted_at'     => CRMContractEnum::formatDate($item->deleted_at ?? null),
+            'transactions_sum_total_amount' => CRMContractEnum::formatPrice($item->transactions_sum_total_amount ?? null),
         ];
 
         return self::addDataWith($item, $data, $relations);

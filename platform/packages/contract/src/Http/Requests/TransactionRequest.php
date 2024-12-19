@@ -65,8 +65,11 @@ class TransactionRequest extends FormRequest
             $customersRule = Rule::exists('customers', 'id')
                 ->where('tenant_id', get_tenant_id());
 
+            $contractRule = Rule::exists('crm_contracts', 'id')
+                ->where('tenant_id', get_tenant_id());
+
             return [
-                'contract_id'  => ['required', 'integer'],
+                'contract_id'  => ['required', 'integer', $contractRule],
                 'customer_id'  => ['required', 'integer', $customersRule],
                 'amount'       => ['required', 'integer'],
                 'deductions'   => ['required', 'string'],

@@ -2,7 +2,9 @@
 
 use Carbon\Carbon;
 use Workable\Contract\Enums\CRMContractEnum;
+use Workable\Contract\Enums\CRMContractHistoryEnum;
 use Workable\Contract\Models\CRMContract;
+use Workable\Contract\Models\CRMContractHistory;
 use Workable\Customers\Models\Customer;
 use Workable\UserTenant\Tests\BaseAuthTest;
 
@@ -43,6 +45,14 @@ class CRMContractTest extends BaseAuthTest
             'created_by' => $this->user->id,
             'updated_by' => $this->user->id
         ]));
+
+        $this->history = CRMContractHistory::create([
+            'tenant_id'   => $this->user->tenant_id,
+            'contract_id' => $this->item->id,
+            'action'      => CRMContractHistoryEnum::CREATED,
+            'meta_data'   => json_encode($this->item),
+            'created_by'  => $this->user->id,
+        ]);
     }
 
     public function test_create()
@@ -60,8 +70,8 @@ class CRMContractTest extends BaseAuthTest
 
     public function test_update()
     {
-        $this->data['status'] = CRMContractEnum::TERMINATED;
-        $response             = $this->json("POST", route('api.contracts.update', $this->item->id), $this->data);
+        $this->data['payment'] = 12000000;
+        $response              = $this->json("POST", route('api.contracts.update', $this->item->id), $this->data);
 
         $this->data['status']         = CRMContractEnum::getStatus($this->data['status']);
         $this->data['payment']        = CRMContractEnum::formatPrice($this->data['payment']);
@@ -75,7 +85,8 @@ class CRMContractTest extends BaseAuthTest
     public function test_show()
     {
         $response = $this->json("GET", route('api.contracts.show', $this->item->id), [
-            'with' => 'tenant, customer,  createdBy, updatedBy'
+            'with' => 'tenant, customer, histories, transactions, createdBy, updatedBy',
+            'is_paid' => true
         ]);
 
         $this->data['status']         = CRMContractEnum::getStatus($this->data['status']);
@@ -118,7 +129,6 @@ class CRMContractTest extends BaseAuthTest
             'with'        => 'tenant, customer,  createdBy, updatedBy',
             'is_paginate' => true,
         ]);
-        dd($response->json('data'));
 
         $response
             ->assertStatus(200)

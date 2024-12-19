@@ -48,7 +48,7 @@ class TransactionTest extends BaseAuthTest
             'deductions'   => "Không",
             'total_amount' => 1000000 / 2,
             'created_by'   => $this->user->id,
-            'status'       => TransactionEnum::STATUS_PENDING
+            'status'       => TransactionEnum::STATUS_APPROVED
         ];
 
         $this->item = Transaction::create(array_merge($this->data, [
@@ -120,7 +120,7 @@ class TransactionTest extends BaseAuthTest
     public function test_list_paginated()
     {
         $response = $this->json("GET", route('api.transactions.index', $this->item->id), [
-            'with'        => 'tenant, customer, contract, createdBy, updatedBy',
+            'with'        => 'tenant, customer, contract,, createdBy, updatedBy',
             'is_paginate' => true,
         ]);
 

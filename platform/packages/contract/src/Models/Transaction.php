@@ -24,6 +24,7 @@ class Transaction extends Model
         'deductions',
         'total_amount',
         'status',
+        'is_amount_added',
         'created_by',
         'updated_by',
     ];

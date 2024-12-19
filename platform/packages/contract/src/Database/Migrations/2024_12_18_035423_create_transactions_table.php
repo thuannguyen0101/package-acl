@@ -22,6 +22,7 @@ class CreateTransactionsTable extends Migration
             $table->text('deductions')->nullable(); // Các khoản khấu trừ
             $table->integer('total_amount'); // Số tiền cần thanh toán
             $table->smallInteger('status');
+            $table->boolean('is_amount_added')->default(false);
             $table->unsignedBigInteger('created_by'); // Người tạo bởi
             $table->unsignedBigInteger('updated_by')->nullable(); // Người cập nhật bởi
             $table->timestamps(); // created_at và updated_at

@@ -12,9 +12,10 @@ class CRMContractHistory extends Model
     protected $table = 'crm_contract_histories';
 
     protected $fillable = [
+        'tenant_id',
         'contract_id',
-        'transaction_id',
         'action',
-        'data',
+        'meta_data',
+        'created_by',
     ];
 }

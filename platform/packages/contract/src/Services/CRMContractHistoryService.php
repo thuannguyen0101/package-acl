@@ -7,13 +7,14 @@ use Workable\Contract\Models\CRMContractHistory;
 
 class CRMContractHistoryService
 {
-    public function store($item, int $action = CRMContractHistoryEnum::UPDATE, int $transactionId = null)
+    public function store($item, int $action = CRMContractHistoryEnum::UPDATED)
     {
         $data = [
-            'contract_id'       => $item->id,
-            'transaction_id' => $transactionId,
-            'data'           => json_encode($item),
-            'action'         => $action
+            'tenant_id'   => $item->tenant_id,
+            'contract_id' => $item->id,
+            'action'      => $action,
+            'meta_data'   => json_encode($item),
+            'created_by'  => get_user_id(),
         ];
 
         return CRMContractHistory::create($data);

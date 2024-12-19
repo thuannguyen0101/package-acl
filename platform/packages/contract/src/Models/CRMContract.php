@@ -5,6 +5,7 @@ namespace Workable\Contract\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Workable\Customers\Models\Customer;
 use Workable\UserTenant\Models\Tenant;
@@ -50,5 +51,15 @@ class CRMContract extends Model
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    public function histories(): HasMany
+    {
+        return $this->hasMany(CRMContractHistory::class, 'contract_id', 'id');
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'contract_id', 'id');
     }
 }

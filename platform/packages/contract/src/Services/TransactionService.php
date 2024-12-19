@@ -59,7 +59,7 @@ class TransactionService
     public function store(array $request = []): array
     {
         $user              = get_user();
-        $request['status'] = $user['status'] ?? TransactionEnum::STATUS_PENDING;
+        $request['status'] = $request['status'] ?? TransactionEnum::STATUS_PENDING;
 
         $request['tenant_id']  = $user->tenant_id;
         $request['created_by'] = $user->id;
@@ -85,6 +85,7 @@ class TransactionService
         $item->fill($request);
 
         if ($item->isDirty()) {
+            $item->updated_by = get_user_id();
             $item->update();
         }
 

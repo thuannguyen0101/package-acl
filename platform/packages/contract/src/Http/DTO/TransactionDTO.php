@@ -23,18 +23,19 @@ class TransactionDTO extends BaseDTO implements DtoInterface
     public static function processSinger($item, array $relations = []): array
     {
         $data = [
-            'id'           => $item->id,
-            'tenant_id'    => $item->tenant_id,
-            'contract_id'  => $item->contract_id,
-            'customer_id'  => $item->customer_id,
-            'amount'       => $item->amount,
-            'deductions'   => $item->deductions,
-            'total_amount' => $item->total_amount,
-            'status'       => TransactionEnum::getStatus($item->status),
-            'created_by'   => $item->created_by,
-            'updated_by'   => $item->updated_by,
-            'created_at'   => CRMContractEnum::formatDate($item->created_at),
-            'updated_at'   => CRMContractEnum::formatDate($item->updated_at),
+            'id'              => $item->id,
+            'tenant_id'       => $item->tenant_id,
+            'contract_id'     => $item->contract_id,
+            'customer_id'     => $item->customer_id,
+            'amount'          => $item->amount,
+            'deductions'      => $item->deductions,
+            'total_amount'    => $item->total_amount,
+            'status'          => TransactionEnum::getStatus($item->status),
+            'is_amount_added' => $item->is_amount_added,
+            'created_by'      => $item->created_by,
+            'updated_by'      => $item->updated_by,
+            'created_at'      => CRMContractEnum::formatDate($item->created_at),
+            'updated_at'      => CRMContractEnum::formatDate($item->updated_at),
         ];
 
         return self::addDataWith($item, $data, $relations);

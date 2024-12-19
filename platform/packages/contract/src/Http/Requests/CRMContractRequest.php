@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Workable\Contract\Enums\CRMContractEnum;
+use Workable\Contract\Models\CRMContractHistory;
+use Workable\Contract\Models\Transaction;
 use Workable\Customers\Models\Customer;
 use Workable\Support\Traits\ResponseHelperTrait;
 use Workable\UserTenant\Models\Tenant;
@@ -23,17 +25,23 @@ class CRMContractRequest extends FormRequest
     protected $user;
 
     protected $customer;
+    protected $contractHistory;
+    protected $transaction;
 
     public function __construct(
-        Tenant   $tenant,
-        User     $user,
-        Customer $customer
+        Tenant             $tenant,
+        User               $user,
+        Customer           $customer,
+        CRMContractHistory $contractHistory,
+        Transaction        $transaction
     )
     {
         parent::__construct();
-        $this->tenant   = $tenant;
-        $this->user     = $user;
-        $this->customer = $customer;
+        $this->tenant          = $tenant;
+        $this->user            = $user;
+        $this->customer        = $customer;
+        $this->contractHistory = $contractHistory;
+        $this->transaction     = $transaction;
     }
 
     /**
@@ -74,18 +82,22 @@ class CRMContractRequest extends FormRequest
         }
 
         $validFields = [
-            'with'      => ['tenant', 'customer', 'createdBy', 'updatedBy'],
-            'createdBy' => $this->user->getFillable(),
-            'tenant'    => $this->tenant->getFillable(),
-            'customer'  => $this->customer->getFillable(),
+            'with'         => ['tenant', 'customer', 'histories', 'transactions', 'createdBy', 'updatedBy'],
+            'createdBy'    => $this->user->getFillable(),
+            'tenant'       => $this->tenant->getFillable(),
+            'customer'     => $this->customer->getFillable(),
+            'histories'    => $this->contractHistory->getFillable(),
+            'transactions' => $this->transaction->getFillable(),
         ];
 
         return [
-            'with'                  => ['nullable', new ValidFields('with', $validFields['with'])],
-            'with_fields.tenant'    => ['nullable', new ValidFields('tenant', $validFields['tenant'])],
-            'with_fields.customer'  => ['nullable', new ValidFields('customer', $validFields['customer'])],
-            'with_fields.createdBy' => ['nullable', new ValidFields('createdBy', $validFields['createdBy'])],
-            'with_fields.updatedBy' => ['nullable', new ValidFields('updatedBy', $validFields['createdBy'])],
+            'with'                     => ['nullable', new ValidFields('with', $validFields['with'])],
+            'with_fields.tenant'       => ['nullable', new ValidFields('tenant', $validFields['tenant'])],
+            'with_fields.customer'     => ['nullable', new ValidFields('customer', $validFields['customer'])],
+            'with_fields.histories'    => ['nullable', new ValidFields('histories', $validFields['histories'])],
+            'with_fields.transactions' => ['nullable', new ValidFields('transactions', $validFields['transactions'])],
+            'with_fields.createdBy'    => ['nullable', new ValidFields('createdBy', $validFields['createdBy'])],
+            'with_fields.updatedBy'    => ['nullable', new ValidFields('updatedBy', $validFields['createdBy'])],
         ];
     }
 

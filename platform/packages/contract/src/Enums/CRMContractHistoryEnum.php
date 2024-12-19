@@ -4,15 +4,16 @@ namespace Workable\Contract\Enums;
 
 class CRMContractHistoryEnum
 {
-    const UPDATE = 1;     // Cập nhật
+    const CREATED = 1;     // Tạo mới
 
-    const DELETE           = 2;     // Xóa
+    const UPDATED = 2;     // Cập nhật
 
-    const CONTRACT_PAYMENT = 3;     // Thanh toán
+    const DELETE = 3;     // Xóa
+
 
     const STATUS_TEXT = [
-        self::UPDATE           => 'Cập nhật',
-        self::DELETE           => 'Xóa',
-        self::CONTRACT_PAYMENT => 'Thanh toán',
+        self::CREATED => 'Tạo mới',
+        self::UPDATED => 'Cập nhật',
+        self::DELETE  => 'Xóa',
     ];
 }
