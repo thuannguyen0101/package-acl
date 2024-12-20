@@ -21,7 +21,7 @@ class CreatePenaltiesTable extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->tinyInteger('fine_type');
             $table->integer('amount');
-            $table->integer('status');
+            $table->tinyInteger('status');
             $table->text('note');
 
             $table->unsignedBigInteger('created_by');

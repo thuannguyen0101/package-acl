@@ -15,16 +15,14 @@ class CreatePenaltyRulesTable extends Migration
     {
         Schema::create('penalty_rules', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tenant_id')->index();
-
+            $table->unsignedInteger('tenant_id')->index();
             $table->string('rule_name');
             $table->string('rule_description')->nullable();
-            $table->string('type');
+            $table->tinyInteger('type');
             $table->text('config');
             $table->tinyInteger('status');
-
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
+            $table->unsignedInteger('created_by');
+            $table->unsignedInteger('updated_by');
             $table->timestamps();
             $table->softDeletes();
         });

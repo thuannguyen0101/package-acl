@@ -4,7 +4,7 @@ namespace Workable\HRM\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Workable\HRM\Enums\ResponseEnum;
-use Workable\HRM\Http\Requests\FineRequest;
+use Workable\HRM\Http\Requests\PenaltyRequest;
 use Workable\HRM\Services\PenaltyService;
 use Workable\Support\Traits\ResponseHelperTrait;
 
@@ -19,7 +19,7 @@ class PenaltyController extends Controller
         $this->service = $service;
     }
 
-    public function index(FineRequest $request)
+    public function index(PenaltyRequest $request)
     {
         list(
             'status' => $status,
@@ -34,7 +34,7 @@ class PenaltyController extends Controller
         return $this->respondSuccess($message, $items);
     }
 
-    public function store(FineRequest $request)
+    public function store(PenaltyRequest $request)
     {
         list(
             'status' => $status,
@@ -49,7 +49,7 @@ class PenaltyController extends Controller
         return $this->respondSuccess($message, $item);
     }
 
-    public function update(int $id, FineRequest $request)
+    public function update(int $id, PenaltyRequest $request)
     {
         list(
             'status' => $status,
@@ -79,7 +79,7 @@ class PenaltyController extends Controller
         return $this->respondSuccess($message, $item);
     }
 
-    public function show(int $id, FineRequest $request)
+    public function show(int $id, PenaltyRequest $request)
     {
         list(
             'status' => $status,

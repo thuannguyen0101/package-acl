@@ -4,7 +4,7 @@ namespace Workable\HRM\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Workable\HRM\Enums\ResponseEnum;
-use Workable\HRM\Http\Requests\FineRequest;
+use Workable\HRM\Http\Requests\PenaltyRequest;
 use Workable\HRM\Http\Requests\InsuranceRequest;
 use Workable\HRM\Services\InsuranceService;
 use Workable\Support\Traits\ResponseHelperTrait;

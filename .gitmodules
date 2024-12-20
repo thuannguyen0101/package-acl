@@ -41,3 +41,7 @@
 [submodule "platform/packages/customers"]
 	path = platform/packages/customers
 	url = git@gitlab.com:vnpgroup.net/customers.git
+
+[submodule "platform/packages/contract"]
+	path = platform/packages/contract
+	url = git@gitlab.com:vnpgroup.net/contract.git

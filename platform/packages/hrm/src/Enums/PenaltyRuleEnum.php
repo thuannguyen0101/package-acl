@@ -24,7 +24,7 @@ class PenaltyRuleEnum
         self::BOTH        => 'Both',
     ];
 
-    public static function getStatus($status = null): array
+    public static function getStatus(int $status = null): array
     {
         return self::getDataEnum($status, self::STATUS);
     }
@@ -43,7 +43,7 @@ class PenaltyRuleEnum
 
         if (isset($value)) {
             $data = [
-                'id'    => $value,
+                'id'    => (int)$value,
                 'value' => $arrayEnum[$value]
             ];
         }

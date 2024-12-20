@@ -53,10 +53,9 @@ class TenantSettingAttendanceService
             return $this->returnNotFound();
         }
 
-        $request['exclude_weekends']  = json_encode($request['exclude_weekends'] ?? []);
-        $request['half_day_weekends'] = json_encode($request['half_day_weekends'] ?? []);
+        $data['setting_attendance'] = json_encode($request);
 
-        $config->fill($request);
+        $config->fill($data);
 
         if ($config->isDirty()) {
             $config->updated_by = get_user_id();

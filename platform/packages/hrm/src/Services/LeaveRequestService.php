@@ -36,7 +36,7 @@ class LeaveRequestService
         }
 
         $items = LeaveRequestDTO::transform($items, $filters);
-        dd($items);
+
         return [
             'status'  => ResponseEnum::CODE_OK,
             'message' => "",

@@ -3,6 +3,7 @@
 namespace Workable\HRM\Services;
 
 use Illuminate\Database\Eloquent\Builder;
+use Workable\HRM\Enums\PenaltyRuleEnum;
 use Workable\HRM\Enums\ResponseEnum;
 use Workable\HRM\Http\DTO\PenaltyRuleDTO;
 use Workable\HRM\Models\PenaltyRule;
@@ -51,7 +52,7 @@ class PenaltyRuleService
     public function store(array $request = []): array
     {
         $user                  = get_user();
-        $request['user_id']    = $user->id;
+        $request['status']     = $request['status'] ?? PenaltyRuleEnum::STATUS_ACTIVE;
         $request['tenant_id']  = $user->tenant_id;
         $request['created_by'] = $user->id;
         $request['updated_by'] = $user->id;
@@ -66,7 +67,7 @@ class PenaltyRuleService
     public function update(int $id, array $request = []): array
     {
         $item = $this->findOne($id);
-
+        dd($item);
         if (!$item) {
             return $this->returnNotFound();
         }

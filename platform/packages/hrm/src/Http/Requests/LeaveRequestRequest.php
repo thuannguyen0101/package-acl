@@ -54,9 +54,9 @@ class LeaveRequestRequest extends FormRequest
 
             return [
                 'user_id'     => ['required', $userRule],
-                'leave_type'  => ['required', 'numeric', 'in:' . implode(',', array_keys(LeaveRequestEnum::LEAVE_TYPE))],
-                'start_date'  => ['required', 'date', 'date_format:Y-m-d H:i'],
-                'end_date'    => ['required', 'date', 'date_format:Y-m-d H:i', 'after_or_equal:start_date'],
+                'leave_type'  => ['required', 'integer', 'in:' . implode(',', array_keys(LeaveRequestEnum::LEAVE_TYPE))],
+                'start_date'  => ['required', 'date', 'date_format:Y-m-d H:i:s'],
+                'end_date'    => ['required', 'date', 'date_format:Y-m-d H:i:s', 'after_or_equal:start_date'],
                 'reason'      => ['required', 'string'],
                 'status'      => ['nullable', 'integer', 'in:' . implode(',', array_keys(LeaveRequestEnum::LEAVE_STATUS))],
                 'approved_by' => ['required', 'integer', $userRule],

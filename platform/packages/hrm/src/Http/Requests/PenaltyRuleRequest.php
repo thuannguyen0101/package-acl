@@ -50,27 +50,27 @@ class PenaltyRuleRequest extends FormRequest
         if ($request->isMethod(RequestAlias::METHOD_POST)) {
             return [
                 'rule_name'        => ['required', 'string'],
-                'rule_description' => ['nullable', 'string'],
                 'config'           => ['required', 'array'],
+                'type'             => ['required', 'integer', 'in:' . implode(',', array_keys(PenaltyRuleEnum::TYPE))],
                 'config.name'      => ['required', 'string'],
                 'config.value'     => ['required', 'integer'],
                 'config.price'     => ['required', 'integer'],
-                'type'             => ['nullable', 'integer', 'in:' . implode(',', array_keys(PenaltyRuleEnum::TYPE))],
+                'rule_description' => ['nullable', 'string'],
                 'status'           => ['nullable', 'integer', 'in:' . implode(',', array_keys(PenaltyRuleEnum::STATUS))],
             ];
         }
 
         $validFields = [
-            'with'   => ['tenant', 'user', 'approvedBy'],
-            'user'   => $this->user->getFillable(),
-            'tenant' => $this->tenant->getFillable(),
+            'with'      => ['tenant', 'createdBy', 'updatedBy'],
+            'tenant'    => $this->tenant->getFillable(),
+            'createdBy' => $this->user->getFillable(),
         ];
 
         return [
-            'with'                   => ['nullable', new ValidFields('with', $validFields['with'])],
-            'with_fields.user'       => ['nullable', new ValidFields('user', $validFields['user'])],
-            'with_fields.tenant'     => ['nullable', new ValidFields('tenant', $validFields['tenant'])],
-            'with_fields.approvedBy' => ['nullable', new ValidFields('approvedBy', $validFields['user'])],
+            'with'                  => ['nullable', new ValidFields('with', $validFields['with'])],
+            'with_fields.tenant'    => ['nullable', new ValidFields('tenant', $validFields['tenant'])],
+            'with_fields.createdBy' => ['nullable', new ValidFields('createdBy', $validFields['createdBy'])],
+            'with_fields.updatedBy' => ['nullable', new ValidFields('updatedBy', $validFields['createdBy'])],
         ];
     }
 

@@ -10,6 +10,14 @@ class PenaltyDTO extends BaseDTO implements DtoInterface
 {
     protected static $dataKey = 'penalty';
 
+    protected static function getAdditionalRelations(): array
+    {
+        return [
+            'penaltyRule' => PenaltyRuleDTO::class,
+            'attendance'  => AttendanceDTO::class,
+        ];
+    }
+
     public static function processSinger($item, array $relations = []): array
     {
         $data = [

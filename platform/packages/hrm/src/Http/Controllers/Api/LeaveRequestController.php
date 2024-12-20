@@ -106,7 +106,7 @@ class LeaveRequestController extends Controller
         list(
             'status' => $status,
             'message' => $message,
-            'item' => $item,
+            'items' => $items,
 
             ) = $this->service->index($request);
 
@@ -114,6 +114,6 @@ class LeaveRequestController extends Controller
             return $this->respondError($message);
         }
 
-        return $this->respondSuccess($message, $item);
+        return $this->respondSuccess($message, $items);
     }
 }

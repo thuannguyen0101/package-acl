@@ -4,6 +4,9 @@ namespace Workable\HRM\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Workable\UserTenant\Models\Tenant;
+use Workable\UserTenant\Models\User;
 
 class Insurance extends Model
 {
@@ -23,4 +26,14 @@ class Insurance extends Model
         'status',
         'note'
     ];
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class, 'tenant_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }
