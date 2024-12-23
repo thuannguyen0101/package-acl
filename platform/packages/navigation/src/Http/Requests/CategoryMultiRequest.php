@@ -46,24 +46,6 @@ class CategoryMultiRequest extends formRequest
     public function rules(Request $request)
     {
         if ($request->isMethod(RequestAlias::METHOD_POST)) {
-            dd( $this->getMessage(
-                [
-                    'name'      => ['required', 'string', 'max:191'],
-                    'root_id'   => ['nullable', 'integer', 'exists'],
-                    'parent_id' => ['nullable', 'exists'],
-                    'url'       => ['required', 'string'],
-                    'type'      => ['nullable', 'string', 'max:50'],
-                    'icon'      => ['nullable', 'string', 'max:50'],
-                    'view_data' => ['nullable', 'string'],
-                    'label'     => ['integer'],
-                    'layout'    => ['integer'],
-                    'sort'      => ['integer'],
-                    'is_auth'   => ['integer'],
-                    'status'    => ['integer'],
-                    'meta'      => ['nullable', 'array'],
-                ],
-                'navigation::api'
-            ));
             return [
                 'name'      => ['required', 'string', 'max:191'],
                 'root_id'   => ['nullable', 'integer', 'exists:category_multi,id'],
