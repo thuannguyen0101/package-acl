@@ -20,6 +20,9 @@
         <testsuite name="UserTenant">
             <directory suffix="Test.php">./platform/packages/user-tenant/tests/Feature</directory>
         </testsuite>
+        <testsuite name="Contract">
+            <directory suffix="Test.php">./platform/packages/contract/tests/Feature</directory>
+        </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
         <include>

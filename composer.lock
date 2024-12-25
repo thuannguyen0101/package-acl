@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b441a6d941c010868d860adfe4b5efca",
+    "content-hash": "aea096e9091f4fe6c73dce2598974af4",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6926,6 +6926,39 @@
             }
         },
         {
+            "name": "workable/announcements",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "./platform/packages/announcements",
+                "reference": "655edec7c51bd317d6548074a4962aa3b8f1b1e9"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workable\\Announcements\\AnnouncementsServiceProvider"
+                    ],
+                    "aliases": []
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Workable\\Announcements\\": "src/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "dinhthangpham",
+                    "email": "dinhthang.phamm@gmail.com"
+                }
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "workable/bank",
             "version": "dev-main",
             "dist": {
@@ -7027,10 +7060,9 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/contract",
-                "reference": "9c9fc5c1d1c969c1a331397dfdf3d1d9e59c1e8f"
+                "reference": "c7fa0b4cab84f097fe4d07fc848acbdcd5a09812"
             },
             "require": {
-                "maatwebsite/excel": "^3.1.61",
                 "php": "^7.4"
             },
             "type": "library",
@@ -7109,7 +7141,7 @@
             "dist": {
                 "type": "path",
                 "url": "./platform/packages/hrm",
-                "reference": "600b6be1a6938d76f309289dfffe2f03e09ae448"
+                "reference": "856579770c00329d5912c9a8b6147908bfe80f6a"
             },
             "require": {
                 "maatwebsite/excel": "^3.1.61",
@@ -9698,6 +9730,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "workable/acl": 20,
+        "workable/announcements": 20,
         "workable/bank": 20,
         "workable/budget": 20,
         "workable/contract": 20,

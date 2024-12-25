@@ -1,47 +1,51 @@
-[submodule "platform/core"]
-	path = platform/core
-	url = git@gitlab.com:workable_packages/platform.git
-
-[submodule "platform/packages/helpers"]
-	path = platform/packages/helpers
-	url = git@gitlab.com:123job_core/helpers.git
-
-[submodule "platform/packages/user-tenant"]
-	path = platform/packages/user-tenant
-	url = git@gitlab.com:vnpgroup.net/vnp_user_tenant.git
-
-[submodule "platform/packages/acl"]
-	path = platform/packages/acl
-	url = git@gitlab.com:vnpgroup.net/acl.git
-
-[submodule "platform/packages/bank"]
-	path = platform/packages/bank
-	url = git@gitlab.com:vnpgroup.net/bank.git
-
-[submodule "platform/packages/budget"]
-	path = platform/packages/budget
-	url = git@gitlab.com:vnpgroup.net/budget.git
-
-[submodule "platform/packages/translate"]
-	path = platform/packages/translate
-	url = git@gitlab.com:vnpgroup.net/translate.git
-
-[submodule "platform/packages/service-price"]
-	path = platform/packages/service-price
-	url = git@gitlab.com:vnpgroup.net/service-price.git
-
-[submodule "platform/packages/incident"]
-	path = platform/packages/incident
-	url = git@gitlab.com:vnpgroup.net/incident.git
-
-[submodule "platform/packages/hrm"]
-	path = platform/packages/hrm
-	url = git@gitlab.com:vnpgroup.net/hrm.git
-
-[submodule "platform/packages/customers"]
-	path = platform/packages/customers
-	url = git@gitlab.com:vnpgroup.net/customers.git
-
-[submodule "platform/packages/contract"]
-	path = platform/packages/contract
-	url = git@gitlab.com:vnpgroup.net/contract.git
+; [submodule "platform/core"]
+; 	path = platform/core
+; 	url = git@gitlab.com:workable_packages/platform.git
+;
+; [submodule "platform/packages/helpers"]
+; 	path = platform/packages/helpers
+; 	url = git@gitlab.com:123job_core/helpers.git
+;
+; [submodule "platform/packages/user-tenant"]
+; 	path = platform/packages/user-tenant
+; 	url = git@gitlab.com:vnpgroup.net/vnp_user_tenant.git
+;
+; [submodule "platform/packages/acl"]
+; 	path = platform/packages/acl
+; 	url = git@gitlab.com:vnpgroup.net/acl.git
+;
+; [submodule "platform/packages/bank"]
+; 	path = platform/packages/bank
+; 	url = git@gitlab.com:vnpgroup.net/bank.git
+;
+; [submodule "platform/packages/budget"]
+; 	path = platform/packages/budget
+; 	url = git@gitlab.com:vnpgroup.net/budget.git
+;
+; [submodule "platform/packages/translate"]
+; 	path = platform/packages/translate
+; 	url = git@gitlab.com:vnpgroup.net/translate.git
+;
+; [submodule "platform/packages/service-price"]
+; 	path = platform/packages/service-price
+; 	url = git@gitlab.com:vnpgroup.net/service-price.git
+;
+; [submodule "platform/packages/incident"]
+; 	path = platform/packages/incident
+; 	url = git@gitlab.com:vnpgroup.net/incident.git
+;
+; [submodule "platform/packages/hrm"]
+; 	path = platform/packages/hrm
+; 	url = git@gitlab.com:vnpgroup.net/hrm.git
+;
+; [submodule "platform/packages/customers"]
+; 	path = platform/packages/customers
+; 	url = git@gitlab.com:vnpgroup.net/customers.git
+;
+; [submodule "platform/packages/contract"]
+; 	path = platform/packages/contract
+; 	url = git@gitlab.com:vnpgroup.net/contract.git
+;
+; [submodule "platform/packages/announcements"]
+; 	path = platform/packages/announcements
+; 	url = git@gitlab.com:vnpgroup.net/announcements.git

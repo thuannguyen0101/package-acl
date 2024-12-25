@@ -67,7 +67,7 @@ class PenaltyRuleService
     public function update(int $id, array $request = []): array
     {
         $item = $this->findOne($id);
-        dd($item);
+
         if (!$item) {
             return $this->returnNotFound();
         }
