@@ -6,6 +6,10 @@
 	path = platform/packages/helpers
 	url = git@gitlab.com:123job_core/helpers.git
 
+[submodule "platform/packages/navigation"]
+	path = platform/packages/navigation
+	url = git@gitlab.com:vnpgroup.net/navigation.git
+
 [submodule "platform/packages/user-tenant"]
 	path = platform/packages/user-tenant
 	url = git@gitlab.com:vnpgroup.net/vnp_user_tenant.git
@@ -29,10 +33,12 @@
 [submodule "platform/packages/service-price"]
 	path = platform/packages/service-price
 	url = git@gitlab.com:vnpgroup.net/service-price.git
+	branch = sondev
 
 [submodule "platform/packages/incident"]
 	path = platform/packages/incident
 	url = git@gitlab.com:vnpgroup.net/incident.git
+	branch = sondev
 
 [submodule "platform/packages/hrm"]
 	path = platform/packages/hrm
@@ -49,3 +55,11 @@
 [submodule "platform/packages/announcements"]
 	path = platform/packages/announcements
 	url = git@gitlab.com:vnpgroup.net/announcements.git
+
+[submodule "platform/packages/file-uploader"]
+	path = platform/packages/file-uploader
+	url = git@gitlab.com:workable_packages/file-uploader.git
+
+[submodule "platform/packages/appointments"]
+	path = platform/packages/appointments
+	url = git@gitlab.com:vnpgroup.net/appointments.git
